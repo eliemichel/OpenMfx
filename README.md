@@ -31,3 +31,7 @@ See [LICENSE.md](LICENSE.md).
 ## Contributing
 
 This document currently is a draft. Feel free to give some feedback through the GitHub [issues](https://github.com/eliemichel/OpenMeshEffect/issues) of this repository.
+
+## History
+
+The need for such a standard urged when I tried to tie Blender and Houdini together while respecting the spirit of the GPL license under which Blender is released. See [the discussion on Blender Dev Talk forum](https://devtalk.blender.org/t/houdini-engine-modifier-for-blender/8218).
