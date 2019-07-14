@@ -294,6 +294,18 @@ This property contains a pointer to memory where mesh face data is stored
 /*@}*/
 /*@}*/
 
+
+/** @brief Tells the binary the path to the bundle from which it is loaded.
+ *
+ * This is useful for the binary to locate the resource directory, wose content
+ * my impact the number of available plugins. A host may not call this, but if
+ * it does, it must be only once and before calling OfxGetNumberOfPlugins().
+ *
+ * A binary may not implement this symbol, because core OpenFX does not
+ * introduce it.
+ */
+OfxExport void OfxSetBundleDirectory(const char *path);
+
 /** @brief the string that names mesh effect suites, passed to OfxHost::fetchSuite */
 #define kOfxMeshEffectSuite "OfxMeshEffectSuite"
 
