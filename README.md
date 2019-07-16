@@ -1,4 +1,8 @@
 
+<p align="center">
+  <img alt="Open Mesh Effect" src="doc/images/openmesheffect.png">
+</p>
+
 OpenFX Mesh Effect API
 ======================
 
