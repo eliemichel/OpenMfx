@@ -80,3 +80,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+## Open Mesh Effect Logo
+
+```
+The Open Mesh Effect logo.
+Copyright (c) 2019 Elie Michel
+
+You may reuse the logo provided that:
+
+  1. it is used to refer to the Open Mesh Effect API;
+  2. it is made clear that you product differs from the Open Mesh Effect API if it does;
+  3. the shape of the logo remains unaffected (you may adapt the color to the circumstances);
+  4. and the font shape and weight remains unaffected (you may change its size, or even remove it).
+
+```
+
+The font present on the Open Mesh Effect logo is *Datalegreya*, copyright (c) 2013, Juan Pablo del Peral. It is released under the SIL Open Font License v1.10, whose details can be obtained at https://www.fontsquirrel.com/license/datalegreya
