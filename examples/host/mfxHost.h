@@ -105,6 +105,7 @@ typedef struct OfxPropertyStruct {
 } OfxPropertyStruct;
 
 typedef enum PropertySetContext {
+    PROP_CTX_HOST,
     PROP_CTX_MESH_EFFECT,
     PROP_CTX_INPUT,
     PROP_CTX_MESH,
@@ -116,6 +117,39 @@ typedef struct OfxPropertySetStruct {
     int num_properties;
     OfxPropertyStruct **properties;
 } OfxPropertySetStruct;
+
+// Parameters
+
+typedef union OfxParamValueStruct {
+    void *as_pointer;
+    const char *as_const_char;
+    char *as_char;
+    double as_double;
+    int as_int;
+} OfxParamValueStruct;
+
+typedef enum ParamType {
+    PARAM_TYPE_UNKNOWN = -1,
+    PARAM_TYPE_DOUBLE,
+    PARAM_TYPE_INT,
+    PARAM_TYPE_STRING,
+} ParamType;
+
+typedef struct OfxParamStruct {
+    const char *name;
+    OfxParamValueStruct value[4];
+    ParamType type;
+    OfxPropertySetStruct properties;
+} OfxParamStruct;
+
+typedef struct OfxParamSetStruct {
+    int num_parameters;
+    OfxParamStruct **parameters;
+    OfxPropertySetStruct *effect_properties; // weak pointer
+} OfxParamSetStruct;
+
+void parameter_set_type(OfxParamHandle param, ParamType type);
+void parameter_realloc_string(OfxParamHandle param, int size);
 
 // Inputs
 
@@ -137,6 +171,7 @@ typedef struct OfxMeshInputSetStruct {
 typedef struct OfxMeshEffectStruct {
     OfxMeshInputSetStruct inputs;
     OfxPropertySetStruct properties;
+    OfxParamSetStruct parameters;
     OfxHost *host; // weak pointer, do not deep copy
 } OfxMeshEffectStruct;
 
@@ -149,7 +184,7 @@ void releaseGlobalHost(void);
  *       OfxPlugin pointers. Registry must be later released using
  *       free_registry()
  */
-bool load_plugins_linux(PluginRegistry *registry, const char *ofx_filepath);
+bool load_registry(PluginRegistry *registry, const char *ofx_filepath);
 
 /**
  * /pre registry has been allocated

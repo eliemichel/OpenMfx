@@ -20,8 +20,10 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "ofxProperty.h"
+#include "ofxParam.h"
 #include "ofxMeshEffect.h"
 
 #include "util/ofx_util.h"
@@ -34,6 +36,8 @@
 #else
 #include <dlfcn.h>
 #endif
+
+// OFX PROPERTIES SUITE
 
 // // OfxPropertySetStruct
 
@@ -312,6 +316,305 @@ static OfxStatus propGetDimension(OfxPropertySetHandle properties, const char *p
   return kOfxStatOK;
 }
 
+
+// OFX PARAMETERS SUITE
+
+// // OfxParamStruct
+
+static void init_parameter(OfxParamHandle param) {
+  param->type = PARAM_TYPE_DOUBLE;
+  param->name = NULL;
+  init_properties(&param->properties);
+}
+
+static void free_parameter(OfxParamHandle param) {
+  free_properties(&param->properties);
+  if (PARAM_TYPE_STRING == param->type) {
+    free_array(param->value[0].as_char);
+  }
+  if (NULL != param->name) {
+    free_array(param->name);
+  }
+}
+
+void parameter_set_type(OfxParamHandle param, ParamType type) {
+  if (param->type == type) {
+    return;
+  }
+
+  if (PARAM_TYPE_STRING == param->type) {
+    free_array(param->value[0].as_char);
+    param->value[0].as_char = NULL;
+  }
+
+  param->type = type;
+
+  if (PARAM_TYPE_STRING == param->type) {
+    param->value[0].as_char = NULL;
+    parameter_realloc_string(param, 1);
+  }
+}
+
+void parameter_realloc_string(OfxParamHandle param, int size) {
+  if (NULL != param->value[0].as_char) {
+    free_array(param->value[0].as_char);
+  }
+  param->value[0].as_char = malloc_array(sizeof(char), size, "parameter string value");
+  param->value[0].as_char[0] = '\0';
+}
+
+// // OfxParamSetStruct
+
+static void deep_copy_parameter(OfxParamStruct *destination, const OfxParamStruct *source) {
+  destination->name = source->name;
+  if (NULL != destination->name) {
+    destination->name = malloc_array(sizeof(char), strlen(source->name), "parameter name");
+    strcpy(destination->name, source->name);
+  }
+  destination->type = source->type;
+  destination->value[0] = source->value[0];
+  destination->value[1] = source->value[1];
+  destination->value[2] = source->value[2];
+  destination->value[3] = source->value[3];
+
+  // Strings are dynamically allocated, so deep copy must allocate new data
+  if (destination->type == PARAM_TYPE_STRING) {
+    int n = strlen(source->value[0].as_char);
+    destination->value[0].as_char = NULL;
+    parameter_realloc_string(destination, n + 1);
+    strcpy(destination->value[0].as_char, source->value[0].as_char);
+  }
+
+  deep_copy_property_set(&destination->properties, &source->properties);
+}
+
+static int find_parameter(OfxParamSetHandle param_set, const char *param) {
+  for (int i = 0 ; i < param_set->num_parameters ; ++i) {
+    if (0 == strcmp(param_set->parameters[i]->name, param)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+static void append_parameters(OfxParamSetHandle param_set, int count) {
+  int old_num_parameters = param_set->num_parameters;
+  OfxParamStruct **old_parameters = param_set->parameters;
+  param_set->num_parameters += count;
+  param_set->parameters = malloc_array(sizeof(OfxParamStruct*), param_set->num_parameters, "parameters");
+  for (int i = 0 ; i < param_set->num_parameters ; ++i){
+    if (i < old_num_parameters) {
+      param_set->parameters[i] = old_parameters[i];
+    } else {
+      param_set->parameters[i] = malloc_array(sizeof(OfxParamStruct), 1, "parameter");
+      init_parameter(param_set->parameters[i]);
+    }
+  }
+  if (NULL != old_parameters) {
+    free_array(old_parameters);
+  }
+}
+
+static int ensure_parameter(OfxParamSetHandle param_set, const char *parameter) {
+  int i = find_parameter(param_set, parameter);
+  if (i == -1) {
+    append_parameters(param_set, 1);
+    i = param_set->num_parameters - 1;
+    param_set->parameters[i]->name = malloc_array(sizeof(char), strlen(parameter), "parameter name");
+    strcpy(param_set->parameters[i]->name, parameter);
+  }
+  return i;
+}
+
+static void init_parameter_set(OfxParamSetHandle param_set) {
+  param_set->num_parameters = 0;
+  param_set->parameters = NULL;
+  param_set->effect_properties = NULL;
+}
+
+static void free_parameter_set(OfxParamSetHandle param_set) {
+  for (int i = 0 ; i < param_set->num_parameters ; ++i){
+    free_parameter(param_set->parameters[i]);
+    free_array(param_set->parameters[i]);
+  }
+  param_set->num_parameters = 0;
+  if (NULL != param_set->parameters) {
+    free_array(param_set->parameters);
+    param_set->parameters = NULL;
+  }
+}
+
+static void deep_copy_parameter_set(OfxParamSetStruct *destination, const OfxParamSetStruct *source) {
+  init_parameter_set(destination);
+  append_parameters(destination, source->num_parameters);
+  for (int i = 0 ; i < destination->num_parameters ; ++i) {
+    deep_copy_parameter(destination->parameters[i], source->parameters[i]);
+  }
+  destination->effect_properties = source->effect_properties;
+}
+
+// // Parameter Suite Entry Points
+
+static ParamType parse_parameter_type(const char *str) {
+  if (0 == strcmp(str, kOfxParamTypeDouble)) {
+    return PARAM_TYPE_DOUBLE;
+  }
+  if (0 == strcmp(str, kOfxParamTypeInteger)) {
+    return PARAM_TYPE_INT;
+  }
+  if (0 == strcmp(str, kOfxParamTypeString)) {
+    return PARAM_TYPE_STRING;
+  }
+  return PARAM_TYPE_UNKNOWN;
+}
+
+static size_t parameter_type_dimensions(ParamType type) {
+  switch (type) {
+  case PARAM_TYPE_DOUBLE:
+  case PARAM_TYPE_INT:
+  case PARAM_TYPE_STRING:
+    return 1;
+  default:
+    return 1;
+  }
+}
+
+static OfxStatus paramDefine(OfxParamSetHandle paramSet,
+                             const char *paramType,
+                             const char *name,
+                             OfxPropertySetHandle *propertySet) {
+  int i = find_parameter(paramSet, name);
+  if (-1 != i) {
+    return kOfxStatErrExists;
+  }
+  i = ensure_parameter(paramSet, name);
+  parameter_set_type(paramSet->parameters[i], parse_parameter_type(paramType));
+  if (NULL != propertySet) {
+    *propertySet = &paramSet->parameters[i]->properties;
+  }
+  return kOfxStatOK;
+}
+
+static OfxStatus paramGetHandle(OfxParamSetHandle paramSet,
+                                const char *name,
+                                OfxParamHandle *param,
+                                OfxPropertySetHandle *propertySet) {
+  int i = find_parameter(paramSet, name);
+  if (-1 == i) {
+    return kOfxStatErrUnknown; // parameter not found
+  }
+  *param = paramSet->parameters[i];
+  if (NULL !=  propertySet) {
+    *propertySet = &paramSet->parameters[i]->properties;
+  }
+  return kOfxStatOK;
+}
+
+static OfxStatus paramSetGetPropertySet(OfxParamSetHandle paramSet,
+                                        OfxPropertySetHandle *propHandle) {
+  *propHandle = paramSet->effect_properties;
+  return kOfxStatOK;
+}
+
+static OfxStatus paramGetPropertySet(OfxParamHandle param,
+                                     OfxPropertySetHandle *propHandle) {
+  *propHandle = &param->properties;
+  return kOfxStatOK;
+}
+
+static OfxStatus paramGetValue(OfxParamHandle paramHandle, ...) {
+  size_t dimensions = parameter_type_dimensions(paramHandle->type);
+  va_list valist;
+  va_start(valist, paramHandle);
+  for (size_t i = 0 ; i < dimensions ; ++i) {
+    switch (paramHandle->type) {
+    case PARAM_TYPE_DOUBLE:
+      *va_arg(valist, double*) = paramHandle->value[i].as_double;
+      break;
+    case PARAM_TYPE_INT:
+      *va_arg(valist, int*) = paramHandle->value[i].as_int;
+      break;
+    }
+  }
+  va_end(valist);
+  return kOfxStatOK;
+}
+
+static OfxStatus paramGetValueAtTime(OfxParamHandle paramHandle, OfxTime time, ...) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramGetDerivative(OfxParamHandle paramHandle, OfxTime time, ...) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramGetIntegral(OfxParamHandle paramHandle, OfxTime time1, OfxTime time2, ...) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramSetValue(OfxParamHandle paramHandle, ...) {
+  size_t dimensions = parameter_type_dimensions(paramHandle->type);
+  va_list args;
+  va_start(args, paramHandle);
+  for (size_t i = 0 ; i < dimensions ; ++i) {
+    switch (paramHandle->type) {
+    case PARAM_TYPE_DOUBLE:
+    {
+      double d = va_arg(args, double);
+      printf("double: %f\n", d);
+      paramHandle->value[i].as_double = d;
+      break;
+    }
+    case PARAM_TYPE_INT:
+      paramHandle->value[i].as_int = va_arg(args, int);
+      break;
+    }
+  }
+  va_end(args);
+  return kOfxStatOK;
+}
+
+static OfxStatus paramSetValueAtTime(OfxParamHandle  paramHandle, OfxTime time, ...) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramGetNumKeys(OfxParamHandle  paramHandle, unsigned int  *numberOfKeys) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramGetKeyTime(OfxParamHandle  paramHandle,
+                                 unsigned int nthKey,
+                                 OfxTime *time) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramGetKeyIndex(OfxParamHandle  paramHandle,
+                                  OfxTime time,
+                                  int     direction,
+                                  int    *index) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramDeleteKey(OfxParamHandle  paramHandle, OfxTime time) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramDeleteAllKeys(OfxParamHandle  paramHandle) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramCopy(OfxParamHandle  paramTo, OfxParamHandle  paramFrom, OfxTime dstOffset, const OfxRangeD *frameRange) {
+  return kOfxStatErrUnsupported;
+}
+
+static OfxStatus paramEditBegin(OfxParamSetHandle paramSet, const char *name) {
+  return kOfxStatErrUnsupported;
+}
+ 
+static OfxStatus paramEditEnd(OfxParamSetHandle paramSet) {
+  return kOfxStatErrUnsupported;
+}
+
 // OFX MESH EFFECT SUITE
 
 // // OfxInputStruct
@@ -409,17 +712,22 @@ static void init_mesh_effect(OfxMeshEffectHandle meshEffectHandle) {
   meshEffectHandle->inputs.host = meshEffectHandle->host;
   init_input_set(&meshEffectHandle->inputs);
   init_properties(&meshEffectHandle->properties);
+  init_parameter_set(&meshEffectHandle->parameters);
+  meshEffectHandle->parameters.effect_properties = &meshEffectHandle->properties;
   meshEffectHandle->properties.context = PROP_CTX_MESH_EFFECT;
 }
 
 static void free_mesh_effect(OfxMeshEffectHandle meshEffectHandle) {
   free_input_set(&meshEffectHandle->inputs);
   free_properties(&meshEffectHandle->properties);
+  free_parameter_set(&meshEffectHandle->parameters);
 }
 
 static void deep_copy_mesh_effect(OfxMeshEffectStruct *destination, const OfxMeshEffectStruct *source) {
   deep_copy_input_set(&destination->inputs, &source->inputs);
   deep_copy_property_set(&destination->properties, &source->properties);
+  deep_copy_parameter_set(&destination->parameters, &source->parameters);
+  destination->parameters.effect_properties = &destination->properties;
   destination->host = source->host; // not deep copied, as this is a weak pointer
 }
 
@@ -433,9 +741,8 @@ static OfxStatus getPropertySet(OfxMeshEffectHandle meshEffect,
 
 static OfxStatus getParamSet(OfxMeshEffectHandle meshEffect,
                              OfxParamSetHandle *paramSet) {
-  (void)meshEffect;
-  (void)paramSet;
-  return kOfxStatReplyDefault;
+  *paramSet = &meshEffect->parameters;
+  return kOfxStatOK;
 }
 
 static OfxStatus inputDefine(OfxMeshEffectHandle meshEffect,
@@ -602,6 +909,27 @@ static const void * fetchSuite(OfxPropertySetHandle host,
     /* abort */               ofxAbort
   };
 
+  static const OfxParameterSuiteV1 parameterSuiteV1 = {
+    /* paramDefine */            paramDefine,
+    /* paramGetHandle */         paramGetHandle,
+    /* paramSetGetPropertySet */ paramSetGetPropertySet,
+    /* paramGetPropertySet */    paramGetPropertySet,
+    /* paramGetValue */          paramGetValue,
+    /* paramGetValueAtTime */    paramGetValueAtTime,
+    /* paramGetDerivative */     paramGetDerivative,
+    /* paramGetIntegral */       paramGetIntegral,
+    /* paramSetValue */          paramSetValue,
+    /* paramSetValueAtTime */    paramSetValueAtTime,
+    /* paramGetNumKeys */        paramGetNumKeys,
+    /* paramGetKeyTime */        paramGetKeyTime,
+    /* paramGetKeyIndex */       paramGetKeyIndex,
+    /* paramDeleteKey */         paramDeleteKey,
+    /* paramDeleteAllKeys */     paramDeleteAllKeys,
+    /* paramCopy */              paramCopy,
+    /* paramEditBegin */         paramEditBegin,
+    /* paramDeleteKey */         paramDeleteKey
+  };
+
   static const OfxPropertySuiteV1 propertySuiteV1 = {
     /* propSetPointer */   propSetPointer,
     /* propSetString */    propSetString,
@@ -628,6 +956,9 @@ static const void * fetchSuite(OfxPropertySetHandle host,
   if (0 == strcmp(suiteName, kOfxMeshEffectSuite) && suiteVersion == 1) {
     return &meshEffectSuiteV1;
   }
+  if (0 == strcmp(suiteName, kOfxParameterSuite) && suiteVersion == 1) {
+    return &parameterSuiteV1;
+  }
   if (0 == strcmp(suiteName, kOfxPropertySuite) && suiteVersion == 1) {
     return &propertySuiteV1;
   }
@@ -636,16 +967,27 @@ static const void * fetchSuite(OfxPropertySetHandle host,
 
 // OFX MESH EFFECT HOST
 
+typedef void (*OfxSetBundleDirectoryFunc)(const char *path);
 typedef int (*OfxGetNumberOfPluginsFunc)(void);
 typedef OfxPlugin *(*OfxGetPluginFunc)(int nth);
 
-bool load_plugins_linux(PluginRegistry *registry, const char *ofx_filepath) {
 #ifdef _WIN32
-#  define get_error() "<unknown>"
-#else
-#  define get_error() dlerror()
-#endif
+LPVOID getLastErrorMessage() {
+  LPVOID msg;
+  FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    GetLastError(),
+    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+    (LPTSTR)&msg,
+    0, NULL);
+  return msg;
+}
+#endif // _WIN32
 
+bool load_registry(PluginRegistry *registry, const char *ofx_filepath) {
 #ifdef _WIN32
   FARPROC proc;
 #else
@@ -653,6 +995,7 @@ bool load_plugins_linux(PluginRegistry *registry, const char *ofx_filepath) {
 #endif
   OfxGetNumberOfPluginsFunc fOfxGetNumberOfPlugins;
   OfxGetPluginFunc fOfxGetPlugin;
+  OfxSetBundleDirectoryFunc fOfxSetBundleDirectory;
 
   // Init registry
   registry->num_plugins = 0;
@@ -666,10 +1009,15 @@ bool load_plugins_linux(PluginRegistry *registry, const char *ofx_filepath) {
   
   // Open ofx binary
 #ifdef _WIN32
-  registry->hinstance = LoadLibrary(TEXT(ofx_filepath)); 
+  registry->hinstance = LoadLibrary(TEXT(ofx_filepath));
+  if (NULL == registry->hinstance) {
+    LPVOID msg = getLastErrorMessage();
+    printf("mfxHost: Unable to load plugin binary at path %s. LoadLibrary returned: %s\n", ofx_filepath, msg);
+    LocalFree(msg);
+    return false;
+  }
 #else
   registry->handle = dlopen(ofx_filepath, RTLD_LAZY | RTLD_LOCAL);
-
   if (NULL == registry->handle) {
     printf("mfxHost: Unable to load plugin binary at path %s. dlopen returned: %s\n", ofx_filepath, get_error());
     return false;
@@ -684,7 +1032,14 @@ bool load_plugins_linux(PluginRegistry *registry, const char *ofx_filepath) {
   fOfxGetNumberOfPlugins = (OfxGetNumberOfPluginsFunc)proc;
 
   if (NULL == proc) {
-    printf("mfxHost: Unable to load symbol 'OfxGetNumberOfPlugins' from %s. dlsym returned: %s\n", ofx_filepath, get_error());
+    printf("mfxHost: Unable to load symbol 'OfxGetNumberOfPlugins' from %s. ", ofx_filepath);
+#ifdef _WIN32
+    LPVOID msg = getLastErrorMessage();
+    printf("GetProcAddress returned: %s\n", msg);
+    LocalFree(msg);
+#else
+    printf("dlsym returned: %s\n", dlerror());
+#endif
     free_registry(registry);
     return false;
   }
@@ -697,9 +1052,42 @@ bool load_plugins_linux(PluginRegistry *registry, const char *ofx_filepath) {
   fOfxGetPlugin = (OfxGetPluginFunc)proc;
 
   if (NULL == proc) {
-    printf("mfxHost: Unable to load symbol 'OfxGetPlugin' from %s. dlsym returned: %s\n", ofx_filepath, get_error());
+    printf("mfxHost: Unable to load symbol 'OfxGetPlugin' from %s. ", ofx_filepath);
+#ifdef _WIN32
+    LPVOID msg = getLastErrorMessage();
+    printf("GetProcAddress returned: %s\n", msg);
+    LocalFree(msg);
+#else
+    printf("dlsym returned: %s\n", dlerror());
+#endif
     free_registry(registry);
     return false;
+  }
+  
+#ifdef _WIN32
+  proc = GetProcAddress(registry->hinstance, "OfxSetBundleDirectory");
+#else
+  proc = dlsym(registry->handle, "OfxSetBundleDirectory");
+#endif
+  fOfxSetBundleDirectory = (OfxSetBundleDirectoryFunc)proc;
+  if (NULL == proc) {
+    printf("mfxHost: Unable to load symbol 'OfxSetBundleDirectory' from %s. ", ofx_filepath);
+#ifdef _WIN32
+    LPVOID msg = getLastErrorMessage();
+    printf("GetProcAddress returned: %s\n", msg);
+    LocalFree(msg);
+#else
+    printf("dlsym returned: %s\n", dlerror());
+#endif
+  }
+
+  {
+    if (NULL != fOfxSetBundleDirectory) {
+      char *bundle_directory = malloc_array(sizeof(char), strlen(ofx_filepath) + 1, "bundle directory");
+      strcpy(bundle_directory, ofx_filepath);
+      *strrchr(bundle_directory, '\\') = '\0'; // TODO: Forward slash
+      fOfxSetBundleDirectory(bundle_directory);
+    }
   }
 
   {
@@ -782,9 +1170,11 @@ int gHostUse = 0;
 OfxHost * getGlobalHost(void) {
   if (0 == gHostUse) {
     gHost = malloc_array(sizeof(OfxHost), 1, "global host");
-    OfxPropertySetHandle hostPropertiesHandle = malloc_array(sizeof(OfxPropertySetStruct), 1, "global host properties");
-    init_properties(hostPropertiesHandle);
-    gHost->host = hostPropertiesHandle;
+    OfxPropertySetHandle hostProperties = malloc_array(sizeof(OfxPropertySetStruct), 1, "global host properties");
+    init_properties(hostProperties);
+    hostProperties->context = PROP_CTX_HOST;
+    propSetPointer(hostProperties, kOfxHostPropBeforeMeshReleaseCb, 0, (void*)NULL);
+    gHost->host = hostProperties;
     gHost->fetchSuite = fetchSuite;
   }
   ++gHostUse;
@@ -987,9 +1377,8 @@ bool use_plugin(const PluginRegistry *registry, int plugin_index) {
   }
 
   // Unload action (TODO: move into e.g. free_registry)
-  ofxhost_unload_plugin(plugin);
-
-  releaseGlobalHost();
+  //ofxhost_unload_plugin(plugin);
+  //releaseGlobalHost();
 
   return true;
 }
