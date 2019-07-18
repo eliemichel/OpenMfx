@@ -28,6 +28,19 @@ Many 3D software feature some non destructive workflow, relying on procedural ge
 
 The OpenFX standard has been cleverly separated into several parts, leaving its core very generic. This OpenFX Mesh Effect API leverage on this agnostic core (called `ofxCore`) but completely ignores the image related part (`ofxImageEffect`). Instead, it defined an `ofxMeshEffect`, following similar patterns where it is relevant.
 
+## Implementations
+
+### Hosts
+
+ - Example of [host](examples/host/) from this repository
+ - [OpenMeshEffectForBlender](https://github.com/eliemichel/OpenMeshEffectForBlender), a host integratint Open Mesh Effect plug-ins in Blender as *modifiers*.
+
+*NB: None of these implementations are complete. The Blender implementation is based on the example from this repository.*
+
+### Plug-ins
+
+ - Examples of [plugins](examples/plugins/) from this repository
+
 ## License
 
 See [LICENSE.md](LICENSE.md).
@@ -35,6 +48,13 @@ See [LICENSE.md](LICENSE.md).
 ## Contributing
 
 This document currently is a draft. Feel free to give some feedback through the GitHub [issues](https://github.com/eliemichel/OpenMeshEffect/issues) of this repository.
+
+## Current limitations
+
+Some limitations that we need to address while designing the standard:
+
+ - It must be possible to declare and attach arbitrary attributes to points, vertices and faces.
+ - Custom strides must be possible in data arrays in order to minimize the need for hosts to re-layout data when invoking the effects.
 
 ## History
 

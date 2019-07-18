@@ -37,6 +37,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
+/** @file ofxMeshEffect.h
+Contains the part of the API that relates to mesh processing. This is what is called "Open Mesh Effect". For more details on the basic OFX architecture, see \ref Architecture.
+*/
+
 /** @brief String used to label OFX Mesh Effect Plug-ins
 
     Set the pluginApi member of the OfxPluginHeader inside any OfxMeshEffectPluginStruct

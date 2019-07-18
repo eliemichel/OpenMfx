@@ -957,11 +957,15 @@ General status codes start at 1 and continue until 999
 }
 #endif
 
-/** @mainpage OFX : Open Plug-Ins For Special Effects
+/** @mainpage Open Mesh Effect: An open plug-in API for cross-software procedural mesh effects
 
-This page represents the automatically extracted HTML documentation of the source headers for the OFX Image Effect API. The documentation was extracted by doxygen (http://www.doxygen.org). It breaks documentation into sets of pages, use the links at the top of this page (marked 'Modules', 'Compound List' and especially 'File List' etcc) to browse through the OFX doc.
+This page represents the automatically extracted HTML documentation of the source headers for the OFX Mesh Effect API. The documentation was extracted by doxygen (http://www.doxygen.org). It breaks documentation into sets of pages, use the links at the top of this page (marked 'Modules', 'Compound List' and especially 'File List' etcc) to browse through the doc.
 
-A more complete reference manual is http://openfx.sourceforge.net .
+The original source files and examples are available at https://github.com/eliemichel/OpenMeshEffect .
+
+It is recommended to first read the OpenFX core documentation (no need to dive too much into the Image Effect part, though): http://openeffects.org/documentation/reference/ .
+
+Then, the specificities of the Mesh Effect API can be found in \ref OfxMeshEffectSuiteV1 or \ref MeshEffectPropDefines for example.
 
 */
 
