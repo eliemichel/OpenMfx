@@ -69,6 +69,14 @@ typedef struct OfxMeshInputStruct *OfxMeshInputHandle;
 /** @brief Use to define the general mesh effect context See \ref ::kOfxMeshEffectPropContext */
 #define kOfxMeshEffectContextGeneral "OfxMeshEffectContextGeneral"
 
+/** @brief Identifier of the main mesh input of a mesh effect
+ */
+#define kOfxMeshMainInput "OfxMeshMainInput"
+
+/** @brief Identifier of the main mesh output of a mesh effect
+ */
+#define kOfxMeshMainOutput "OfxMeshMainOutput"
+
 /**
    \addtogroup ActionsAll
 */

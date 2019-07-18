@@ -1,9 +1,11 @@
 
-OpenFX Mesh Effect API - Programming Guide
-==========================================
+OpenFX Mesh Effect API - Documentation
+======================================
 
-*TODO*
+This directory consolidates different documents about the OpenFX Mesh Effect API, also known as *Open Mesh Effect*.
 
-Before looking at the mesh effect API itself, you must get familiarized with the generic OpenFX API, reading its programming reference at http://openeffects.org/documentation/reference/.
+Contents:
 
-Then, you can read the docstrings of the Mesh Effect API in [include/ofxMeshEffect.h](../../include/ofxMeshEffect.h).
+ - [The Programming Reference](reference.md)
+ - [A Host Writing Guide](host-guide.md)
+ - [A Plug-in Writing Guide](plugin-guide.md)
