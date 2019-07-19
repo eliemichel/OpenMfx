@@ -70,10 +70,10 @@ So the first thing to do in this main entry point is to check which action is re
 
 ```C
 if (0 == strcmp(action, kOfxActionLoad)) {
-	return load(handle, inArgs, outArgs);
+    return load(handle, inArgs, outArgs);
 }
 if (0 == strcmp(action, kOfxActionUnload)) {
-	return unload(handle, inArgs, outArgs);
+    return unload(handle, inArgs, outArgs);
 }
 // ...
 ```
@@ -106,52 +106,52 @@ So, at this point, our mainEntry functions relatives has become:
 
 ```C
 static OfxStatus load() {
-	return kOfxStatReplyDefault;
+    return kOfxStatReplyDefault;
 }
 
 static OfxStatus unload() {
-	return kOfxStatReplyDefault;
+    return kOfxStatReplyDefault;
 }
 
 static OfxStatus describe(OfxMeshEffectHandle descriptor) {
-	return kOfxStatReplyDefault;
+    return kOfxStatReplyDefault;
 }
 
 static OfxStatus createInstance(OfxMeshEffectHandle instance) {
-	return kOfxStatReplyDefault;
+    return kOfxStatReplyDefault;
 }
 
 static OfxStatus destroyInstance(OfxMeshEffectHandle instance) {
-	return kOfxStatReplyDefault;
+    return kOfxStatReplyDefault;
 }
 
 static OfxStatus cook(OfxMeshEffectHandle instance) {
-	return kOfxStatReplyDefault;
+    return kOfxStatReplyDefault;
 }
 
 static OfxStatus mainEntry(const char *action,
-	                       const void *handle,
-	                       OfxPropertySetHandle inArgs,
-	                       OfxPropertySetHandle outArgs) {
-	if (0 == strcmp(action, kOfxActionLoad)) {
-		return load();
-	}
-	if (0 == strcmp(action, kOfxActionUnload)) {
-		return unload();
-	}
-	if (0 == strcmp(action, kOfxActionDescribe)) {
-		return describe((OfxMeshEffectHandle)handle);
-	}
-	if (0 == strcmp(action, kOfxActionCreateInstance)) {
-		return createInstance((OfxMeshEffectHandle)handle);
-	}
-	if (0 == strcmp(action, kOfxActionDestroyInstance)) {
-		return destroyInstance((OfxMeshEffectHandle)handle);
-	}
-	if (0 == strcmp(action, kOfxMeshEffectActionCook)) {
-		return cook((OfxMeshEffectHandle)handle);
-	}
-	return kOfxStatReplyDefault; // this means "unhandled action"
+                           const void *handle,
+                           OfxPropertySetHandle inArgs,
+                           OfxPropertySetHandle outArgs) {
+    if (0 == strcmp(action, kOfxActionLoad)) {
+        return load();
+    }
+    if (0 == strcmp(action, kOfxActionUnload)) {
+        return unload();
+    }
+    if (0 == strcmp(action, kOfxActionDescribe)) {
+        return describe((OfxMeshEffectHandle)handle);
+    }
+    if (0 == strcmp(action, kOfxActionCreateInstance)) {
+        return createInstance((OfxMeshEffectHandle)handle);
+    }
+    if (0 == strcmp(action, kOfxActionDestroyInstance)) {
+        return destroyInstance((OfxMeshEffectHandle)handle);
+    }
+    if (0 == strcmp(action, kOfxMeshEffectActionCook)) {
+        return cook((OfxMeshEffectHandle)handle);
+    }
+    return kOfxStatReplyDefault; // this means "unhandled action"
 }
 ```
 
@@ -170,11 +170,11 @@ The plug-in asks the host for suites using the `fetchSuite` function of an `OfxH
 OfxMeshEffectSuiteV1 *gMeshEffectSuite; // global variable
 
 static void setHost(OfxHost *host) {
-	gMeshEffectSuite = host->fetchSuite(
-		host->host, // host properties, might be useful to the host's internals
-		kOfxMeshEffectSuite, // name of the suite we want to fetch
-		1 // version of the suite
-	);
+    gMeshEffectSuite = host->fetchSuite(
+        host->host, // host properties, might be useful to the host's internals
+        kOfxMeshEffectSuite, // name of the suite we want to fetch
+        1 // version of the suite
+    );
 }
 ```
 
@@ -184,11 +184,11 @@ The check is expected to be carried in the `describe` action. If a required suit
 
 ```C
 static void describe(OfxMeshEffectHandle descriptor) {
-	if (NULL == gMeshEffectSuite) {
-		return kOfxStatErrMissingHostFeature;
-	}
-	// ...
-	return kOfxStatReplyDefault;
+    if (NULL == gMeshEffectSuite) {
+        return kOfxStatErrMissingHostFeature;
+    }
+    // ...
+    return kOfxStatReplyDefault;
 }
 ```
 
@@ -196,10 +196,10 @@ static void describe(OfxMeshEffectHandle descriptor) {
 
 ```C
 typedef struct PluginRuntime {
-	OfxHost *host;
-	OfxPropertySuiteV1 *propertySuite;
-	OfxParameterSuiteV1 *parameterSuite;
-	OfxMeshEffectSuiteV1 *meshEffectSuite;
+    OfxHost *host;
+    OfxPropertySuiteV1 *propertySuite;
+    OfxParameterSuiteV1 *parameterSuite;
+    OfxMeshEffectSuiteV1 *meshEffectSuite;
 } PluginRuntime;
 
 PluginRuntime gRuntime;
@@ -268,11 +268,150 @@ Cooking
 
 In our example, we do not need to initialize anything when creating an instance, so we can leave aside the `createInstance` and `destroyInstance` functions and focus now on the capital `cook` action.
 
+The main steps of this function are:
+
+ - Get the input data
+ - Allocate new output data
+ - Fill in the output data
+
+Before anything, we must hence take a look at the way data is represented in Open Mesh Effect.
+
+### Data layout
+
+*NB: The data layout may be subject to change in the near future. If you feel limited by its current state, you are more than welcome to report your use case in the issues.*
+
+Mesh data is made of *geometrical* and *topological* information. The former is a set of positions in the 3D world. We call them *points*. The topological information tells us about the connections between these points. It is split into *vertices* and *faces*. Faces connect vertices together, and each vertex links to a single point. A vertex only belongs to one face, while many vertices might link to a given point.
+
+*NB: In Blender's vocabulary, what Open Mesh Effect calls a 'vertex' is called a 'loop', and what Open Mesh Effect calls a 'point' is called... a 'vertex'. It might be disturbing but the term of "loop" is little used outside of Blender, and the word "point" is better suited to its geometrical meaning. If, on the other hand, you are used to Houdini's vocabulary, it is the same as Open Mesh Effect's.*
+
+Concretely, a mesh in Open Mesh Effect is represented by an `OfxPropertySetHandle` that provides a pointer to three arrays:
+
+ - the `kOfxMeshPropPointData` array, with three floats per points;
+ - the `kOfxMeshPropVertexData` array, with one integer per vertex, corresponding to the index of its associated point in the previous array;
+ - the `kOfxMeshPropFaceData` array, with one integer per face, corresponding to the number of vertices it connects;
+
+The vertices in the vertex data are sorted by face. It contains the vertice of the first face, then those of the second face, etc. This is why the face data only consists in vertex counts. The drawback is that random access to a face requires to sum up the counts of all the previous ones, but this can be easily cached at the beginning of the cook action.
+
+The mesh also provides the number of points, vertices and faces in the properties respectively `kOfxMeshPropPointCount`, `kOfxMeshPropVertexCount` and `kOfxMeshPropFaceCount`.
+
+### Input mesh
+
+To get a mesh from an input, the mesh effect suites provides a `inputGetMesh` function:
+
 ```C
-meshEffectSuite->inputGetHandle(meshEffect, kOfxMeshMainInput, &input, NULL);
+OfxMeshInputHandle input;
+meshEffectSuite->inputGetHandle(instance, kOfxMeshMainInput, &input, NULL);
+
+OfxPropertySetHandle input_mesh;
+meshEffectSuite->inputGetMesh(input, time, &input_mesh);
 ```
 
-**WORK IN PROGRESS**
+From this input mesh, you can retrieve all the properties you need:
+
+```C
+int input_point_count;
+propertySuite->propGetInt(input_mesh, kOfxMeshPropPointCount, 0, (void**)&input_point_count);
+
+float *input_points;
+propertySuite->propGetPointer(input_mesh, kOfxMeshPropPointData, 0, (void**)&input_points);
+```
+
+### Output mesh
+
+Accessing the data pointers for outputs is done with the same steps than the input, at the difference that for the pointers to be valid, it must first get allocated. The mesh effect suites provides a function for this called `meshAlloc`.
+
+```C
+meshEffectSuite->meshAlloc(output_mesh,
+                           output_point_count,
+                           output_vertex_count,
+                           output_face_count);
+```
+
+You must call this function **before** getting data pointers like `kOfxMeshPropPointData`, otherwise pointers will be null or invalid.
+
+### Releasing meshes
+
+Whenever you use the `inputGetMesh`, you must then use `inputReleaseMesh` when you finished editing the data.
+
+### Mirror example
+
+In our example of a simple mirror effect, the cooking function can be:
+
+```C
+static OfxStatus cook(PluginRuntime *runtime, OfxMeshEffectHandle instance) { 
+    OfxMeshEffectSuiteV1 *meshEffectSuite = runtime->meshEffectSuite;
+    OfxPropertySuiteV1 *propertySuite = runtime->propertySuite;
+    OfxTime time = 0;
+
+    // Get input/output
+    OfxMeshInputHandle input, output;
+    meshEffectSuite->inputGetHandle(instance, kOfxMeshMainInput, &input, NULL);
+    meshEffectSuite->inputGetHandle(instance, kOfxMeshMainOutput, &output, NULL);
+
+    // Get meshes
+    OfxPropertySetHandle input_mesh, output_mesh;
+    meshEffectSuite->inputGetMesh(input, time, &input_mesh);
+    meshEffectSuite->inputGetMesh(output, time, &output_mesh);
+
+    // Get input mesh data
+    int input_point_count = 0, input_vertex_count = 0, input_face_count = 0;
+    float *input_points;
+    int *input_vertices, *input_faces;
+    propertySuite->propGetInt(input_mesh, kOfxMeshPropPointCount,
+                              0, &input_point_count);
+    propertySuite->propGetInt(input_mesh, kOfxMeshPropVertexCount,
+                              0, &input_vertex_count);
+    propertySuite->propGetInt(input_mesh, kOfxMeshPropFaceCount,
+                              0, &input_face_count);
+    propertySuite->propGetPointer(input_mesh, kOfxMeshPropPointData,
+                                  0, (void**)&input_points);
+    propertySuite->propGetPointer(input_mesh, kOfxMeshPropVertexData,
+                                  0, (void**)&input_vertices);
+    propertySuite->propGetPointer(input_mesh, kOfxMeshPropFaceData,
+                                  0, (void**)&input_faces);
+
+    // Allocate output mesh
+    int output_point_count = 2 * input_point_count;
+    int output_vertex_count = 2 * input_vertex_count;
+    int output_face_count = 2 * input_face_count;
+    meshEffectSuite->meshAlloc(output_mesh,
+                               output_point_count,
+                               output_vertex_count,
+                               output_face_count);
+
+    // Get output mesh data
+    float *output_points;
+    int *output_vertices, *output_faces;
+    propertySuite->propGetPointer(output_mesh, kOfxMeshPropPointData,
+                                  0, (void**)&output_points);
+    propertySuite->propGetPointer(output_mesh, kOfxMeshPropVertexData,
+                                  0, (void**)&output_vertices);
+    propertySuite->propGetPointer(output_mesh, kOfxMeshPropFaceData,
+                                  0, (void**)&output_faces);
+
+    // Fill in output data
+    for (int i = 0 ; i < 3 * input_point_count ; ++i) {
+        output_points[i] = input_points[i];
+        output_points[i + 3 * input_point_count] = input_points[i];
+    }
+    for (int i = 0 ; i < input_vertex_count ; ++i) {
+        output_vertices[i] = input_vertices[i];
+        output_vertices[i + input_vertex_count]
+            = input_point_count + input_vertices[i];
+    }
+    for (int i = 0 ; i < input_face_count ; ++i) {
+        output_faces[i] = input_faces[i];
+        output_faces[i + input_face_count] = input_faces[i];
+    }
+
+    // Release meshes
+    meshEffectSuite->inputReleaseMesh(input_mesh);
+    meshEffectSuite->inputReleaseMesh(output_mesh);
+    return kOfxStatOK;
+}
+```
+
+You can already see from the code duplication between input and output data that you will quickly feel the need for some utility structures/functions, but I keep it simple for the example.
 
 Glossary
 --------
