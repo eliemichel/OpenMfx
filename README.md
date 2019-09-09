@@ -22,6 +22,8 @@ The present repository contains:
 
 Many 3D software feature some non destructive workflow, relying on procedural geometry effect being recomputed on the fly whenever the underlying mesh data is modified. One can quote for instance Houdini SOPs, some of Maya's nodes, or Blender's modifiers. Unfortunately, usual open exchange formats do not support these, as they might be implemented differently in different software, forcing geometries to be "baked" at export. This destructive step prevents one from tweaking the procedural parameters again. A standard description of such mesh effects will lead to effect that work exactly the same way in different softwares, enabling exchange formats to store meshes without baking them first.
 
+For a more complete post about the motivations behind Open Mesh Effect, see [The need for Open Mesh Effect](https://blog.exppad.com/article/the-need-for-open-mesh-effect).
+
 ## Why OpenFX?
 
 > OpenFX has been designed for 2D images, it is completely different from 3D meshes, so why using it?
