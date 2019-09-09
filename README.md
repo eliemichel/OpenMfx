@@ -40,6 +40,7 @@ The OpenFX standard has been cleverly separated into several parts, leaving its 
 ### Plug-ins
 
  - Examples of [plugins](examples/plugins/) from this repository
+ - [MfxVCG](https://github.com/eliemichel/MfxVCG) is an example of Open Mesh Effect plug-in that provides mesh filters from [VCGlib](http://www.vcglib.net/), the core library of [MeshLab](http://www.meshlab.net/).
 
 ## License
 
