@@ -1,6 +1,6 @@
 # ***** BEGIN APACHE 2 LICENSE BLOCK *****
 #
-# Copyright 2019 Elie Michel
+# Copyright 2019 - 2020 Elie Michel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,15 +26,32 @@ set(INC_PRIV
 set(SRC
   mfxHost.c
   mfxHost.h
+  mfxPluginRegistry.h
+  intern/attributes.h
+  intern/attributes.c
+  intern/properties.h
+  intern/properties.c
+  intern/parameters.h
+  intern/parameters.c
+  intern/inputs.h
+  intern/inputs.c
+  intern/mesh.h
+  intern/mesh.c
+  intern/mesheffect.h
+  intern/mesheffect.c
+  intern/mfxPluginRegistry.c
+)
+
+set(LIB_PRIV
+  openmesheffect_openfx
 )
 
 set(LIB
-  openmesheffect_openfx
   openmesheffect_util
 )
 
 add_library(openmesheffect_host "${SRC}")
 target_include_directories(openmesheffect_host PRIVATE "${INC_PRIV}" PUBLIC "${INC}")
-target_link_libraries(openmesheffect_host PRIVATE "${LIB}")
+target_link_libraries(openmesheffect_host PRIVATE "${LIB_PRIV}"  PUBLIC "${LIB}")
 
 set_property(TARGET openmesheffect_host PROPERTY FOLDER "openmesheffect")

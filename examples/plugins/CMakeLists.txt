@@ -1,6 +1,6 @@
 # ***** BEGIN APACHE 2 LICENSE BLOCK *****
 #
-# Copyright 2019 Elie Michel
+# Copyright 2019 - 2020 Elie Michel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,17 +20,20 @@ set(INC
   .
 )
 
-set(SRC
-  sample_plugin.c
-)
+macro(MFX_PLUGIN TARGET SRC LIB)
+	add_library(${TARGET} SHARED ${SRC})
+	target_include_directories(${TARGET} PRIVATE "${INC}")
+	target_link_libraries(${TARGET} PRIVATE "${LIB}")
+	set_property(TARGET ${TARGET} PROPERTY FOLDER "openmesheffect")
+	set_target_properties(${TARGET} PROPERTIES SUFFIX ".ofx" PREFIX "")
+endmacro()
 
 set(LIB
   openmesheffect_openfx
   openmesheffect_util
 )
 
-add_library(openmesheffect_sample_plugin SHARED ${SRC})
-target_include_directories(openmesheffect_sample_plugin PRIVATE "${INC}")
-target_link_libraries(openmesheffect_sample_plugin PRIVATE "${LIB}")
-
-set_property(TARGET openmesheffect_sample_plugin PROPERTY FOLDER "openmesheffect")
+MFX_PLUGIN(openmesheffect_sample_plugin mfx_sample_plugin.c "${LIB}")
+MFX_PLUGIN(openmesheffect_test_parameters_plugin mfx_test_parameters_plugin.c "${LIB}")
+MFX_PLUGIN(openmesheffect_identity_plugin mfx_identity_plugin.c "${LIB}")
+MFX_PLUGIN(openmesheffect_mirror_plugin mfx_mirror_plugin.c "${LIB}")
