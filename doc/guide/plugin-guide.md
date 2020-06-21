@@ -2,6 +2,10 @@
 Writing an Open Mesh Effect Plug-in
 ===================================
 
+**The official documentation of the API is now located at https://openmesheffect.org**
+
+**NB** This document needs a major rewrite since the API has been enhanced with custom attributes. Read with caution and refere to the API reference for more up to date information.
+
 In this document, we will use a couple of simple examples of plug-ins to illustrate the main steps involved in writing an Open Mesh Effect plug-in.
 
 The first example is a mirror plug-in. It doubles the geometry, symmetrizing the duplicate. It requires to read some input data, allocate a new mesh for output, while it does not involve complex mathematical operation that could disturb the reader.

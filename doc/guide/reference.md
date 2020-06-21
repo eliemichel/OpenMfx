@@ -2,7 +2,7 @@
 OpenFX Mesh Effect API - Programming Reference
 ==============================================
 
-*TODO*
+**The official documentation of the API is now located at https://openmesheffect.org**
 
 Before looking at the mesh effect API itself, you must get familiarized with the generic OpenFX API, reading its programming reference at http://openeffects.org/documentation/reference/.
 

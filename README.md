@@ -8,15 +8,7 @@ OpenFX Mesh Effect API
 
 This is a plug-in standard for 3D mesh processing effects built on top of [OpenFX](http://openeffects.org/), a standard originally designed for 2D image processing.
 
-Recommended fore-reading: OpenFX Core Guide and Reference from the [OpenFX repository](https://github.com/ofxa/openfx).
-
-The present repository contains:
-
- - The Mesh Effect API itself: [`ofxMeshEffect`](include/)
- - Examples of implementation, both for [host](examples/host/) and [plug-ins](examples/plugins/).
- - Documentation, with a [programming guide](doc/guide/) as well as [config](doc/generated/) to generate doc from header files (you can also read comments from header files directly).
-
-**Current status of this memo** This is a work in progress DRAFT of the API. Some parts are still missing, others need intensive testing. Feel free to fill issues if you have any suggestions.
+**The official documentation of the API is now located at https://openmesheffect.org**
 
 ## Why a standard?
 
@@ -51,13 +43,6 @@ See [LICENSE.md](LICENSE.md).
 ## Contributing
 
 This document currently is a draft. Feel free to give some feedback through the GitHub [issues](https://github.com/eliemichel/OpenMeshEffect/issues) of this repository.
-
-## Current limitations
-
-Some limitations that we need to address while designing the standard:
-
- - It must be possible to declare and attach arbitrary attributes to points, vertices and faces.
- - Custom strides must be possible in data arrays in order to minimize the need for hosts to re-layout data when invoking the effects.
 
 ## History
 

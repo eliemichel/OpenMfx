@@ -1,6 +1,6 @@
 # ***** BEGIN APACHE 2 LICENSE BLOCK *****
 #
-# Copyright 2019 - 2020 Elie Michel
+# Copyright 2019 Elie Michel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ set(SRC
   mfxHost.c
   mfxHost.h
   mfxPluginRegistry.h
+  mfxPluginRegistryPool.h
   intern/attributes.h
   intern/attributes.c
   intern/properties.h
@@ -39,7 +40,10 @@ set(SRC
   intern/mesh.c
   intern/mesheffect.h
   intern/mesheffect.c
+  intern/messages.h
+  intern/messages.c
   intern/mfxPluginRegistry.c
+  intern/mfxPluginRegistryPool.c
 )
 
 set(LIB_PRIV

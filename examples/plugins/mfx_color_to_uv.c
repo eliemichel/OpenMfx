@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019 - 2020 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,35 @@
  */
 
 /**
- * TODO: At the moment this only copies the position attribute and topology. We should copy all
- * available attributes but there is no mechanism yet to query the list of existing attributes.
+ * This plugin is a test for vertex attributes, transfering vertex colors to UVs.
  */
 
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "ofxCore.h"
 #include "ofxMeshEffect.h"
 #include "util/plugin_support.h"
 
-static OfxStatus describe(PluginRuntime *runtime, OfxMeshEffectHandle descriptor) {
+static OfxStatus load() {
+    return kOfxStatOK;
+}
+
+static OfxStatus unload() {
+    return kOfxStatOK;
+}
+
+static OfxStatus describe(OfxMeshEffectHandle descriptor) {
     bool missing_suite =
-        NULL == runtime->propertySuite ||
-        NULL == runtime->parameterSuite ||
-        NULL == runtime->meshEffectSuite;
+        NULL == gRuntime.propertySuite ||
+        NULL == gRuntime.parameterSuite ||
+        NULL == gRuntime.meshEffectSuite;
     if (missing_suite) {
         return kOfxStatErrMissingHostFeature;
     }
-    const OfxMeshEffectSuiteV1 *meshEffectSuite = runtime->meshEffectSuite;
-    const OfxPropertySuiteV1 *propertySuite = runtime->propertySuite;
+    const OfxMeshEffectSuiteV1 *meshEffectSuite = gRuntime.meshEffectSuite;
+    const OfxPropertySuiteV1 *propertySuite = gRuntime.propertySuite;
 
     OfxPropertySetHandle inputProperties;
     meshEffectSuite->inputDefine(descriptor, kOfxMeshMainInput, &inputProperties);
@@ -48,10 +56,19 @@ static OfxStatus describe(PluginRuntime *runtime, OfxMeshEffectHandle descriptor
     return kOfxStatOK;
 }
 
-static OfxStatus cook(PluginRuntime *runtime, OfxMeshEffectHandle instance) {
-    const OfxMeshEffectSuiteV1 *meshEffectSuite = runtime->meshEffectSuite;
-    const OfxPropertySuiteV1 *propertySuite = runtime->propertySuite;
+static OfxStatus createInstance(OfxMeshEffectHandle instance) {
+    return kOfxStatOK;
+}
+
+static OfxStatus destroyInstance(OfxMeshEffectHandle instance) {
+    return kOfxStatOK;
+}
+
+static OfxStatus cook(OfxMeshEffectHandle instance) {
+    const OfxMeshEffectSuiteV1 *meshEffectSuite = gRuntime.meshEffectSuite;
+    const OfxPropertySuiteV1 *propertySuite = gRuntime.propertySuite;
     OfxTime time = 0;
+    OfxStatus status;
 
     // Get input/output
     OfxMeshInputHandle input, output;
@@ -70,6 +87,21 @@ static OfxStatus cook(PluginRuntime *runtime, OfxMeshEffectHandle instance) {
     propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropVertexCount, 0, &input_vertex_count);
     propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropFaceCount, 0, &input_face_count);
 
+    // Get attribute pointers
+   
+
+    // Get vertex color
+    OfxPropertySetHandle vcolor_attrib, uv_attrib;
+    status = meshEffectSuite->meshGetAttribute(input_mesh, kOfxMeshAttribVertex, "color0", &vcolor_attrib);
+
+    printf("Look for color0...\n");
+    char *vcolor_data = NULL;
+    if (kOfxStatOK == status) {
+      printf("found!\n");
+      propertySuite->propGetPointer(vcolor_attrib, kOfxMeshAttribPropData, 0, (void**)&vcolor_data);
+      meshEffectSuite->attributeDefine(output_mesh, kOfxMeshAttribVertex, "uv0", 2, kOfxMeshAttribTypeFloat, &uv_attrib);
+      propertySuite->propSetInt(uv_attrib, kOfxMeshAttribPropIsOwner, 0, 1);
+    }
 
     // Allocate output mesh
     int output_point_count = input_point_count;
@@ -82,6 +114,7 @@ static OfxStatus cook(PluginRuntime *runtime, OfxMeshEffectHandle instance) {
 
     meshEffectSuite->meshAlloc(output_mesh);
 
+    // Get output mesh data
 
 
     // Fill in output data
@@ -90,15 +123,22 @@ static OfxStatus cook(PluginRuntime *runtime, OfxMeshEffectHandle instance) {
     getPointAttribute(output_mesh, kOfxMeshAttribPointPosition, &output_pos);
     copyAttribute(&output_pos, &input_pos, 0, input_point_count);
 
-    Attribute input_vertpoints, output_vertpoint;
-    getPointAttribute(input_mesh, kOfxMeshAttribVertexPoint, &input_vertpoints);
-    getPointAttribute(output_mesh, kOfxMeshAttribVertexPoint, &output_vertpoint);
-    copyAttribute(&output_vertpoint, &input_vertpoints, 0, input_vertex_count);
+    Attribute input_vertpoint, output_vertpoint;
+    getVertexAttribute(input_mesh, kOfxMeshAttribVertexPoint, &input_vertpoint);
+    getVertexAttribute(output_mesh, kOfxMeshAttribVertexPoint, &output_vertpoint);
+    copyAttribute(&output_vertpoint, &input_vertpoint, 0, input_vertex_count);
 
     Attribute input_facecounts, output_facecounts;
-    getPointAttribute(input_mesh, kOfxMeshAttribFaceCounts, &input_facecounts);
-    getPointAttribute(output_mesh, kOfxMeshAttribFaceCounts, &output_facecounts);
+    getFaceAttribute(input_mesh, kOfxMeshAttribFaceCounts, &input_facecounts);
+    getFaceAttribute(output_mesh, kOfxMeshAttribFaceCounts, &output_facecounts);
     copyAttribute(&output_facecounts, &input_facecounts, 0, input_face_count);
+
+    if (NULL != vcolor_data) {
+      Attribute input_color, output_uv;
+      getVertexAttribute(input_mesh, "color0", &input_color);
+      getVertexAttribute(output_mesh, "uv0", &output_uv);
+      copyAttribute(&output_uv, &input_color, 0, input_vertex_count);
+    }
 
     // Release meshes
     meshEffectSuite->inputReleaseMesh(input_mesh);
@@ -110,25 +150,23 @@ static OfxStatus mainEntry(const char *action,
                            const void *handle,
                            OfxPropertySetHandle inArgs,
                            OfxPropertySetHandle outArgs) {
-    (void)inArgs;
-    (void)outArgs;
     if (0 == strcmp(action, kOfxActionLoad)) {
-        return kOfxStatOK;
+        return load();
     }
     if (0 == strcmp(action, kOfxActionUnload)) {
-        return kOfxStatOK;
+        return unload();
     }
     if (0 == strcmp(action, kOfxActionDescribe)) {
-        return describe(&gRuntime, (OfxMeshEffectHandle)handle);
+        return describe((OfxMeshEffectHandle)handle);
     }
     if (0 == strcmp(action, kOfxActionCreateInstance)) {
-        return kOfxStatOK;
+        return createInstance((OfxMeshEffectHandle)handle);
     }
     if (0 == strcmp(action, kOfxActionDestroyInstance)) {
-        return kOfxStatOK;
+        return destroyInstance((OfxMeshEffectHandle)handle);
     }
     if (0 == strcmp(action, kOfxMeshEffectActionCook)) {
-        return cook(&gRuntime, (OfxMeshEffectHandle)handle);
+        return cook((OfxMeshEffectHandle)handle);
     }
     return kOfxStatReplyDefault;
 }
@@ -147,11 +185,10 @@ OfxExport int OfxGetNumberOfPlugins(void) {
 }
 
 OfxExport OfxPlugin *OfxGetPlugin(int nth) {
-    (void)nth;
     static OfxPlugin plugin = {
         /* pluginApi */          kOfxMeshEffectPluginApi,
         /* apiVersion */         kOfxMeshEffectPluginApiVersion,
-        /* pluginIdentifier */   "MirrorPlugin",
+        /* pluginIdentifier */   "VertexColor2Uv",
         /* pluginVersionMajor */ 1,
         /* pluginVersionMinor */ 0,
         /* setHost */            setHost,

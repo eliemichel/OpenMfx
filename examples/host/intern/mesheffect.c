@@ -49,6 +49,7 @@ void init_mesh_effect(OfxMeshEffectHandle meshEffectHandle) {
   init_parameter_set(&meshEffectHandle->parameters);
   meshEffectHandle->parameters.effect_properties = &meshEffectHandle->properties;
   meshEffectHandle->properties.context = PROP_CTX_MESH_EFFECT;
+  meshEffectHandle->messageType = OFX_MESSAGE_INVALID;
 }
 
 void free_mesh_effect(OfxMeshEffectHandle meshEffectHandle) {
@@ -63,6 +64,8 @@ void deep_copy_mesh_effect(OfxMeshEffectStruct *destination, const OfxMeshEffect
   deep_copy_parameter_set(&destination->parameters, &source->parameters);
   destination->parameters.effect_properties = &destination->properties;
   destination->host = source->host; // not deep copied, as this is a weak pointer
+  destination->messageType = source->messageType;
+  strncpy(destination->message, source->message, sizeof(source->message));
 }
 
 // // Mesh Effect Suite Entry Points
@@ -173,15 +176,18 @@ OfxStatus inputReleaseMesh(OfxMeshHandle meshHandle) {
     }
   }
 
-  // Free attributes
+  // Free owned attributes
   void *data;
+  int is_owner;
   for (int i = 0; i < meshHandle->attributes.num_attributes; ++i) {
     OfxAttributeStruct *attribute = meshHandle->attributes.attributes[i];
     propGetPointer(&attribute->properties, kOfxMeshAttribPropData, 0, &data);
-    if (NULL != data) {
+    propGetInt(&attribute->properties, kOfxMeshAttribPropIsOwner, 0, &is_owner);
+    if (is_owner && NULL != data) {
       free_array(data);
     }
     propSetPointer(&attribute->properties, kOfxMeshAttribPropData, 0, NULL);
+    propSetInt(&attribute->properties, kOfxMeshAttribPropIsOwner, 0, 0);
   }
 
   propSetInt(&meshHandle->properties, kOfxMeshPropPointCount, 0, 0);
@@ -201,7 +207,9 @@ OfxStatus attributeDefine(OfxMeshHandle meshHandle,
   if (componentCount < 1 || componentCount > 4) {
     return kOfxStatErrValue;
   }
-  if (type != kOfxMeshAttribTypeInt && type != kOfxMeshAttribTypeFloat) {
+  if (0 != strcmp(type, kOfxMeshAttribTypeInt)
+    && 0 != strcmp(type, kOfxMeshAttribTypeFloat)
+    && 0 != strcmp(type, kOfxMeshAttribTypeUByte)) {
     return kOfxStatErrValue;
   }
 
@@ -216,6 +224,7 @@ OfxStatus attributeDefine(OfxMeshHandle meshHandle,
   propSetPointer(attributeProperties, kOfxMeshAttribPropData, 0, NULL);
   propSetInt(attributeProperties, kOfxMeshAttribPropComponentCount, 0, componentCount);
   propSetString(attributeProperties, kOfxMeshAttribPropType, 0, type);
+  propSetInt(attributeProperties, kOfxMeshAttribPropIsOwner, 0, 1);
 
   if (attributeHandle){
     *attributeHandle = attributeProperties;
@@ -271,11 +280,22 @@ OfxStatus meshAlloc(OfxMeshHandle meshHandle) {
   }
   elementCount[3] = 1;
 
-
   // Allocate memory attributes
 
   for (int i = 0; i < meshHandle->attributes.num_attributes; ++i) {
     OfxAttributeStruct *attribute = meshHandle->attributes.attributes[i];
+
+    int is_owner;
+    status = propGetInt(&attribute->properties, kOfxMeshAttribPropIsOwner, 0, &is_owner);
+    if (kOfxStatOK != status) {
+      return status;
+    }
+
+    // Don't allocate non-own attributes (i.e. attributes which are just proxy to externally
+    // allocated buffers.
+    if (!is_owner) {
+      continue;
+    }
 
     int count;
     status = propGetInt(&attribute->properties, kOfxMeshAttribPropComponentCount, 0, &count);
@@ -290,9 +310,11 @@ OfxStatus meshAlloc(OfxMeshHandle meshHandle) {
     }
 
     size_t byteSize = 0;
-    if (type == kOfxMeshAttribTypeInt) {
+    if (0 == strcmp(type, kOfxMeshAttribTypeUByte)) {
+      byteSize = sizeof(unsigned char);
+    } else if (0 == strcmp(type, kOfxMeshAttribTypeInt)) {
       byteSize = sizeof(int);
-    } else if (type == kOfxMeshAttribTypeFloat) {
+    } else if (0 == strcmp(type, kOfxMeshAttribTypeFloat)) {
       byteSize = sizeof(float);
     } else {
       return kOfxStatErrBadHandle;
@@ -304,6 +326,16 @@ OfxStatus meshAlloc(OfxMeshHandle meshHandle) {
     }
 
     status = propSetPointer(&attribute->properties, kOfxMeshAttribPropData, 0, data);
+    if (kOfxStatOK != status) {
+      return status;
+    }
+
+    status = propSetInt(&attribute->properties, kOfxMeshAttribPropStride, 0, (int)(byteSize * count));
+    if (kOfxStatOK != status) {
+      return status;
+    }
+
+    status = propSetInt(&attribute->properties, kOfxMeshAttribPropIsOwner, 0, 1);
     if (kOfxStatOK != status) {
       return status;
     }

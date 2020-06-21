@@ -23,6 +23,7 @@
 #include "ofxCore.h"
 #include "ofxParam.h"
 #include "ofxMeshEffect.h"
+#include "ofxMessage.h"
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -33,6 +34,7 @@ typedef struct PluginRuntime {
     OfxPropertySuiteV1 *propertySuite;
     OfxParameterSuiteV1 *parameterSuite;
     OfxMeshEffectSuiteV1 *meshEffectSuite;
+    OfxMessageSuiteV2 *messageSuite;
 } PluginRuntime;
 
 PluginRuntime plugin0_runtime;
@@ -43,6 +45,7 @@ static OfxStatus plugin0_load(PluginRuntime *runtime) {
     runtime->propertySuite = (OfxPropertySuiteV1*)h->fetchSuite(h->host, kOfxPropertySuite, 1);
     runtime->parameterSuite = (OfxParameterSuiteV1*)h->fetchSuite(h->host, kOfxParameterSuite, 1);
     runtime->meshEffectSuite = (OfxMeshEffectSuiteV1*)h->fetchSuite(h->host, kOfxMeshEffectSuite, 1);
+    runtime->messageSuite = (OfxMessageSuiteV2*)h->fetchSuite(h->host, kOfxMessageSuite, 2);
     return kOfxStatOK;
 }
 
@@ -77,20 +80,46 @@ static OfxStatus plugin0_describe(const PluginRuntime *runtime, OfxMeshEffectHan
 
     // Declare parameters
     OfxParamSetHandle parameters;
-    OfxParamHandle param;
     status = runtime->meshEffectSuite->getParamSet(meshEffect, &parameters);
     printf("Suite method 'getParamSet' returned status %d (%s)\n", status, getOfxStateName(status));
 
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeInteger, "Count", NULL);
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Count2D", NULL);
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeInteger3D, "Count3D", NULL);
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeDouble, "Distance", NULL);
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeDouble2D, "Vector2D", NULL);
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeDouble3D, "Vector3D", NULL);
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeRGB, "Color", NULL);
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeRGBA, "RGBA Color", NULL);
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeBoolean, "Enable Option", NULL);
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeString, "Description", NULL);
+    OfxPropertySetHandle paramProps;
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeInteger, "Count", &paramProps);
+    runtime->propertySuite->propSetInt(paramProps, kOfxParamPropDefault, 0, 15);
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Count2D", &paramProps);
+    int int2D[2] = { 25, 87 };
+    runtime->propertySuite->propSetIntN(paramProps, kOfxParamPropDefault, 2, int2D);
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeInteger3D, "Count3D", &paramProps);
+    int int3D[3] = { 12, 45, 1569 };
+    runtime->propertySuite->propSetIntN(paramProps, kOfxParamPropDefault, 3, int3D);
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeDouble, "Distance", &paramProps);
+    runtime->propertySuite->propSetDouble(paramProps, kOfxParamPropDefault, 0, 17);
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeDouble2D, "Vector2D", &paramProps);
+    double double2D[2] = { 12.89, 1.02369 };
+    runtime->propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 2, double2D);
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeDouble3D, "Vector3D", &paramProps);
+    double double3D[3] = { -159.51, 0.00416, 2257896.123 };
+    runtime->propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 3, double3D);
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeRGB, "Color", &paramProps);
+    double rgb[3] = { 0.025363, 0.608, 0.62 };
+    runtime->propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 3, rgb);
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeRGBA, "RGBA Color", &paramProps);
+    double rgba[4] = { 0.72, 0.058068, 0.14, 0.5 };
+    runtime->propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 4, rgba);
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeBoolean, "Enable Option", &paramProps);
+    runtime->propertySuite->propSetInt(paramProps, kOfxParamPropDefault, 0, (int)true);
+
+    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeString, "Description", &paramProps);
+    runtime->propertySuite->propSetString(paramProps, kOfxParamPropDefault, 0, "Description here!");
 
     return kOfxStatOK;
 }
@@ -147,6 +176,14 @@ static OfxStatus plugin0_cook(PluginRuntime *runtime, OfxMeshEffectHandle meshEf
     status = runtime->parameterSuite->paramGetHandle(parameters, "Description", &param, NULL);
     status = runtime->parameterSuite->paramGetValue(param, &str);
     printf(" - Parameter 'Description' (kOfxParamTypeString): (%s)\n", str);
+
+    // Also test messaging system
+    runtime->messageSuite->message(
+      meshEffect, kOfxMessageMessage, NULL, "mfx_test_parameters_plugin cooked successfully.");
+    runtime->messageSuite->setPersistentMessage(
+        meshEffect, kOfxMessageMessage, NULL, "mfx_test_parameters_plugin cooked successfully!");
+    runtime->messageSuite->setPersistentMessage(
+        meshEffect, kOfxMessageError, NULL, "oh no, an error!");
     
     return kOfxStatOK;
 }
