@@ -48,6 +48,10 @@ OfxStatus MfxEffect::MainEntry(const char *action,
             SetupCook((OfxMeshEffectHandle)handle);
             return Cook((OfxMeshEffectHandle)handle);
         }
+        if (0 == strcmp(action, kOfxMeshEffectActionIsIdentity)) {
+            SetupIsIdentity((OfxMeshEffectHandle)handle);
+            return IsIdentity((OfxMeshEffectHandle)handle);
+        }
         return kOfxStatReplyDefault;
     }
     catch (MfxSuiteException &e)
@@ -163,6 +167,12 @@ void MfxEffect::SetupDescribe(OfxMeshEffectHandle descriptor)
 }
 
 void MfxEffect::SetupCook(OfxMeshEffectHandle instance)
+{
+    m_instance = instance;
+    MFX_ENSURE(meshEffectSuite->getParamSet(instance, &m_parameters));
+}
+
+void MfxEffect::SetupIsIdentity(OfxMeshEffectHandle instance)
 {
     m_instance = instance;
     MFX_ENSURE(meshEffectSuite->getParamSet(instance, &m_parameters));

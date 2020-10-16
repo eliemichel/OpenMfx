@@ -47,6 +47,9 @@ protected:
 	virtual OfxStatus Cook(OfxMeshEffectHandle instance)
 	{ return kOfxStatOK; }
 
+    virtual OfxStatus IsIdentity(OfxMeshEffectHandle instance)
+    { return kOfxStatReplyDefault; }
+
 protected:
 	// Utility methods to be used during the Describe() action only:
 
@@ -87,6 +90,13 @@ private:
 	 * in the Cook() action.
 	 */
 	void SetupCook(OfxMeshEffectHandle instance);
+
+    /**
+     * Cache the current instance and its parameter set to avoid providing
+     * it to each call to GetInput and GetParameter while evaluating whether
+     * the effect should be cooked in the IsIdentity() action.
+     */
+    void SetupIsIdentity(OfxMeshEffectHandle instance);
 
 protected:
 	const MfxHost & host() const { return m_host; }
