@@ -3,6 +3,7 @@
 #include "macros.h"
 
 #include <iostream>
+#include <cstring>
 
 void MfxEffect::SetHost(OfxHost* host)
 {
