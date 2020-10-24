@@ -1,6 +1,8 @@
 #include "MfxAttribute.h"
 #include "macros.h"
 
+#include <cstring>
+
 MfxAttribute::MfxAttribute(const MfxHost& host, OfxPropertySetHandle properties)
 	: MfxBase(host)
 	, m_properties(properties)

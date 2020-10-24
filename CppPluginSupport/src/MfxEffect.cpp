@@ -3,6 +3,7 @@
 #include "macros.h"
 
 #include <iostream>
+#include <cstring>
 
 void MfxEffect::SetHost(OfxHost* host)
 {
@@ -46,6 +47,10 @@ OfxStatus MfxEffect::MainEntry(const char *action,
         if (0 == strcmp(action, kOfxMeshEffectActionCook)) {
             SetupCook((OfxMeshEffectHandle)handle);
             return Cook((OfxMeshEffectHandle)handle);
+        }
+        if (0 == strcmp(action, kOfxMeshEffectActionIsIdentity)) {
+            SetupIsIdentity((OfxMeshEffectHandle)handle);
+            return IsIdentity((OfxMeshEffectHandle)handle);
         }
         return kOfxStatReplyDefault;
     }
@@ -162,6 +167,12 @@ void MfxEffect::SetupDescribe(OfxMeshEffectHandle descriptor)
 }
 
 void MfxEffect::SetupCook(OfxMeshEffectHandle instance)
+{
+    m_instance = instance;
+    MFX_ENSURE(meshEffectSuite->getParamSet(instance, &m_parameters));
+}
+
+void MfxEffect::SetupIsIdentity(OfxMeshEffectHandle instance)
 {
     m_instance = instance;
     MFX_ENSURE(meshEffectSuite->getParamSet(instance, &m_parameters));
