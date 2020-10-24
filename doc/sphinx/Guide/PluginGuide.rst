@@ -11,3 +11,12 @@ The ``CppPluginSupport`` utility library has been used by `MfxVCG <https://githu
 
 You can also have a look at other examples: :ref:`PluginExamples`
 
+
+Tips
+====
+
+Attribute Forwarding
+--------------------
+
+It is possible -- and encouraged whenever it is possible -- to point the output at the same buffer as the input, for unchanged attributes, and in particular for connectivity information when the effect only is a deformer.
+
