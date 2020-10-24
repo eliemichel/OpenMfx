@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019-2020 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,10 @@
 #ifndef __MFX_HOST_H__
 #define __MFX_HOST_H__
 
+/**
+ * This file defines the public C API for the Open Mesh Effect Host
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -32,11 +36,6 @@ extern "C" {
 #include <stdbool.h>
 #include "ofxCore.h"
 #include "ofxMeshEffect.h"
-
-#include "intern/properties.h"
-#include "intern/parameters.h"
-#include "intern/inputs.h"
-#include "intern/mesheffect.h"
 
 OfxHost * getGlobalHost(void);
 void releaseGlobalHost(void);
@@ -49,16 +48,7 @@ void ofxhost_release_descriptor(OfxMeshEffectHandle effectDescriptor);
 bool ofxhost_create_instance(OfxPlugin *plugin, OfxMeshEffectHandle effectDescriptor, OfxMeshEffectHandle *effectInstance);
 void ofxhost_destroy_instance(OfxPlugin *plugin, OfxMeshEffectHandle effectInstance);
 bool ofxhost_cook(OfxPlugin *plugin, OfxMeshEffectHandle effectInstance);
-
-#include "mfxPluginRegistry.h"
-// TODO: use_plugin might be dropped from API
-/**
- * Flag the plugin as beeing used eventually and perform initial loading
- * /pre plugins have been loaded into the registry using load_plugins_linux()
- *      plugin_index is between 0 included and registry->num_plugins excluded
- * /post use_plugin() will not be called again for this plugin
- */
-bool use_plugin(const PluginRegistry *registry, int plugin_index);
+bool ofxhost_is_identity(OfxPlugin *plugin, OfxMeshEffectHandle effectInstance, bool *shouldCook);
 
 #ifdef __cplusplus
 }

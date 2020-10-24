@@ -24,81 +24,79 @@
 
 #include <stdbool.h>
 
-typedef union OfxPropertyValueStruct {
+union OfxPropertyValueStruct {
     void *as_pointer;
     const char *as_const_char;
     char *as_char;
     double as_double;
     int as_int;
-} OfxPropertyValueStruct;
+};
 
-typedef struct OfxPropertyStruct {
-    const char *name;
-    OfxPropertyValueStruct value[4];
-} OfxPropertyStruct;
+struct OfxPropertyStruct {
+ public:
+  OfxPropertyStruct();
+  ~OfxPropertyStruct();
 
-typedef enum PropertyType {
+  // Disable copy, we handle it explicitely
+  OfxPropertyStruct(const OfxPropertyStruct &) = delete;
+  OfxPropertyStruct &operator=(const OfxPropertyStruct &) = delete;
+
+
+  void deep_copy_from(const OfxPropertyStruct &other);
+
+ public:
+  const char *name;
+  OfxPropertyValueStruct value[4];
+};
+
+enum PropertyType {
 	PROP_TYPE_POINTER,
 	PROP_TYPE_STRING,
 	PROP_TYPE_DOUBLE,
 	PROP_TYPE_INT,
-} PropertyType;
+};
 
 // TODO: use kOfxPropType instead
-typedef enum PropertySetContext {
-    PROP_CTX_HOST, // kOfxTypeMeshEffectHost
-    PROP_CTX_MESH_EFFECT, // kOfxTypeMeshEffect, kOfxTypeMeshEffectInstance
-    PROP_CTX_INPUT, // kOfxTypeMeshEffectInput
-    PROP_CTX_MESH, // kOfxTypeMesh
-    PROP_CTX_PARAM, // kOfxTypeParameter
-    PROP_CTX_ATTRIB,
-    PROP_CTX_OTHER,
-    // kOfxTypeParameterInstance
-} PropertySetContext;
-
-typedef struct OfxPropertySetStruct {
-    PropertySetContext context; // TODO: use this rather than generic property set objects
-    int num_properties;
-    OfxPropertyStruct **properties;
-} OfxPropertySetStruct;
+enum class PropertySetContext {
+  Host, // kOfxTypeMeshEffectHost
+  MeshEffect, // kOfxTypeMeshEffect, kOfxTypeMeshEffectInstance
+  Input, // kOfxTypeMeshEffectInput
+  Mesh, // kOfxTypeMesh
+  Param, // kOfxTypeParameter
+  Attrib,
+  ActionIdentityIn,
+  ActionIdentityOut,
+  Other,
+  // kOfxTypeParameterInstance
+};
 
 // // OfxPropertySetStruct
 
-void deep_copy_property(OfxPropertyStruct *destination, const OfxPropertyStruct *source);
-int find_property(OfxPropertySetStruct *properties, const char *property);
-void append_properties(OfxPropertySetStruct *properties, int count);
-void remove_property(OfxPropertySetStruct *properties, int index);
-int ensure_property(OfxPropertySetStruct *properties, const char *property);
-void init_properties(OfxPropertySetStruct *properties);
-void free_properties(OfxPropertySetStruct *properties);
-void deep_copy_property_set(OfxPropertySetStruct *destination, const OfxPropertySetStruct *source);
-bool check_property_context(OfxPropertySetStruct *propertySet, PropertyType type, const char *property);
+struct OfxPropertySetStruct {
+ public:
+  OfxPropertySetStruct(PropertySetContext context);
+  ~OfxPropertySetStruct();
 
-// // Property Suite Entry Points
+  // Disable copy, we handle it explicitely
+  OfxPropertySetStruct(const OfxPropertySetStruct &) = delete;
+  OfxPropertySetStruct &operator=(const OfxPropertySetStruct &) = delete;
 
-#include "ofxProperty.h"
+  int find_property(const char *property) const;
+  void append_properties(int count);
+  void remove_property(int index);
+  int ensure_property(const char *property);
 
-extern const OfxPropertySuiteV1 gPropertySuiteV1;
+  void deep_copy_from(const OfxPropertySetStruct &other);
 
-// See ofxProperty.h for docstrings
+ public:
+  static bool check_property_context(PropertySetContext context,
+                                     PropertyType type,
+                                     const char *property);
 
-OfxStatus propSetPointer(OfxPropertySetHandle properties, const char *property, int index, void *value);
-OfxStatus propSetString(OfxPropertySetHandle properties, const char *property, int index, const char *value);
-OfxStatus propSetDouble(OfxPropertySetHandle properties, const char *property, int index, double value);
-OfxStatus propSetInt(OfxPropertySetHandle properties, const char *property, int index, int value);
-OfxStatus propSetPointerN(OfxPropertySetHandle properties, const char *property, int count, void *const*value);
-OfxStatus propSetStringN(OfxPropertySetHandle properties, const char *property, int count, const char *const*value);
-OfxStatus propSetDoubleN(OfxPropertySetHandle properties, const char *property, int count, const double *value);
-OfxStatus propSetIntN(OfxPropertySetHandle properties, const char *property, int count, const int *value);
-OfxStatus propGetPointer(OfxPropertySetHandle properties, const char *property, int index, void **value);
-OfxStatus propGetString(OfxPropertySetHandle properties, const char *property, int index, char **value);
-OfxStatus propGetDouble(OfxPropertySetHandle properties, const char *property, int index, double *value);
-OfxStatus propGetInt(OfxPropertySetHandle properties, const char *property, int index, int *value);
-OfxStatus propGetPointerN(OfxPropertySetHandle properties, const char *property, int count, void **value);
-OfxStatus propGetStringN(OfxPropertySetHandle properties, const char *property, int count, char **value);
-OfxStatus propGetDoubleN(OfxPropertySetHandle properties, const char *property, int count, double *value);
-OfxStatus propGetIntN(OfxPropertySetHandle properties, const char *property, int count, int *value);
-OfxStatus propReset(OfxPropertySetHandle properties, const char *property);
-OfxStatus propGetDimension(OfxPropertySetHandle properties, const char *property, int *count);
+ public:
+  PropertySetContext context; // TODO: use this rather than generic property set objects
+  int num_properties;
+  OfxPropertyStruct **properties;
+};
 
 #endif // __MFX_PROPERTIES_H__

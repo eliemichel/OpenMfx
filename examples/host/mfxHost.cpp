@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019-2020 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,15 @@
 #include "util/memory_util.h"
 
 #include "intern/messages.h"
+#include "intern/properties.h"
+#include "intern/parameters.h"
+#include "intern/inputs.h"
+#include "intern/mesheffect.h"
+#include "intern/parameterSuite.h"
+#include "intern/propertySuite.h"
+#include "intern/meshEffectSuite.h"
+#include "intern/messageSuite.h"
+#include "mfxPluginRegistry.h"
 
 #include "mfxHost.h"
 
@@ -86,6 +95,7 @@ static const void * fetchSuite(OfxPropertySetHandle host,
 
 // OFX MESH EFFECT HOST
 
+// TODO: Use a more C++ idiomatic singleton pattern
 OfxHost *gHost = NULL;
 int gHostUse = 0;
 
@@ -93,10 +103,8 @@ OfxHost * getGlobalHost(void) {
   printf("Getting Global Host; reference counter will be set to %d.\n", gHostUse + 1);
   if (0 == gHostUse) {
     printf("(Allocating new host data)\n");
-    gHost = malloc_array(sizeof(OfxHost), 1, "global host");
-    OfxPropertySetHandle hostProperties = malloc_array(sizeof(OfxPropertySetStruct), 1, "global host properties");
-    init_properties(hostProperties);
-    hostProperties->context = PROP_CTX_HOST;
+    gHost = new OfxHost;
+    OfxPropertySetHandle hostProperties = new OfxPropertySetStruct(PropertySetContext::Host);
     propSetPointer(hostProperties, kOfxHostPropBeforeMeshReleaseCb, 0, (void*)NULL);
     propSetPointer(hostProperties, kOfxHostPropBeforeMeshGetCb, 0, (void*)NULL);
     gHost->host = hostProperties;
@@ -110,8 +118,8 @@ void releaseGlobalHost(void) {
   printf("Releasing Global Host; reference counter will be set to %d.\n", gHostUse - 1);
   if (--gHostUse == 0) {
     printf("(Freeing host data)\n");
-    free_array(gHost->host);
-    free_array(gHost);
+    delete gHost->host;
+    delete gHost;
     gHost = NULL;
   }
 }
@@ -159,10 +167,7 @@ bool ofxhost_get_descriptor(OfxHost *host, OfxPlugin *plugin, OfxMeshEffectHandl
   OfxMeshEffectHandle effectHandle;
 
   *effectDescriptor = NULL;
-  effectHandle = malloc_array(sizeof(OfxMeshEffectStruct), 1, "mesh effect descriptor");
-
-  effectHandle->host = host;
-  init_mesh_effect(effectHandle);
+  effectHandle = new OfxMeshEffectStruct(host);
 
   status = plugin->mainEntry(kOfxActionDescribe, effectHandle, NULL, NULL);
   printf("%s action returned status %d (%s)\n", kOfxActionDescribe, status, getOfxStateName(status));
@@ -190,8 +195,7 @@ bool ofxhost_get_descriptor(OfxHost *host, OfxPlugin *plugin, OfxMeshEffectHandl
 }
 
 void ofxhost_release_descriptor(OfxMeshEffectHandle effectDescriptor) {
-  free_mesh_effect(effectDescriptor);
-  free_array(effectDescriptor);
+  delete effectDescriptor;
 }
 
 bool ofxhost_create_instance(OfxPlugin *plugin, OfxMeshEffectHandle effectDescriptor, OfxMeshEffectHandle *effectInstance) {
@@ -200,8 +204,8 @@ bool ofxhost_create_instance(OfxPlugin *plugin, OfxMeshEffectHandle effectDescri
 
   *effectInstance = NULL;
 
-  instance = malloc_array(sizeof(OfxMeshEffectStruct), 1, "mesh effect descriptor");
-  deep_copy_mesh_effect(instance, effectDescriptor);
+  instance = new OfxMeshEffectStruct(effectDescriptor->host);
+  instance->deep_copy_from(*effectDescriptor);
 
   status = plugin->mainEntry(kOfxActionCreateInstance, instance, NULL, NULL);
   printf("%s action returned status %d (%s)\n", kOfxActionCreateInstance, status, getOfxStateName(status));
@@ -237,8 +241,7 @@ void ofxhost_destroy_instance(OfxPlugin *plugin, OfxMeshEffectHandle effectInsta
     printf("ERROR: Fatal error while destroying an instance of plug-in '%s'.\n", plugin->pluginIdentifier);
   }
 
-  free_mesh_effect(effectInstance);
-  free_array(effectInstance);
+  delete effectInstance;
 }
 
 bool ofxhost_cook(OfxPlugin *plugin, OfxMeshEffectHandle effectInstance) {
@@ -262,50 +265,36 @@ bool ofxhost_cook(OfxPlugin *plugin, OfxMeshEffectHandle effectInstance) {
   return true;
 }
 
-bool use_plugin(const PluginRegistry *registry, int plugin_index) {
-  OfxPlugin *plugin = registry->plugins[plugin_index];
-  printf("Using plugin #%d: %s\n", plugin_index, plugin->pluginIdentifier);
+bool ofxhost_is_identity(OfxPlugin *plugin, OfxMeshEffectHandle effectInstance, bool *shouldCook) {
+  OfxStatus status;
 
-  // Set host (TODO: do this in load_plugins?)
-  OfxHost *host = getGlobalHost();
+  OfxPropertySetStruct inArgs(PropertySetContext::ActionIdentityIn);
+  OfxPropertySetStruct outArgs(PropertySetContext::ActionIdentityOut);
 
-  // Load action if not loaded yet
-  if (OfxPluginStatNotLoaded == registry->status[plugin_index]) {
-    if (ofxhost_load_plugin(host, plugin)) {
-      registry->status[plugin_index] = OfxPluginStatOK;
-    } else {
-      registry->status[plugin_index] = OfxPluginStatError;
-      return false;
-    }
-  }
+  propSetInt(&inArgs, kOfxPropTime, 0, 0);
+  propSetString(&outArgs, kOfxPropName, 0, "");
+  propSetInt(&outArgs, kOfxPropTime, 0, 0);
 
-  if (OfxPluginStatError == registry->status[plugin_index]) {
+  *shouldCook = true;
+
+  status = plugin->mainEntry(kOfxMeshEffectActionIsIdentity, effectInstance, &inArgs, &outArgs);
+  printf("%s action returned status %d (%s)\n", kOfxMeshEffectActionIsIdentity, status, getOfxStateName(status));
+
+  if (kOfxStatErrMemory == status) {
+    printf("ERROR: Not enough memory for plug-in '%s'.\n", plugin->pluginIdentifier);
     return false;
   }
-
-  // Describe action
-  OfxMeshEffectHandle effectDescriptor;
-  if (ofxhost_get_descriptor(host, plugin, &effectDescriptor)) {
-    OfxMeshEffectHandle effectInstance;
-
-    // DEBUG
-    printf("After describing effect:\n");
-    printf("  Found %d inputs:\n", effectDescriptor->inputs.num_inputs);
-    for (int i = 0 ; i < effectDescriptor->inputs.num_inputs ; ++i) {
-      printf("    #%d: %s\n", i, effectDescriptor->inputs.inputs[i]->name);
-    }
-
-    // Create Instance action
-    if (ofxhost_create_instance(plugin, effectDescriptor, &effectInstance)) {
-      ofxhost_cook(plugin, effectInstance);
-      ofxhost_destroy_instance(plugin, effectInstance);
-    }
-    ofxhost_release_descriptor(effectDescriptor);
+  if (kOfxStatFailed == status) {
+    printf("ERROR: Error while cooking an instance of plug-in '%s'.\n", plugin->pluginIdentifier); // see message
+    return false;
   }
-
-  // Unload action (TODO: move into e.g. free_registry)
-  //ofxhost_unload_plugin(plugin);
-  //releaseGlobalHost();
-
+  if (kOfxStatErrFatal == status) {
+    printf("ERROR: Fatal error while cooking an instance of plug-in '%s'.\n", plugin->pluginIdentifier);
+    return false;
+  }
+  if (kOfxStatOK == status) {
+    *shouldCook = false;
+    return true;
+  }
   return true;
 }

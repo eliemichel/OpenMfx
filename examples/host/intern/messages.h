@@ -24,27 +24,24 @@
 
 #include "ofxMessage.h"
 
-typedef enum OfxMessageType {
-  OFX_MESSAGE_INVALID = -1, // meaning "don't show"
-  OFX_MESSAGE_FATAL,
-  OFX_MESSAGE_ERROR,
-  OFX_MESSAGE_WARNING,
-  OFX_MESSAGE_MESSAGE,
-  OFX_MESSAGE_LOG,
-  OFX_MESSAGE_QUESTION,
-} OfxMessageType;
+enum class OfxMessageType {
+  Invalid = -1, // meaning "don't show"
+  Fatal,
+  Error,
+  Warning,
+  Message,
+  Log,
+  Question,
+};
+
+/**
+ * Get message type as an enum value from its string based expression
+ */
+OfxMessageType parseMessageType(const char *messageType);
 
 /**
  * Return a human readable version of OfxMessageType value
  */
 const char *messageTypeTag(OfxMessageType type);
-
-// See ofxMessage.h for docstrings
-
-extern const OfxMessageSuiteV2 gMessageSuiteV2;
-
-OfxStatus message(void *handle, const char *messageType, const char *messageId, const char *format, ...);
-OfxStatus setPersistentMessage(void *handle, const char *messageType, const char *messageId, const char *format, ...);
-OfxStatus clearPersistentMessage(void *handle);
 
 #endif // __MFX_MESSAGES_H__

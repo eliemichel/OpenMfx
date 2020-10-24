@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019 - 2020 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,34 @@
  * limitations under the License.
  */
 
-#ifndef __MFX_MEMORY_UTIL_H__
-#define __MFX_MEMORY_UTIL_H__
+ /** \file
+  * \ingroup openmesheffect
+  *
+  */
 
-#include "stddef.h" // for size_t
+#ifndef __MFX_MESSAGE_SUITE_H__
+#define __MFX_MESSAGE_SUITE_H__
+
+// // Message Suite Entry Points
+
+#include "ofxMessage.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void *malloc_array(size_t size, size_t count, const char *reason);
-void free_array(void *p);
+// See ofxMessage.h for docstrings
+
+extern const OfxMessageSuiteV2 gMessageSuiteV2;
+
+OfxStatus message(
+    void *handle, const char *messageType, const char *messageId, const char *format, ...);
+OfxStatus setPersistentMessage(
+    void *handle, const char *messageType, const char *messageId, const char *format, ...);
+OfxStatus clearPersistentMessage(void *handle);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // __MFX_MEMORY_UTIL_H__
+#endif // __MFX_MESSAGE_SUITE_H__

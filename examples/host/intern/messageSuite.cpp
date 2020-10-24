@@ -14,57 +14,13 @@
  * limitations under the License.
  */
 
+#include "messageSuite.h"
 #include "messages.h"
 #include "mesheffect.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-
-static OfxMessageType parseMessageType(const char *messageType)
-{
-  if (0 == strcmp(messageType, kOfxMessageFatal)) {
-    return OFX_MESSAGE_FATAL;
-  }
-  if (0 == strcmp(messageType, kOfxMessageError)) {
-    return OFX_MESSAGE_ERROR;
-  }
-  if (0 == strcmp(messageType, kOfxMessageWarning)) {
-    return OFX_MESSAGE_WARNING;
-  }
-  if (0 == strcmp(messageType, kOfxMessageMessage)) {
-    return OFX_MESSAGE_MESSAGE;
-  }
-  if (0 == strcmp(messageType, kOfxMessageLog)) {
-    return OFX_MESSAGE_LOG;
-  }
-  if (0 == strcmp(messageType, kOfxMessageQuestion)) {
-    return OFX_MESSAGE_QUESTION;
-  }
-  return OFX_MESSAGE_INVALID;
-}
-
-const char *messageTypeTag(OfxMessageType type)
-{
-  switch (type) {
-    case OFX_MESSAGE_INVALID:
-      return "INVALID";
-    case OFX_MESSAGE_FATAL:
-      return "FATAL";
-    case OFX_MESSAGE_ERROR:
-      return "ERROR";
-    case OFX_MESSAGE_WARNING:
-      return "WARNING";
-    case OFX_MESSAGE_MESSAGE:
-      return "MESSAGE";
-    case OFX_MESSAGE_LOG:
-      return "LOG";
-    case OFX_MESSAGE_QUESTION:
-      return "QUESTION";
-    default:
-      return "";
-  }
-}
 
 // // Message Suite Entry Points
 
@@ -96,7 +52,8 @@ OfxStatus setPersistentMessage(
     return kOfxStatErrBadHandle;
   }
   OfxMessageType type = parseMessageType(messageType);
-  if (type != OFX_MESSAGE_ERROR && type != OFX_MESSAGE_WARNING && type != OFX_MESSAGE_MESSAGE) {
+  if (type != OfxMessageType::Error && type != OfxMessageType::Warning &&
+      type != OfxMessageType::Message) {
     return kOfxStatErrValue;
   }
 
@@ -118,6 +75,6 @@ OfxStatus clearPersistentMessage(void* handle)
     return kOfxStatErrBadHandle;
   }
   OfxMeshEffectHandle effect = (OfxMeshEffectHandle)handle;
-  effect->messageType = OFX_MESSAGE_INVALID;
+  effect->messageType = OfxMessageType::Invalid;
   return kOfxStatOK;
 }
