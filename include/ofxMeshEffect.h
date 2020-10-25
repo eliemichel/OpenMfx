@@ -82,37 +82,39 @@ typedef struct OfxMeshStruct *OfxMeshHandle;
 #define kOfxMeshMainOutput "OfxMeshMainOutput"
 
 /**
-   \defgroup MeshAttrib attachements
+   \defgroup MeshAttrib attachments
 
 Mesh attributes can be attached to either points, vertices, faces or the whole mesh. Mandatory
 attributes include a position for points, a point index for vertices and a vertex count for faces.
 */
 /*@{*/
-/** @brief Mesh attribute attachement to points
+/** @brief Mesh attribute attachment to points
  */
 #define kOfxMeshAttribPoint "OfxMeshAttribPoint"
 
-/** @brief Mesh attribute attachement to vertex
+/** @brief Mesh attribute attachment to vertex
  */
 #define kOfxMeshAttribVertex "OfxMeshAttribVertex"
 
-/** @brief Mesh attribute attachement to faces
+/** @brief Mesh attribute attachment to faces
  */
 #define kOfxMeshAttribFace "OfxMeshAttribFace"
 
-/** @brief Mesh attribute attachement to the whole mesh
+/** @brief Mesh attribute attachment to the whole mesh
  */
 #define kOfxMeshAttribMesh "OfxMeshAttribMesh"
 
-/** @brief Name of the point attribut for position
+/** @brief Name of the point attribute for position
  */
 #define kOfxMeshAttribPointPosition "OfxMeshAttribPointPosition"
 
-/** @brief Name of the vertex attribut for point index
+/** @brief Name of the vertex attribute for point index
  */
 #define kOfxMeshAttribVertexPoint "OfxMeshAttribVertexPoint"
 
-/** @brief Name of the face attribut for vertex count
+/** @brief Name of the face attribute for vertex count.
+ * 
+ * This is ignored if the mesh's \ref kOfxMeshPropConstantFaceCount property is different from -1.
  */
 #define kOfxMeshAttribFaceCounts "OfxMeshAttribFaceCounts"
 
@@ -143,7 +145,7 @@ These are the list of actions passed to a mesh effect plugin's main function. Fo
 
 /** @brief
 
- Sometimes an effect can pass through an input uprocessed, for example a
+ Sometimes an effect can pass through an input unprocessed, for example a
  displace effect with a displace amplitude of 0. This action can be called by a
  host before it attempts to cook an effect to determine if it can simply
  copy input directly to output without having to call the render action
@@ -206,7 +208,7 @@ These are the list of actions passed to a mesh effect plugin's main function. Fo
      -  \ref kOfxActionCreateInstance has been called on the instance
      
  @returns
-     -  \ref kOfxStatOK, the effect cooked normaly
+     -  \ref kOfxStatOK, the effect cooked normally
      -  \ref kOfxStatErrMemory, in which case the action may be called again after
      a memory purge
      -  \ref kOfxStatFailed, something wrong, but no error code appropriate,
@@ -219,7 +221,7 @@ These are the list of actions passed to a mesh effect plugin's main function. Fo
 /** @brief
 
  This action is unique to OFX Mesh Effect plug-ins. Because a plugin is
- able to exhibit different behaviour depending on the context of use,
+ able to exhibit different behavior depending on the context of use,
  each separate context will need to be described individually. It is
  within this action that mesh effects describe which parameters and
  input geometry it requires.
@@ -314,7 +316,7 @@ This property is the number of points allocated in the mesh object.
 /** @brief The number of vertices in a mesh
 
     - Type - integer X 1
-    - Property Set - a mesh instance (read only)
+    - Property Set - a mesh instance
 
 This property is the number of vertices allocated in the mesh object.
  */
@@ -323,22 +325,45 @@ This property is the number of vertices allocated in the mesh object.
 /** @brief The number of faces in a mesh
 
     - Type - integer X 1
-    - Property Set - a mesh instance (read only)
+    - Property Set - a mesh instance
 
 This property is the number of faces allocated in the mesh object.
  */
 #define kOfxMeshPropFaceCount "OfxMeshPropFaceCount"
 
-/** @brief The number of attribtues in a mesh
+/** @brief The number of attributes in a mesh
 
     - Type - integer X 1
-    - Property Set - a mesh instance (read only)
+    - Property Set - a mesh instance
 
-This property is the number of attribtues stored in the mesh object. Attributes can be attached to
+This property is the number of attributes stored in the mesh object. Attributes can be attached to
 either points, vertices, faces or the whole mesh. There are at least three attributes in a geometry
 namely the point's position, the vertex' point association and the face's vertex count.
  */
 #define kOfxMeshPropAttributeCount "OfxMeshPropAttributeCount"
+
+/** @brief Whether the is loose-edge free or not
+
+    - Type - bool X 1
+    - Property Set - a mesh instance
+
+This property is true by default and must be turned false when the mesh has loose edges, namely edges
+that are not part of any face (a loose edge is a 2-vertices faces). Turning this false when there is
+actually no loose edge must not change any behavior but may affect performances since a host might use
+this information to speed up processing of loose-edge free meshes.
+ */
+#define kOfxMeshPropNoLooseEdge "kOfxMeshPropNoLooseEdge"
+
+/** @brief Number of vertices per face, or -1.
+
+    - Type - int X 1
+    - Property Set - a mesh instance
+
+When all faces have the same number of vertices, this property may be set to this number in place of
+using the \ref kOfxMeshAttribFaceCounts attribute, thus reducing memory allocation and potentially
+enabling speed-ups on host side. This property is -1 when faces have a varying number of vertices.
+ */
+#define kOfxMeshPropConstantFaceCount "kOfxMeshPropConstantFaceCount"
 
 /**  @brief The data pointer of an attribute.
 
@@ -346,7 +371,7 @@ namely the point's position, the vertex' point association and the face's vertex
     - Property Set - a mesh attribute (read only)
 
 This property contains a pointer to memory where attribute data is stored, whose size depend on the
-attribute attachement (point/vertex/face/mesh) and attribute type (int, float, vector, etc.)
+attribute attachment (point/vertex/face/mesh) and attribute type (int, float, vector, etc.)
 */
 #define kOfxMeshAttribPropData "OfxMeshAttribPropData"
 
@@ -355,9 +380,9 @@ attribute attachement (point/vertex/face/mesh) and attribute type (int, float, v
     - Type - bool X 1
     - Property Set - a mesh attribute (read only)
 
-The mesh effect must free its data on destruction iff it owns it. In most cases, it is recommanded
+The mesh effect must free its data on destruction iff it owns it. In most cases, it is recommended
 to use the mesh effect attributes as proxies to data structures owned by the underlying host mesh
-structures, so this is 0, but in some cases wher ethe data layout does not allow it, some memory is
+structures, so this is 0, but in some cases where the data layout does not allow it, some memory is
 allocated in the mesh and this flag must hence be set to 1, so that memory is automatically freed
 on mesh release.
 */
@@ -556,14 +581,14 @@ If inputGetMesh is called twice with the same parameters, then two separate mesh
       \arg meshHandle       - mesh handle
       \arg attachment       - attribute attachment (see \ref MeshAttrib)
       \arg name             - attribute name
-      \arg componentCount   - nomber of components in the attribute, from 1 to 4 (1 is a scalar
-                              attribtue, 2 is a vector2, etc.)
+      \arg componentCount   - number of components in the attribute, from 1 to 4 (1 is a scalar
+                              attribute, 2 is a vector2, etc.)
       \arg type             - type of the attribute data (float or int, see \ref MeshAttrib)
       \arg attributeHandle  - property set for returning attribute properties, might be NULL.
 
 \pre
  - meshHandle was returned by inputGetMesh
- - attachment is a valid attachement
+ - attachment is a valid attachment
 
 \post
  - attributeHandle is a valid attribute handle
@@ -573,7 +598,7 @@ By default, the attribute data is not owned by the mesh (kOfxMeshAttribPropIsOwn
 @returns
 - ::kOfxStatOK - the attribute was successfully fetched and returned in the handle,
 - ::kOfxStatErrBadIndex - the attribute could not be fetched because it does not exist, or the
-                          attachement is not valid.
+                          attachment is not valid.
 - ::kOfxStatErrValue - the component count or type is not valid.
 - ::kOfxStatErrBadHandle - the mesh handle was invalid,
  */
@@ -587,13 +612,13 @@ By default, the attribute data is not owned by the mesh (kOfxMeshAttribPropIsOwn
   /** @brief Get an attribute handle from a mesh
 
       \arg meshHandle       - mesh handle
-      \arg attachment       - attribute attachement (see \ref MeshAttrib)
+      \arg attachment       - attribute attachment (see \ref MeshAttrib)
       \arg name             - attribute name
       \arg attributeHandle  - property set for returning attribute properties
 
 \pre
  - meshHandle was returned by inputGetMesh
- - attachment is a valid attachement
+ - attachment is a valid attachment
 
 \post
  - attributeHandle is a valid attribute handle
@@ -601,7 +626,7 @@ By default, the attribute data is not owned by the mesh (kOfxMeshAttribPropIsOwn
 @returns
 - ::kOfxStatOK - the attribute was successfully fetched and returned in the handle,
 - ::kOfxStatErrBadIndex - the attribute could not be fetched because it does not exist, or the
-                          attachement is not valid.
+                          attachment is not valid.
 - ::kOfxStatErrBadHandle - the mesh handle was invalid,
  */
   OfxStatus(*meshGetAttribute)(OfxMeshHandle meshHandle,

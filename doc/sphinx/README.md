@@ -8,8 +8,11 @@ pip install sphinxjp.themes.basicstrap
 
 NB: This requires `pip`, Python's package manager, to be installed.
 
-Then just run:
+Then run:
 
 ```
+cd ../doxygen
+doxygen
+cd ../sphinx
 make html
 ```

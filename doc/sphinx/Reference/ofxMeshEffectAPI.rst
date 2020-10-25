@@ -53,6 +53,10 @@ Mesh effects operate on mesh data represented by the ``OfxMeshHandle`` type:
 
 .. doxygendefine:: kOfxMeshPropAttributeCount
 
+.. doxygendefine:: kOfxMeshPropNoLooseEdge
+
+.. doxygendefine:: kOfxMeshPropConstantFaceCount
+
 
 Inputs and outputs
 ------------------
