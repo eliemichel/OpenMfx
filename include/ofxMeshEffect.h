@@ -283,6 +283,17 @@ These are the list of properties used by the Mesh Effects API.
 */
 #define kOfxMeshEffectPropSupportedContexts "OfxMeshEffectPropSupportedContexts"
 
+/** @brief Tells whether the effect only deforms meshes
+
+   - Type - bool X 1
+   - Property Set - image effect instance (read only)
+
+A deformation-only effect does not alter the connectivity of its main input and always
+forwards it to its main and only output. This flag is false by default and turning it
+true might enable optimizations from the host.
+ */
+#define kOfxMeshEffectPropIsDeformation "OfxMeshEffectPropIsDeformation"
+
 /** @brief The plugin handle passed to the initial 'describe' action.
 
    - Type - pointer X 1
@@ -352,7 +363,7 @@ that are not part of any face (a loose edge is a 2-vertices faces). Turning this
 actually no loose edge must not change any behavior but may affect performances since a host might use
 this information to speed up processing of loose-edge free meshes.
  */
-#define kOfxMeshPropNoLooseEdge "kOfxMeshPropNoLooseEdge"
+#define kOfxMeshPropNoLooseEdge "OfxMeshPropNoLooseEdge"
 
 /** @brief Number of vertices per face, or -1.
 
@@ -363,7 +374,7 @@ When all faces have the same number of vertices, this property may be set to thi
 using the \ref kOfxMeshAttribFaceCounts attribute, thus reducing memory allocation and potentially
 enabling speed-ups on host side. This property is -1 when faces have a varying number of vertices.
  */
-#define kOfxMeshPropConstantFaceCount "kOfxMeshPropConstantFaceCount"
+#define kOfxMeshPropConstantFaceCount "OfxMeshPropConstantFaceCount"
 
 /**  @brief The data pointer of an attribute.
 

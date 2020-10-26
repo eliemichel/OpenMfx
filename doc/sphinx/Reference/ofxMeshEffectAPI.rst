@@ -22,7 +22,7 @@ The reminder of this page focuses on the objects defined in ``ofxMeshEffect.h``.
 Mesh Effect
 -----------
 
-A Mesh Effect is an operator that expects zero or more meshes as inputs and provides zero or more other meshes as outputs. The behavior of such effect is tunned using parameters as defined in ``ofxParam.h``. They roughly correspond to a node in a node-based 3D modeling tool like Houdini or a modifier in a stack-based generatino like in Blender or Cinema 4D. A mesh effect is manipulated using the ``OfxMeshEffectHandle`` type.
+A Mesh Effect is an operator that expects zero or more meshes as inputs and provides zero or more other meshes as outputs. The behavior of such effect is tunned using parameters as defined in ``ofxParam.h``. They roughly correspond to a node in a node-based 3D modeling tool like Houdini or a modifier in a stack-based generation like in Blender or Cinema 4D. A mesh effect is manipulated using the ``OfxMeshEffectHandle`` type.
 
 .. doxygentypedef:: OfxMeshEffectHandle
 
@@ -30,6 +30,10 @@ A Mesh Effect is an operator that expects zero or more meshes as inputs and prov
 .. doxygendefine__ kOfxMeshEffectContextGenerator
 .. doxygendefine__ kOfxMeshEffectContextFilter
 .. doxygendefine__ kOfxMeshEffectContextGeneral
+
+**Properties:**
+
+.. doxygendefine:: kOfxMeshEffectPropIsDeformation
 
 .. doxygendefine__ kOfxMeshEffectPropSupportedContexts
 
@@ -96,7 +100,7 @@ The Open Mesh Effect API supports attaching any custom attribute to either point
 .. doxygendefine:: kOfxMeshAttribFaceCounts
 
 
-**Attribute properties/**
+**Attribute properties:**
 
 An attribute is represented by a generic ``OfxPropertySetHandle`` that provides the following keys:
 
