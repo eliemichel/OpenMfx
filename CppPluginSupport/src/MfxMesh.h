@@ -40,7 +40,7 @@ public:
 	MfxAttribute AddFaceAttribute(const char* name, int componentCount, const char* type);
 	MfxAttribute AddMeshAttribute(const char* name, int componentCount, const char* type);
 
-	void Allocate(int pointCount, int vertCount, int faceCount);
+    void Allocate(int pointCount, int vertCount, int faceCount, int noLooseEdge=1, int constantFaceCount=-1);
 
 private:
 	OfxMeshHandle m_mesh;
