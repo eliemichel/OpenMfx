@@ -14,8 +14,11 @@ enum class MfxAttributeType {
  */
 struct MfxAttributeProps
 {
+    MfxAttributeProps() : type(MfxAttributeType::Unknown), stride(0), componentCount(0), data(NULL), isOwner(false) {}
+
     MfxAttributeType type;
     int stride;
     int componentCount;
     char* data;
+    bool isOwner;
 };
