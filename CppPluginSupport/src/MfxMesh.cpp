@@ -49,6 +49,40 @@ MfxAttribute MfxMesh::GetMeshAttribute(const char* name)
 	return GetAttribute(kOfxMeshAttribMesh, name);
 }
 
+bool MfxMesh::HasAttribute(const char* attachment, const char* name)
+{
+    OfxPropertySetHandle attribute;
+    OfxStatus status = this->host().meshEffectSuite->meshGetAttribute(m_mesh, attachment, name, &attribute);
+
+    if (kOfxStatOK == status) {
+        return true;
+    } else if (kOfxStatErrBadIndex == status) {
+        return false;
+    } else {
+        throw MfxSuiteException(status, "meshEffectSuite->meshGetAttribute(m_mesh, attachment, name, &attribute)");
+    }
+}
+
+bool MfxMesh::HasPointAttribute(const char* name)
+{
+    return HasAttribute(kOfxMeshAttribPoint, name);
+}
+
+bool MfxMesh::HasVertexAttribute(const char* name)
+{
+    return HasAttribute(kOfxMeshAttribVertex, name);
+}
+
+bool MfxMesh::HasFaceAttribute(const char* name)
+{
+    return HasAttribute(kOfxMeshAttribFace, name);
+}
+
+bool MfxMesh::HasMeshAttribute(const char* name)
+{
+    return HasAttribute(kOfxMeshAttribMesh, name);
+}
+
 void MfxMesh::Release()
 {
 	MFX_ENSURE(meshEffectSuite->inputReleaseMesh(m_mesh));

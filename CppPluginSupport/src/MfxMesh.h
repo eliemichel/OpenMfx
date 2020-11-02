@@ -25,6 +25,12 @@ public:
 	MfxAttribute GetFaceAttribute(const char* name);
 	MfxAttribute GetMeshAttribute(const char* name);
 
+    bool HasAttribute(const char* attachment, const char* name);
+    bool HasPointAttribute(const char* name);
+    bool HasVertexAttribute(const char* name);
+    bool HasFaceAttribute(const char* name);
+    bool HasMeshAttribute(const char* name);
+
 	/**
 	 * Always call this at some point, don't use the object afterwise.
 	 * (This is not in the dtor because there may be copies of the instance but
