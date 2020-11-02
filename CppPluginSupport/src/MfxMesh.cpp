@@ -11,11 +11,15 @@ MfxMesh::MfxMesh(const MfxHost& host, OfxMeshHandle mesh, OfxPropertySetHandle p
 
 void MfxMesh::FetchProperties(MfxMeshProps& props)
 {
-	MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropPointCount, 0, &props.pointCount));
+	int noLooseEdge;
+
+    MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropPointCount, 0, &props.pointCount));
 	MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropVertexCount, 0, &props.vertexCount));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropFaceCount, 0, &props.faceCount));
-    MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropNoLooseEdge, 0, &props.noLooseEdge));
+    MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropNoLooseEdge, 0, &noLooseEdge));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropConstantFaceCount, 0, &props.constantFaceCount));
+
+    props.noLooseEdge = (bool)noLooseEdge;
 }
 
 MfxAttribute MfxMesh::GetAttribute(const char* attachment, const char* name)
@@ -80,12 +84,12 @@ MfxAttribute MfxMesh::AddMeshAttribute(const char* name, int componentCount, con
 	return AddAttribute(kOfxMeshAttribMesh, name, componentCount, type);
 }
 
-void MfxMesh::Allocate(int pointCount, int vertCount, int faceCount, int noLooseEdge, int constantFaceCount)
+void MfxMesh::Allocate(int pointCount, int vertCount, int faceCount, bool noLooseEdge, int constantFaceCount)
 {
 	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropPointCount, 0, pointCount));
 	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropVertexCount, 0, vertCount));
     MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropFaceCount, 0, faceCount));
-    MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropNoLooseEdge, 0, noLooseEdge));
+    MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropNoLooseEdge, 0, (int)noLooseEdge));
     MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropConstantFaceCount, 0, constantFaceCount));
 	MFX_ENSURE(meshEffectSuite->meshAlloc(m_mesh));
 }

@@ -45,7 +45,8 @@ public:
 	void CopyFrom(MfxAttribute& other, int start, int count);
 
     /**
-     * Forward attribute data, pointing to existing buffers instead of copying
+     * Forward attribute data, pointing to existing buffers instead of copying.
+     * Note that the buffer in source attribute must already be allocated.
      */
     void ForwardFrom(MfxAttribute& other);
 

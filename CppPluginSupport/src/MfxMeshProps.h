@@ -5,6 +5,6 @@ struct MfxMeshProps
     int pointCount;
     int vertexCount;
     int faceCount;
-    int noLooseEdge;
+    bool noLooseEdge;
     int constantFaceCount;
 };
