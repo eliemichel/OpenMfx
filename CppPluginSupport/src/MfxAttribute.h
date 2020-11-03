@@ -16,6 +16,12 @@ private:
 	 * Convert a type string from MeshEffect API to its local enum counterpart
 	 */
 	static MfxAttributeType mfxAttrAsEnum(const char* mfxType);
+
+    /**
+     * Convert local typestring enum to a type string from MeshEffect API
+     */
+    static const char* mfxAttrAsString(MfxAttributeType mfxType);
+
 	/**
 	 * Copy attribute and try to cast. If number of component is different,
 	 * copy the common components only.
@@ -24,13 +30,26 @@ private:
 
 public:
 	/**
-	 * Populate the provided props structure woth this attribute's properties
+	 * Populate the provided props structure with this attribute's properties
 	 */
 	void FetchProperties(MfxAttributeProps & props);
 
+    /**
+     * Set attribute properties according to provided props structure
+     */
+    void SetProperties(const MfxAttributeProps & props);
+
+    /**
+     * Copy attribute data, casting if necessary
+     */
 	void CopyFrom(MfxAttribute& other, int start, int count);
+
+    /**
+     * Forward attribute data, pointing to existing buffers instead of copying.
+     * Note that the buffer in source attribute must already be allocated.
+     */
+    void ForwardFrom(MfxAttribute& other);
 
 private:
 	OfxPropertySetHandle m_properties;
 };
-

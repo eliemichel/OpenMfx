@@ -15,7 +15,7 @@ private:
 
 public:
 	/**
-	 * Populate the provided props structure woth this attribute's properties
+	 * Populate the provided props structure with this attribute's properties
 	 */
 	void FetchProperties(MfxMeshProps& props);
 
@@ -40,7 +40,7 @@ public:
 	MfxAttribute AddFaceAttribute(const char* name, int componentCount, const char* type);
 	MfxAttribute AddMeshAttribute(const char* name, int componentCount, const char* type);
 
-	void Allocate(int pointCount, int vertCount, int faceCount);
+    void Allocate(int pointCount, int vertCount, int faceCount, bool noLooseEdge=true, int constantFaceCount=-1);
 
 private:
 	OfxMeshHandle m_mesh;

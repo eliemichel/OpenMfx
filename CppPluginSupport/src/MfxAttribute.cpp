@@ -19,8 +19,23 @@ MfxAttributeType MfxAttribute::mfxAttrAsEnum(const char* mfxType)
     if (0 == strcmp(mfxType, kOfxMeshAttribTypeFloat)) {
         return MfxAttributeType::Float;
     }
-    printf("Warning: inknown attribute type: %s\n", mfxType);
+    printf("Warning: unknown attribute type: %s\n", mfxType);
     return MfxAttributeType::Unknown;
+}
+
+const char *MfxAttribute::mfxAttrAsString(MfxAttributeType mfxType) {
+    switch (mfxType) {
+        case MfxAttributeType::UByte:
+            return kOfxMeshAttribTypeUByte;
+        case MfxAttributeType::Int:
+            return kOfxMeshAttribTypeInt;
+        case MfxAttributeType::Float:
+            return kOfxMeshAttribTypeFloat;
+        case MfxAttributeType::Unknown:
+        default:
+            printf("Warning: unknown attribute type: %d\n", (int)mfxType);
+            return "";
+    }
 }
 
 OfxStatus MfxAttribute::copyAttributeData(MfxAttributeProps& destination, const MfxAttributeProps& source, int start, int count)
@@ -84,11 +99,24 @@ OfxStatus MfxAttribute::copyAttributeData(MfxAttributeProps& destination, const 
 void MfxAttribute::FetchProperties(MfxAttributeProps& props)
 {
     char* type;
+    int isOwner;
     MFX_ENSURE(propertySuite->propGetString(m_properties, kOfxMeshAttribPropType, 0, &type));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshAttribPropStride, 0, &props.stride));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshAttribPropComponentCount, 0, &props.componentCount));
     MFX_ENSURE(propertySuite->propGetPointer(m_properties, kOfxMeshAttribPropData, 0, (void**)&props.data));
+    MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshAttribPropIsOwner, 0, &isOwner));
     props.type = mfxAttrAsEnum(type);
+    props.isOwner = (bool)isOwner;
+}
+
+void MfxAttribute::SetProperties(const MfxAttributeProps &props) {
+    const char* type = mfxAttrAsString(props.type);
+
+    MFX_ENSURE(propertySuite->propSetString(m_properties, kOfxMeshAttribPropType, 0, type));
+    MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshAttribPropStride, 0, props.stride));
+    MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshAttribPropComponentCount, 0, props.componentCount));
+    MFX_ENSURE(propertySuite->propSetPointer(m_properties, kOfxMeshAttribPropData, 0, (void*)props.data));
+    MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshAttribPropIsOwner, 0, (int)props.isOwner));
 }
 
 void MfxAttribute::CopyFrom(MfxAttribute& other, int start, int count)
@@ -97,4 +125,14 @@ void MfxAttribute::CopyFrom(MfxAttribute& other, int start, int count)
     other.FetchProperties(sourceProps);
     FetchProperties(destinationProps);
     copyAttributeData(destinationProps, sourceProps, start, count);
+}
+
+void MfxAttribute::ForwardFrom(MfxAttribute &other) {
+    MfxAttributeProps sourceProps, destinationProps;
+    other.FetchProperties(sourceProps);
+
+    destinationProps = sourceProps;
+    destinationProps.isOwner = false;
+
+    SetProperties(destinationProps);
 }
