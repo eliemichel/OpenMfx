@@ -376,10 +376,22 @@ enabling speed-ups on host side. This property is -1 when faces have a varying n
  */
 #define kOfxMeshPropConstantFaceCount "OfxMeshPropConstantFaceCount"
 
+/** @brief Matrix converting the mesh's local coordinates into world coordinates
+
+    - Type - pointer X 1
+    - Property Set - a mesh instance (read only)
+
+This points to an array of 16 doubles representing a transform matrix in row major order.
+Some mesh effect inputs may be used only for their location or matrix. Some others might
+ignore this property as they operate in local coordinates. This pointer may be NULL in which
+case the transform is assumed to be the identity.
+ */
+#define kOfxMeshPropTransformMatrix "OfxMeshPropTransformMatrix"
+
 /**  @brief The data pointer of an attribute.
 
-    - Type - int X 1
-    - Property Set - a mesh attribute (read only)
+    - Type - pointer X 1
+    - Property Set - a mesh attribute
 
 This property contains a pointer to memory where attribute data is stored, whose size depend on the
 attribute attachment (point/vertex/face/mesh) and attribute type (int, float, vector, etc.)

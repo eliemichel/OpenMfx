@@ -40,8 +40,8 @@ A Mesh Effect is an operator that expects zero or more meshes as inputs and prov
 .. doxygendefine:: kOfxMeshEffectPropPluginHandle
 .. doxygendefine__ kOfxMeshEffectPropContext
 
-Mesh Instances
---------------
+Mesh Data
+---------
 
 Mesh effects operate on mesh data represented by the ``OfxMeshHandle`` type:
 
@@ -60,6 +60,8 @@ Mesh effects operate on mesh data represented by the ``OfxMeshHandle`` type:
 .. doxygendefine:: kOfxMeshPropNoLooseEdge
 
 .. doxygendefine:: kOfxMeshPropConstantFaceCount
+
+.. doxygendefine:: kOfxMeshPropTransformMatrix
 
 
 Inputs and outputs
