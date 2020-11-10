@@ -155,6 +155,9 @@ bool OfxPropertySetStruct::check_property_context(PropertySetContext context, Pr
       (0 == strcmp(property, kOfxMeshPropPointCount)   && type == PROP_TYPE_INT)     ||
       (0 == strcmp(property, kOfxMeshPropVertexCount)  && type == PROP_TYPE_INT)     ||
       (0 == strcmp(property, kOfxMeshPropFaceCount)    && type == PROP_TYPE_INT)     ||
+      (0 == strcmp(property, kOfxMeshPropNoLooseEdge)  && type == PROP_TYPE_INT)     ||
+      (0 == strcmp(property, kOfxMeshPropConstantFaceCount) && type == PROP_TYPE_INT) ||
+      (0 == strcmp(property, kOfxMeshPropTransformMatrix) && type == PROP_TYPE_POINTER) ||
       false
     );
     case PropertySetContext::Param:
@@ -182,7 +185,9 @@ bool OfxPropertySetStruct::check_property_context(PropertySetContext context, Pr
       (0 == strcmp(property, kOfxMeshAttribPropStride) && type == PROP_TYPE_INT) ||
       (0 == strcmp(property, kOfxMeshAttribPropComponentCount) && type == PROP_TYPE_INT) ||
       (0 == strcmp(property, kOfxMeshAttribPropType) && type == PROP_TYPE_STRING) ||
+      (0 == strcmp(property, kOfxMeshAttribPropSemantic) && type == PROP_TYPE_STRING) ||
       (0 == strcmp(property, kOfxMeshAttribPropIsOwner) && type == PROP_TYPE_INT) ||
+      (0 == strcmp(property, kMeshAttribRequestPropMandatory) && type == PROP_TYPE_INT) ||
       false);
     case PropertySetContext::ActionIdentityIn:
     return (

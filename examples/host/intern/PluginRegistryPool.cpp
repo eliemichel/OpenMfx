@@ -16,7 +16,8 @@
 
 #include "PluginRegistryPool.h"
 
-#include <cassert>
+#include <assert.h>
+#include <string.h>
 
 // // PluginRegistryPoolEntry
 
@@ -76,7 +77,7 @@ void PluginRegistryPoolEntry::decrementReferences()
 
 bool PluginRegistryPoolEntry::isReferenced() const
 {
-  return m_count == 0;
+  return m_count > 0;
 }
 
 // // PluginRegistryPool

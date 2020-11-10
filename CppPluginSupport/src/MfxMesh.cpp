@@ -90,32 +90,32 @@ void MfxMesh::Release()
 
 //-----------------------------------------------------------------------------
 
-MfxAttribute MfxMesh::AddAttribute(const char* attachment, const char* name, int componentCount, const char* type)
+MfxAttribute MfxMesh::AddAttribute(const char* attachment, const char* name, int componentCount, const char* type, const char* semantic)
 {
 	OfxPropertySetHandle attribute;
-	MFX_ENSURE(meshEffectSuite->attributeDefine(m_mesh, attachment, name, componentCount, type, &attribute));
+	MFX_ENSURE(meshEffectSuite->attributeDefine(m_mesh, attachment, name, componentCount, type, semantic, &attribute));
 	MFX_ENSURE(propertySuite->propSetInt(attribute, kOfxMeshAttribPropIsOwner, 0, 1));
 	return MfxAttribute(host(), attribute);
 }
 
-MfxAttribute MfxMesh::AddPointAttribute(const char* name, int componentCount, const char* type)
+MfxAttribute MfxMesh::AddPointAttribute(const char* name, int componentCount, const char* type, const char* semantic)
 {
-	return AddAttribute(kOfxMeshAttribPoint, name, componentCount, type);
+	return AddAttribute(kOfxMeshAttribPoint, name, componentCount, type, semantic);
 }
 
-MfxAttribute MfxMesh::AddVertexAttribute(const char* name, int componentCount, const char* type)
+MfxAttribute MfxMesh::AddVertexAttribute(const char* name, int componentCount, const char* type, const char* semantic)
 {
-	return AddAttribute(kOfxMeshAttribVertex, name, componentCount, type);
+	return AddAttribute(kOfxMeshAttribVertex, name, componentCount, type, semantic);
 }
 
-MfxAttribute MfxMesh::AddFaceAttribute(const char* name, int componentCount, const char* type)
+MfxAttribute MfxMesh::AddFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic)
 {
-	return AddAttribute(kOfxMeshAttribFace, name, componentCount, type);
+	return AddAttribute(kOfxMeshAttribFace, name, componentCount, type, semantic);
 }
 
-MfxAttribute MfxMesh::AddMeshAttribute(const char* name, int componentCount, const char* type)
+MfxAttribute MfxMesh::AddMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic)
 {
-	return AddAttribute(kOfxMeshAttribMesh, name, componentCount, type);
+	return AddAttribute(kOfxMeshAttribMesh, name, componentCount, type, semantic);
 }
 
 void MfxMesh::Allocate(int pointCount, int vertCount, int faceCount, bool noLooseEdge, int constantFaceCount)

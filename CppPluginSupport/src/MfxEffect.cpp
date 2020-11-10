@@ -66,8 +66,9 @@ OfxStatus MfxEffect::MainEntry(const char *action,
 MfxInputDef MfxEffect::AddInput(const char *name)
 {
     OfxPropertySetHandle inputProps;
-    MFX_ENSURE(meshEffectSuite->inputDefine(m_descriptor, name, &inputProps));
-    return MfxInputDef(host(), inputProps);
+    OfxMeshInputHandle input;
+    MFX_ENSURE(meshEffectSuite->inputDefine(m_descriptor, name, &input, &inputProps));
+    return MfxInputDef(host(), input, inputProps);
 }
 
 MfxParamDef<int> MfxEffect::AddParam(const char *name, int defaultValue)

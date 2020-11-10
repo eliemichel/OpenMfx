@@ -633,7 +633,7 @@ typedef struct OfxMeshEffectSuiteV1 {
   \pre
       - called from inside the describe or describe in context action
       - input was returned by inputGetHandle
-      - inputRequireAttribute was not called with the same \e attachement and \e name combination
+      - inputRequestAttribute was not called with the same \e attachement and \e name combination
   
   @returns
       - ::kOfxStatOK     - the mesh was successfully fetched and returned in the handle,
@@ -643,7 +643,7 @@ typedef struct OfxMeshEffectSuiteV1 {
       - ::kOfxStatErrMemory - the host had not enough memory to complete the operation, plugin should abort whatever it was doing.
 
   */
-  OfxStatus (*inputRequireAttribute)(OfxMeshInputHandle input,
+  OfxStatus (*inputRequestAttribute)(OfxMeshInputHandle input,
                                      const char *attachment,
                                      const char *name,
                                      int componentCount,

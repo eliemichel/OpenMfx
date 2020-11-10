@@ -40,11 +40,11 @@ public:
 
 public:
 	// Only for output meshes and before allocation:
-	MfxAttribute AddAttribute(const char* attachment, const char* name, int componentCount, const char *type);
-	MfxAttribute AddPointAttribute(const char* name, int componentCount, const char* type);
-	MfxAttribute AddVertexAttribute(const char* name, int componentCount, const char* type);
-	MfxAttribute AddFaceAttribute(const char* name, int componentCount, const char* type);
-	MfxAttribute AddMeshAttribute(const char* name, int componentCount, const char* type);
+	MfxAttribute AddAttribute(const char* attachment, const char* name, int componentCount, const char *type, const char* semantic = NULL);
+	MfxAttribute AddPointAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
+	MfxAttribute AddVertexAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
+	MfxAttribute AddFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
+	MfxAttribute AddMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 
     void Allocate(int pointCount, int vertCount, int faceCount, bool noLooseEdge=true, int constantFaceCount=-1);
 
