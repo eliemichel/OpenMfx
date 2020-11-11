@@ -42,7 +42,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # Breathe Configuration
 breathe_projects = {
-	"OpenMeshEffect": "../doxygen/output/xml"
+	"OpenMeshEffect": "../doxygen/output/xml",
+	"SDK": "../doxygen/output-sdk/xml"
 }
 breathe_default_project = "OpenMeshEffect"
 

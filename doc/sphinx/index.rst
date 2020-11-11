@@ -56,3 +56,4 @@ Contents
    Reference/index
    Guide/index
    Implementations/index
+   Sdk/index
