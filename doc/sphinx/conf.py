@@ -47,7 +47,7 @@ breathe_projects = {
 }
 breathe_default_project = "OpenMeshEffect"
 
-breathe_default_members = ('members', 'protected-members', 'private-members','undoc-members')
+breathe_default_members = ('members', 'protected-members', 'undoc-members')
 
 #pygments_style = 'sphinx'
 

@@ -1,3 +1,4 @@
+.. _OfxMeshEffectActions:
 
 Actions Passed to a Mesh Effect
 ===============================

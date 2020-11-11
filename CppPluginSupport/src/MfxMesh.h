@@ -7,6 +7,14 @@
 #include "ofxCore.h"
 #include "ofxMeshEffect.h"
 
+/**
+ * Mesh data coming from an input or being sent to an output.
+ * The instance of this class -- like all classes from this API except the
+ * structs whose name ends with "Props" -- does not actually contain data,
+ * it is only a reference and can hence be freely copied around without
+ * worrying about memory usage. You MUST call \ref Release once and only once
+ * though.
+ */
 class MfxMesh : public MfxBase
 {
 private:
@@ -15,16 +23,28 @@ private:
 
 public:
 	/**
-	 * Populate the provided props structure with this attribute's properties
+	 * Populate the provided props structure with this mesh's properties
 	 */
 	void FetchProperties(MfxMeshProps& props);
 
+	/**
+	 * Get an attribute of an input or output mesh.
+	 * The returned \ref MfxAttribute can be used to get the data buffer and
+	 * extra information like type, component count, stride, etc.
+	 * `Get*Attribute` methods are shortcuts for the different values allowed
+	 * for the `attachment` argument.
+	 */
 	MfxAttribute GetAttribute(const char* attachment, const char* name);
 	MfxAttribute GetPointAttribute(const char* name);
 	MfxAttribute GetVertexAttribute(const char* name);
 	MfxAttribute GetFaceAttribute(const char* name);
 	MfxAttribute GetMeshAttribute(const char* name);
 
+	/**
+	 * Tells whether an attribute exists in the input or output mesh.
+	 * `Has*Attribute` methods are shortcuts for the different values allowed
+	 * for the `attachment` argument.
+	 */
     bool HasAttribute(const char* attachment, const char* name);
     bool HasPointAttribute(const char* name);
     bool HasVertexAttribute(const char* name);
@@ -39,13 +59,30 @@ public:
 	void Release();
 
 public:
-	// Only for output meshes and before allocation:
+	/**
+	 * Define a new attribute on an output mesh.
+	 * The returned \ref MfxAttribute can be used to set additionnal properties
+	 * such has whether the data is "owned" or borrowed/forwarded from an input.
+	 * `Add*Attribute` methods are shortcuts for the different values allowed
+	 * for the `attachment` argument.
+	 *
+	 * \see attributeDefine from ofxMeshEffect.h for more information.
+	 *
+	 * Call **only for output** meshes and before allocation:
+	 */
 	MfxAttribute AddAttribute(const char* attachment, const char* name, int componentCount, const char *type, const char* semantic = NULL);
 	MfxAttribute AddPointAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 	MfxAttribute AddVertexAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 	MfxAttribute AddFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 	MfxAttribute AddMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 
+	/**
+	 * Allocate memory for new owned attributes according to the previously
+	 * called \ref AddAttribute and likes. Non own attributes are attributes
+	 * pointing to externally allocated memory (for instance memory buffers
+	 * forwarded from the input) and will hence not be newly allocate.
+	 * Call **only for output** meshes.
+	 */
     void Allocate(int pointCount, int vertCount, int faceCount, bool noLooseEdge=true, int constantFaceCount=-1);
 
 private:

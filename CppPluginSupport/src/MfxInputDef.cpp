@@ -15,7 +15,7 @@ MfxInputDef & MfxInputDef::Label(const char *label)
 	return *this;
 }
 
-MfxInputDef& MfxInputDef::RequestAttribute(const char* attachment, const char* name, int componentCount, const char* type, const char* semantic, int mandatory)
+MfxInputDef& MfxInputDef::RequestAttribute(const char* attachment, const char* name, int componentCount, const char* type, const char* semantic, bool mandatory)
 {
 	MFX_ENSURE(meshEffectSuite->inputRequestAttribute(m_input, attachment, name, componentCount, type, semantic, mandatory));
 	return *this;

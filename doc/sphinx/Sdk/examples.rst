@@ -26,6 +26,10 @@ Simple example
 
 			return kOfxStatOK;
 		}
+
+		OfxStatus Cook(OfxMeshEffectHandle instance) override {
+			// ...
+		}
 	};
 
 	MfxRegister(
@@ -35,4 +39,4 @@ Simple example
 Other examples
 --------------
 
-You can look at MfxVCG and MfxVTK as example of real-life Open Mesh Effect plugins actually using the "CppPluginSupport" Sdk.
+You can look at `MfxVCG <https://github.com/eliemichel/MfxVCG>`_ and `MfxVTK <https://github.com/tkarabela/MfxVTK>`_ as example of real-life Open Mesh Effect plugins actually using the "CppPluginSupport" Sdk.

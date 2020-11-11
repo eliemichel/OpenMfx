@@ -5,6 +5,9 @@
 #include <exception>
 #include <string>
 
+/**
+ * Exception thrown by the \ref MFX_ENSURE macro.
+ */
 class MfxSuiteException : public std::exception
 {
 public:

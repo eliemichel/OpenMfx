@@ -5,13 +5,22 @@
 #include <array>
 #include <string>
 
-// REGISTRATION
-// Must be used at the very end of the main file.
-// 
-// It is a bit unfortunate for readability that all this has to be a macro, but
-// it is important to have gEffects defined before setHost<> and mainEntry<> so
-// I could not figure out any other way.
-
+/**
+ * Registration must be performed at the very end of the main file. Example:
+ * ```{.cpp}
+ * MfxRegister(
+ *     MyFirstEffect,
+ *     AnotherEffect,
+ *     AThirdEffect
+ * );
+ * ```
+ * There can be an arbitrary number of arguments, and all of them are expected
+ * to be subclasses of \ref MfxEffect.
+ * 
+ * **Dev note:** It is a bit unfortunate for readability that all this has to
+ * be a macro, but it is important to have `gEffects` defined before `setHost<>`
+ * and `mainEntry<>` so I could not figure out any other way.
+ */
 #define MfxRegister(...) std::tuple<__VA_ARGS__> gEffects; \
 constexpr size_t Count = std::tuple_size<std::tuple<__VA_ARGS__>>::value;\
  \

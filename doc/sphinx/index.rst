@@ -45,7 +45,9 @@ The reminder of this documentation is split into:
 
 - Examples of implementation, both for `host <Implementations/Host>`_ and `plugins <Implementations/Plugins>`_: `Implementations and Related Work <Implementations>`_
 
-**Current status of this memo** This is a work in progress DRAFT of the API. Some parts are still missing, others need intensive testing. Feel free to fill issues if you have any suggestions.
+- The documentation of the C++ SDK, namely a set of classes built on top of the C API that is not mandatory to use but can ease the developement of C++ plugins: `Software Development Kit <Sdk>`_
+
+**Current status of this memo** This is a work in progress DRAFT of the API. Some parts are still missing, others need intensive testing. Feel free to `fill issues <https://github.com/eliemichel/OpenMeshEffect/issues>`_ if you have any suggestions.
 
 Contents
 --------

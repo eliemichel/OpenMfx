@@ -18,6 +18,7 @@ void MfxMesh::FetchProperties(MfxMeshProps& props)
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropFaceCount, 0, &props.faceCount));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropNoLooseEdge, 0, &noLooseEdge));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropConstantFaceCount, 0, &props.constantFaceCount));
+    MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropAttributeCount, 0, &props.attributeCount));
 
     props.noLooseEdge = (bool)noLooseEdge;
 }

@@ -7,7 +7,6 @@
 
 void MfxEffect::SetHost(OfxHost* host)
 {
-    //host = host;
     if (NULL != host) {
         m_host.propertySuite = static_cast<const OfxPropertySuiteV1*>(host->fetchSuite(host->host, kOfxPropertySuite, 1));
         m_host.parameterSuite = static_cast<const OfxParameterSuiteV1*>(host->fetchSuite(host->host, kOfxParameterSuite, 1));
