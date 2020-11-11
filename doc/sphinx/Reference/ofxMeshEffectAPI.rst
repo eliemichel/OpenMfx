@@ -101,6 +101,9 @@ The Open Mesh Effect API supports attaching any custom attribute to either point
 
 .. doxygendefine:: kOfxMeshAttribFaceCounts
 
+**Attribute request:**
+
+Attribute request using ``inputRequestAttribute`` is a mean for the effect to tell the host at describe time that it will need a particular attribute to be available at cook time. It can also notify the host from attributes that are not mandatory but that it would make good use of, to have the host recook the effect any time this attribute changes.
 
 **Attribute properties:**
 
@@ -125,3 +128,15 @@ An attribute is represented by a generic ``OfxPropertySetHandle`` that provides 
 .. doxygendefine:: kOfxMeshAttribTypeInt
 
 .. doxygendefine:: kOfxMeshAttribTypeFloat
+
+**Attributes semantics:**
+
+Attribute semantics tell what the intended usage of the attribute data is prior to and beyond the effect.
+
+.. doxygendefine:: kOfxMeshAttribSemanticTextureCoordinate
+
+.. doxygendefine:: kOfxMeshAttribSemanticNormal
+
+.. doxygendefine:: kOfxMeshAttribSemanticColor
+
+.. doxygendefine:: kOfxMeshAttribSemanticWeight

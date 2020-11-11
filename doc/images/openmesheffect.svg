@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg4617"
+   width="380.12067"
+   height="107.9811"
+   viewBox="0 0 380.12067 107.9811"
+   sodipodi:docname="openmesheffect.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata4623">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4621">
+    <inkscape:path-effect
+       effect="simplify"
+       id="path-effect5351"
+       is_visible="true"
+       steps="1"
+       threshold="0.00278425"
+       smooth_angles="360"
+       helper_size="0"
+       simplify_individual_paths="false"
+       simplify_just_coalesce="false"
+       simplifyindividualpaths="false"
+       simplifyJustCoalesce="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="simplify"
+       id="path-effect5347"
+       is_visible="true"
+       steps="1"
+       threshold="0.00278425"
+       smooth_angles="360"
+       helper_size="0"
+       simplify_individual_paths="false"
+       simplify_just_coalesce="false"
+       simplifyindividualpaths="false"
+       simplifyJustCoalesce="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="simplify"
+       id="path-effect5343"
+       is_visible="true"
+       steps="1"
+       threshold="0.00278425"
+       smooth_angles="360"
+       helper_size="0"
+       simplify_individual_paths="false"
+       simplify_just_coalesce="false"
+       simplifyindividualpaths="false"
+       simplifyJustCoalesce="false"
+       lpeversion="0" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5173">
+      <rect
+         style="opacity:1;fill:#f26722;fill-opacity:1;stroke:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect5175"
+         width="324.56201"
+         height="272.94321"
+         x="3037.7307"
+         y="3006.8306" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5181">
+      <rect
+         style="opacity:1;fill:#f26722;fill-opacity:1;stroke:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect5183"
+         width="94"
+         height="15.625"
+         x="3978.375"
+         y="3551.25" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5189">
+      <rect
+         style="opacity:1;fill:#f26722;fill-opacity:1;stroke:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect5191"
+         width="422.5"
+         height="53"
+         x="3917"
+         y="3603" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5197">
+      <rect
+         style="opacity:1;fill:#f26722;fill-opacity:1;stroke:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect5199"
+         width="84.145508"
+         height="30.052061"
+         x="4256.0015"
+         y="3601.311" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5205">
+      <rect
+         style="opacity:1;fill:#f26722;fill-opacity:1;stroke:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect5207"
+         width="178.58545"
+         height="25.834473"
+         x="4018.4138"
+         y="3604.998" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5213">
+      <rect
+         style="opacity:1;fill:#f26722;fill-opacity:1;stroke:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect5215"
+         width="81.670837"
+         height="25.102291"
+         x="3427.3467"
+         y="3605.75" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview4619"
+     showgrid="false"
+     inkscape:zoom="2"
+     inkscape:cx="429.53508"
+     inkscape:cy="66.344907"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4617"
+     inkscape:snap-global="true"
+     inkscape:measure-start="0,0"
+     inkscape:measure-end="0,0"
+     showguides="true"
+     inkscape:document-rotation="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <g
+     id="g1216"
+     transform="translate(-2551.5866,-3033.255)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:34.4219px;line-height:1.25;font-family:Datalegreya;-inkscape-font-specification:Datalegreya;letter-spacing:0px;word-spacing:0px;fill:#242424;fill-opacity:1;stroke:#242424;stroke-width:1.10843;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="2550.4885"
+       y="3140.5098"
+       id="text5234"
+       inkscape:export-filename="E:\SourceCode\OpenMeshEffect\doc\images\openmesheffect.png"
+       inkscape:export-xdpi="202.5174"
+       inkscape:export-ydpi="202.5174"><tspan
+         sodipodi:role="line"
+         id="tspan5232"
+         x="2550.4885"
+         y="3140.5098"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Datalegreya;-inkscape-font-specification:Datalegreya;fill:#242424;fill-opacity:1;stroke:#242424;stroke-width:1.10843;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Open Mesh Effect</tspan></text>
+    <g
+       id="g5242"
+       transform="matrix(0.82136842,0,0,0.82136842,-268.28249,2183.4627)"
+       inkscape:export-filename="E:\SourceCode\OpenMeshEffect\doc\images\openmesheffect.png"
+       inkscape:export-xdpi="202.5174"
+       inkscape:export-ydpi="202.5174">
+      <path
+         inkscape:connector-curvature="0"
+         style="opacity:1;fill:#748d92;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="m 3580.9199,1034.6055 -7.1797,12.4218 47.1582,56.8965 z m -8.0332,14.5273 -5.2168,14.0664 42.8985,31.3946 z m -5.3008,8.5449 -40.041,69.2832 14.3457,0.01 z m -0.2656,7.7442 -1.2812,11.8027 32.9355,11.3633 z m -2.6484,5.8633 -20.5313,55.3691 14.791,-2.5156 z m 0.5937,13.0488 -4.2344,38.9961 10.8614,-4.791 z m 39.4805,8.4785 -26.3086,22.8398 35.8887,-15.83 z m 11.3281,8.4238 -48.6387,21.4551 58.2149,-9.9023 z m 10.9727,13.3438 -72.8574,12.3926 80.0253,0.037 z"
+         id="path5236" />
+      <path
+         inkscape:connector-curvature="0"
+         style="opacity:1;vector-effect:none;fill:#556d72;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="m 3604.7461,1092.8125 -26.3086,22.8398 35.8887,-15.83 z m 11.3281,8.4238 -48.6387,21.4551 58.2149,-9.9023 z m 10.9727,13.3438 -72.8574,12.3926 80.0253,0.037 z"
+         id="path5238" />
+      <path
+         inkscape:connector-curvature="0"
+         style="opacity:1;vector-effect:none;fill:#b1bdbf;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="m 3580.9199,1034.6055 -7.1797,12.4218 47.1582,56.8965 z m -8.0332,14.5273 -5.2168,14.0664 42.8985,31.3946 z m -5.5664,16.2891 -1.2812,11.8027 32.9355,11.3633 z"
+         id="path5240" />
+    </g>
+  </g>
+  <g
+     id="g1208"
+     transform="translate(-2336.6261,-3178.919)">
+    <text
+       inkscape:export-ydpi="140.24959"
+       inkscape:export-xdpi="140.24959"
+       inkscape:export-filename="E:\SourceCode\OpenMeshEffect\doc\images\openmesheffect.png"
+       id="text5246"
+       y="3270.1108"
+       x="2629.3782"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.2453px;line-height:1.25;font-family:Datalegreya;-inkscape-font-specification:Datalegreya;letter-spacing:0px;word-spacing:0px;fill:#242424;fill-opacity:1;stroke:#242424;stroke-width:0.394317;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Datalegreya;-inkscape-font-specification:Datalegreya;fill:#242424;fill-opacity:1;stroke:#242424;stroke-width:0.394317;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         y="3270.1108"
+         x="2629.3782"
+         id="tspan5244"
+         sodipodi:role="line">Open Mesh Effect</tspan></text>
+    <g
+       inkscape:export-ydpi="60.263493"
+       inkscape:export-xdpi="60.263493"
+       inkscape:export-filename="E:\SourceCode\OpenMeshEffect\doc\images\openmesheffect-doc.png"
+       transform="matrix(0.82136842,0,0,0.82136842,-268.28249,2329.1267)"
+       id="g5254">
+      <path
+         id="path5248"
+         d="m 3580.9199,1034.6055 -7.1797,12.4218 47.1582,56.8965 z m -8.0332,14.5273 -5.2168,14.0664 42.8985,31.3946 z m -5.3008,8.5449 -40.041,69.2832 14.3457,0.01 z m -0.2656,7.7442 -1.2812,11.8027 32.9355,11.3633 z m -2.6484,5.8633 -20.5313,55.3691 14.791,-2.5156 z m 0.5937,13.0488 -4.2344,38.9961 10.8614,-4.791 z m 39.4805,8.4785 -26.3086,22.8398 35.8887,-15.83 z m 11.3281,8.4238 -48.6387,21.4551 58.2149,-9.9023 z m 10.9727,13.3438 -72.8574,12.3926 80.0253,0.037 z"
+         style="opacity:1;fill:#748d92;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path5250"
+         d="m 3604.7461,1092.8125 -26.3086,22.8398 35.8887,-15.83 z m 11.3281,8.4238 -48.6387,21.4551 58.2149,-9.9023 z m 10.9727,13.3438 -72.8574,12.3926 80.0253,0.037 z"
+         style="opacity:1;vector-effect:none;fill:#556d72;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path5252"
+         d="m 3580.9199,1034.6055 -7.1797,12.4218 47.1582,56.8965 z m -8.0332,14.5273 -5.2168,14.0664 42.8985,31.3946 z m -5.5664,16.2891 -1.2812,11.8027 32.9355,11.3633 z"
+         style="opacity:1;vector-effect:none;fill:#b1bdbf;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>
