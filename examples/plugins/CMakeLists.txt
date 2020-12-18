@@ -29,7 +29,7 @@ macro(MFX_PLUGIN TARGET SRC LIB)
 endmacro()
 
 set(LIB
-  openmesheffect_openfx
+  openmesheffect
   openmesheffect_util
 )
 

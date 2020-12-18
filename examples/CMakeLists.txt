@@ -16,9 +16,6 @@
 #
 # ***** END APACHE 2 LICENSE BLOCK *****
 
-add_library(openmesheffect_openfx INTERFACE)
-target_include_directories(openmesheffect_openfx INTERFACE ../include)
-
 add_subdirectory(util)
 add_subdirectory(host)
 add_subdirectory(plugins)

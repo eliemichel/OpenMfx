@@ -16,33 +16,18 @@
 #
 # ***** END APACHE 2 LICENSE BLOCK *****
 
-set(INC
-  include
-)
+cmake_minimum_required(VERSION 3.0...3.18.4)
+project(OpenMeshEffect)
 
-set(INC_PRIV
-	include/util
-)
+option(OPENMESHEFFECT_BUILD_EXAMPLES "Build example projects" OFF)
 
-set(SRC
-  intern/ofx_util.c
-  intern/memory_util.c
-  intern/binary_util.c
-  intern/plugin_support.c
+# Main target (C API)
+add_library(openmesheffect INTERFACE)
+target_include_directories(openmesheffect INTERFACE include)
 
-  include/util/ofx_util.h
-  include/util/memory_util.h
-  include/util/binary_util.h
-  include/util/path_util.h
-  include/util/plugin_support.h
-)
+# C++ API
+add_subdirectory(CppPluginSupport)
 
-set(LIB
-  openmesheffect
-)
-
-add_library(openmesheffect_util "${SRC}")
-target_include_directories(openmesheffect_util PRIVATE "${INC_PRIV}" PUBLIC "${INC}")
-target_link_libraries(openmesheffect_util PRIVATE "${LIB}")
-
-set_property(TARGET openmesheffect_util PROPERTY FOLDER "openmesheffect")
+if (OPENMESHEFFECT_BUILD_EXAMPLES)
+	add_subdirectory(examples)
+endif ()

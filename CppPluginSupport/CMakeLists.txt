@@ -18,12 +18,6 @@
 
 file(GLOB SRC src/*.cpp src/*.h)
 
-set(LIB
-  openmesheffect_openfx
-)
-
 add_library(CppPluginSupport "${SRC}")
 target_include_directories(CppPluginSupport PUBLIC include)
-target_link_libraries(CppPluginSupport PUBLIC "${LIB}")
-
-set_property(TARGET openmesheffect_util PROPERTY FOLDER "openmesheffect")
+target_link_libraries(CppPluginSupport PUBLIC openmesheffect)

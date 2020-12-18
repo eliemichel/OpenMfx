@@ -4,6 +4,7 @@
 
 #include <array>
 #include <string>
+#include <tuple>
 
 /**
  * Registration must be performed at the very end of the main file. Example:

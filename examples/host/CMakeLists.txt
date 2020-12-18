@@ -58,7 +58,7 @@ set(SRC
 )
 
 set(LIB_PRIV
-  openmesheffect_openfx
+  openmesheffect
 )
 
 set(LIB
