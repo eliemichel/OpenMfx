@@ -69,6 +69,8 @@ public:
 	 * \see attributeDefine from ofxMeshEffect.h for more information.
 	 *
 	 * Call **only for output** meshes and before allocation:
+	 * 
+	 * TODO: Have the type argument use MfxAttributeType enum as defined in MfxAttributeProps.h
 	 */
 	MfxAttribute AddAttribute(const char* attachment, const char* name, int componentCount, const char *type, const char* semantic = NULL);
 	MfxAttribute AddPointAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);

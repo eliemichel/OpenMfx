@@ -41,6 +41,11 @@ public:
 	 */
 	MfxInputDef & RequestAttribute(const char* attachment, const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
 
+	MfxInputDef & RequestPointAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
+	MfxInputDef & RequestVertexAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
+	MfxInputDef & RequestFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
+	MfxInputDef & RequestMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
+
 private:
 	OfxMeshInputHandle m_input;
 	OfxPropertySetHandle m_properties;
