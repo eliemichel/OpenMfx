@@ -5,18 +5,18 @@ Writing an Open Mesh Effect plugin
 
 There are two levels at which it is possible to write Open Mesh Effect plug-ins. The first one is using the low-level C API as described in the `reference </Reference>`_ section. The second one uses a higher level C++ API called `SDK </Sdk>`_ or ``CppPluginSupport``.
 
-To get a first glance of the C API, you can have a look at this tutorial, but **it is outdated**: https://github.com/eliemichel/OpenMeshEffect/blob/master/doc/guide/plugin-guide.md It has been written with for previous draft of the API in which there was no notion of custom attributes.
+Th easiest route is to start with the C++ SDK, and follow the tutorial :ref:`TutorialCppSdk`. This SDK has been used by `MfxVCG <https://github.com/eliemichel/MfxVCG>`_ and `MfxVTK <https://github.com/tkarabela/MfxVTK>`_ already, so you can also look these up for reference.
 
-The ``CppPluginSupport`` utility library has been used by `MfxVCG <https://github.com/eliemichel/MfxVCG>`_ and `MfxVTK <https://github.com/tkarabela/MfxVTK>`_ already, so you can look these up for reference.
+To get a first glance of the C API, you can have a look at this tutorial, but **it is outdated**: https://github.com/eliemichel/OpenMeshEffect/blob/master/doc/guide/plugin-guide.md It has been written with for previous draft of the API in which there was no notion of custom attributes.
 
 You can also have a look at other examples: :ref:`PluginExamples`
 
 
 Tips
-====
+----
 
 Attribute Forwarding
---------------------
+....................
 
 It is possible -- and encouraged whenever it is possible -- to point the output at the same buffer as the input, for unchanged attributes, and in particular for connectivity information when the effect only is a deformer.
 

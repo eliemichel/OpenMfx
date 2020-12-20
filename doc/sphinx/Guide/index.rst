@@ -12,5 +12,5 @@ Contents
    :maxdepth: 1
 
    PluginGuide
-   HostGuide
    TutorialCppSdk
+   HostGuide

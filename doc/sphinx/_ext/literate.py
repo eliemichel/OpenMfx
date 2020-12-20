@@ -8,7 +8,7 @@ from os.path import dirname, realpath, join
 
 def build_lit(litfile, lit_source_dir):
     lit_source_dir = realpath(lit_source_dir)
-    build_dir = join(lit_source_dir, "build")
+    build_dir = join(lit_source_dir, "build", litfile[:-4])
     htmlfile = join(build_dir, litfile[:-4] + ".html")
 
     if not os.path.exists(build_dir):
@@ -22,9 +22,10 @@ def build_lit(litfile, lit_source_dir):
     main_content = ""
     rec = False
     for line in html_content.split("\n"):
-        if "<body" in line:
-            rec = True
-        if rec:
+        if not rec:
+            if "<body" in line:
+                rec = True
+        else:
             if "</body>" in line:
                 rec = False
             main_content += line

@@ -1,26 +1,33 @@
 
-This tutorial follows the principle of *literate programming*, which means that it is written primarily for human reading, but is also a complete and valid code base if one follows the `{Curly bracket titles}` to browse through code blocks.
+@s Introduction
 
-We'll see how to write a simple plugins with a few effects bundled in it using the C++ SDK provided on top of the raw C API of Open Mesh Effect.
+The C++ SDK is the easiest way to create an Open Mesh Effect. We'll see in this tutorial how to write a simple plugins with a few effects bundled in it using the C++ SDK provided on top of the raw C API of Open Mesh Effect.
 
-@s Project setup
+**NB** This tutorial follows the principle of *literate programming*, which means that it is written primarily for human reading, but is also a complete and valid code base if one follows the `{Curly bracket titles}` to browse through code blocks. The code generated from this text is available [in the git repository](https://github.com/eliemichel/OpenMeshEffect/tree/master/doc/literate/build/TutorialCppSdk).
+
+![Our plugin once loaded in Blender. It contains a 'Translate' and an 'Array' effects.](../_static/TutorialCppSdk/modifier.png)
+
+@s Setup
+
+Setting the project up is pretty straightforward. We create a directory, download the SDK, and use a simple CMake file to build it.
+
+--- setup.sh
+@{Create project}
+@{Get OpenMeshEffect SDK}
+@{Build plugin}
+---
 
 Create the root directory for your project. It usually starts with "Mfx":
 
 --- Create project
-mkdir MfxDiffParam
-cd MfxDiffParam
+mkdir MfxTutorial
+cd MfxTutorial
 ---
 
-Optionally create a git repo:
+Get [the OpenMeshEffect repository](https://github.com/eliemichel/OpenMeshEffect), either as a submodule or by [downloading it as a zip](https://github.com/eliemichel/OpenMeshEffect/archive/master.zip). This contains C++ SDK in the `CppPluginSupport` subdirectory.
 
---- Initialize git repository
+--- Get OpenMeshEffect SDK
 git init
----
-
-Get [the OpenMeshEffect repository](https://github.com/eliemichel/OpenMeshEffect), either as a submodule or by downloading it as a zip.
-
---- Get OpenMeshEffect submodule
 git submodule add https://github.com/eliemichel/OpenMeshEffect
 ---
 
@@ -29,19 +36,19 @@ In this example, we'll use CMake as a build system, so create this minimal `CMak
 --- CMakeLists.txt
 cmake_minimum_required(VERSION 3.0...3.18.4)
 # Name of the project
-project(MfxDiffParam)
+project(MfxTutorial)
 
 # Add OpenMeshEffect to define CppPluginSupport, the C++ helper API
 add_subdirectory(OpenMeshEffect)
 
-# Define the plugin target, called for instance mfx_diffparam
+# Define the plugin target, called for instance mfx_tutorial
 # You may list additional source files after "plugin.cpp"
-add_library(mfx_diffparam SHARED plugin.cpp)
+add_library(mfx_tutorial SHARED plugin.cpp)
 
 # Set up the target to depend on CppPluginSupport and output a file
 # called .ofx (rather than the standard .dll or .so)
-target_link_libraries(mfx_diffparam PRIVATE CppPluginSupport)
-set_target_properties(mfx_diffparam PROPERTIES SUFFIX ".ofx")
+target_link_libraries(mfx_tutorial PRIVATE CppPluginSupport)
+set_target_properties(mfx_tutorial PROPERTIES SUFFIX ".ofx")
 ---
 
 To build the plugin, follow the usual cmake workflow:
@@ -57,9 +64,7 @@ This CMakeList tells that the source code for the plugin will be in `plugin.cpp`
 
 At the very least, this file must do two things:
 
-#### 1.a. Define effects.
-
-Effects are defined by subclassing the `MfxEffect` class provided by the CppPluginSupport:
+**(i) Define effects.** Effects are defined by subclassing the `MfxEffect` class provided by the SDK:
 
 --- Define TranslateEffect
 #include <PluginSupport/MfxEffect>
@@ -69,9 +74,7 @@ class TranslateEffect : public MfxEffect {
 };
 ---
 
-#### 1.b. Register effects into the final binary
-
-This is actually a macro handling the boilerplate required to expose the correct symbols in the final library, but you don't have to bother about the details.
+**(ii) Register effects into the final binary.** This is actually a macro handling the boilerplate required to expose the correct symbols in the final library, but you don't have to bother about the details.
 
 --- plugin.cpp
 #include <PluginSupport/MfxRegister>
@@ -109,7 +112,7 @@ const char* GetName() override {
 }
 ---
 
-### 2.1. Describing the effect
+### 3.1. Describing the effect
 
 The `Describe` method is called only once upon loading, and does not depend on the actual content of the input.
 
@@ -141,7 +144,7 @@ Finally, we tell that everything went OK. Other values are possible, in case of 
 return kOfxStatOK;
 ---
 
-### 2.2. Cooking
+### 3.2. Cooking
 
 Once in the `Cook` we can have access to the parameter values and input data. We first retrieve these, then allocate the output mesh, and finally fill it. At the very end we also don't forget to release input/output memory.
 
@@ -155,7 +158,7 @@ Once in the `Cook` we can have access to the parameter values and input data. We
 return kOfxStatOK;
 ---
 
-#### 2.2.a. Get Inputs
+#### 3.2.a. Get Inputs
 
 Getting the input is as fast as calling `GetInput` but then we need to think about what information we need from this input.
 
@@ -175,7 +178,7 @@ input_mesh.GetPointAttribute(kOfxMeshAttribPointPosition)
 
 In our final example, we'll duplicate and translate the input geometry, but for now let's focus only on the translation, for which the position attribute is all we need.
 
-#### 2.2.b. Get Parameters
+#### 3.2.b. Get Parameters
 
 Parameters are identified by the name used to create them. It is required to specify the type again though. From the handle returned by `GetParam()` one can get the current value of the parameter with `GetValue()`:
 
@@ -190,7 +193,7 @@ Or, in a more compact way:
 double3 translation = GetParam<double3>("translation").GetValue();
 ---
 
-#### 2.2.c. Allocate Output
+#### 3.2.c. Allocate Output
 
 Since in this first part we only translate the mesh, the size of the output is known already -- we copy properties from the input:
 
@@ -221,9 +224,13 @@ output_mesh.Allocate(
 	output_constant_face_count);
 ---
 
-**NB** The last two arguments of `Allocate` are optional.
+**NB** The last two arguments of `Allocate` are optional, we'll come back on them later on.
 
-An output mesh need at least the attributes `kOfxMeshAttribPointPosition` (on points), `kOfxMeshAttribVertexPoint` (on vertices) and `kOfxMeshAttribFaceCounts` (on faces, telling the number of corners per face). Although we'll modify the first one, the two others -- defining the connectivity of the mesh -- will remain identical. In such a case, we can *forward* them to the output, so that the same memory buffer is reused, without any copy:
+An output mesh needs at least the attributes `kOfxMeshAttribPointPosition` (on points), `kOfxMeshAttribVertexPoint` (on vertices) and `kOfxMeshAttribFaceCounts` (on faces, telling the number of corners per face).
+
+![A mesh is at least defined by these three attributes. Vertices are listed in the same order then faces, their number being given by the face counts attribute.](../_static/TutorialCppSdk/main-attributes.png)
+
+Although we'll modify the position of the points, the two others attributes -- defining the connectivity of the mesh -- will remain identical. In such a case, we can *forward* them to the output, so that the same memory buffer is reused, without any copy:
 
 --- Forward Attributes
 output_mesh.GetVertexAttribute(kOfxMeshAttribVertexPoint)
@@ -233,7 +240,7 @@ output_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts)
 	.ForwardFrom(input_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts));
 ---
 
-#### 2.2.c. Computing Output
+#### 3.2.d. Computing Output
 
 Once the output mesh has been allocated, we can get the `data` field of the `MfxAttributeProps` of the output points to a valid buffer that we can freely fill in.
 
@@ -265,7 +272,7 @@ This concludes our first effect, which translates the object.
 
 We will now see a slightly more complicated example in which we will need to deal with the connectivity information that in the Translation example we could simply forward.
 
-### 3.1. Setup and describe
+### 4.1. Setup and describe
 
 The base skeleton remains similar:
 
@@ -307,7 +314,7 @@ AddParam("translation", double3{0.0, 0.0, 0.0})
 .Range(double3{-10.0, -10.0, -10.0}, double3{10.0, 10.0, 10.0});
 ---
 
-### 3.2. Cooking output with varying connectivity
+### 4.2. Cooking output with varying connectivity
 
 The major change compared with the previous effect lies in the part that fills it in.
 
@@ -410,11 +417,11 @@ for (int i = 0 ; i < input_props.faceCount ; ++i) {
 
 @s Manipulating UVs
 
-We'll now add a feature to our Array effect: packing UVs of the instances so that they don't overlap. Let's first add an option to turn this on or off:
+We'll now add a feature to our Array effect: offsetting UVs of the instances so that they don't overlap. Let's first add an option to turn this on or off:
 
 --- Describe ArrayEffect Parameters +=
-AddParam("pack_uv", false)
-.Label("Pack UVs");
+AddParam("offset_uv", false)
+.Label("Offset UVs");
 ---
 
 Then we will also need to tell the host that we will manipulate UV-related attributes. The attributes we've been using so far were the three mandatory attributes, so we did not have to, but for other attributes, one must call `RequestAttribute()`.
@@ -436,25 +443,25 @@ The semantic `kOfxMeshAttribSemanticTextureCoordinate` may allow the host to dis
 We may now retrieve this attribute at cook time. Since this attribute was not declared mandatory, we must check whether it is available with `HasAttribute()`.
 
 --- Get Array inputs and parameters +=
-bool pack_uv = GetParam<bool>("pack_uv").GetValue();
+bool offset_uv = GetParam<bool>("offset_uv").GetValue();
 ---
 
 --- Get Array inputs and parameters +=
 MfxAttributeProps input_uv;
-if (pack_uv && input_mesh.HasVertexAttribute("uv0")) {
+if (offset_uv && input_mesh.HasVertexAttribute("uv0")) {
 	input_mesh.GetVertexAttribute("uv0").FetchProperties(input_uv);
 	if (input_uv.componentCount < 2 || input_uv.type != MfxAttributeType::Float) {
-		pack_uv = false; // incompatible type, so we deactivate this feature
+		offset_uv = false; // incompatible type, so we deactivate this feature
 	}
 } else {
-	pack_uv = false; // no uv available, so here again we deactivate this feature
+	offset_uv = false; // no uv available, so here again we deactivate this feature
 }
 ---
 
 We must also add this UV attribute to the output. This must be done *before* memory allocation (so that there is memory allocated for this attribute).
 
 --- Add extra output attributes
-if (pack_uv) {
+if (offset_uv) {
 	output_mesh.AddVertexAttribute(
 		"uv0",
 		2, kOfxMeshAttribTypeFloat,
@@ -470,19 +477,19 @@ Here again, a semantic hint is added to mean that this attribute should be inter
 Once allocated, we can now manipulate UV data:
 
 --- Fill in Array output +=
-if (pack_uv) {
+if (offset_uv) {
 	MfxAttributeProps output_uv;
 	output_mesh.GetVertexAttribute("uv0").FetchProperties(output_uv);
 
 	for (int k = 0 ; k < count ; ++k) {
-		@{Pack UVs of k-th instance}
+		@{Offset UVs of k-th instance}
 	}
 }
 ---
 
 We simply move UVs of other instance along the U axis:
 
---- Pack UVs of k-th instance
+--- Offset UVs of k-th instance
 for (int i = 0 ; i < input_props.vertexCount ; ++i) {
 	int j = i + k * input_props.vertexCount;
 	float *in_p = reinterpret_cast<float*>(input_uv.data + i * input_uv.stride);
@@ -491,3 +498,9 @@ for (int i = 0 ; i < input_props.vertexCount ; ++i) {
 	out_p[1] = in_p[1];
 }
 ---
+
+![The final plugin used in Blender](../_static/TutorialCppSdk/final.png)
+
+@s Conclusion
+
+You are thus able to write Open Mesh Effect plugins for any compatible host using C++. If you encounter any issue during the process feel free to report it on GitHub: [github.com/eliemichel/OpenMeshEffect/issues](https://github.com/eliemichel/OpenMeshEffect/issues).

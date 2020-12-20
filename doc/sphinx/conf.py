@@ -73,6 +73,11 @@ html_static_path = ['_static']
 
 html_css_files = [
     'extra.css',
+    'prism.css',
+]
+html_js_files = [
+    'extra.js',
+    'prism.js',
 ]
 
 literate_source_path = "../literate"

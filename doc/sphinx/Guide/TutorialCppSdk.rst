@@ -1,7 +1,7 @@
 .. _TutorialCppSdk:
 
 
-Creating a plugin using the C++ SDK
-===================================
+Getting started with the C++ SDK
+================================
 
 .. literate:: TutorialCppSdk.lit

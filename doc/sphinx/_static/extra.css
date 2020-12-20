@@ -2,17 +2,37 @@
 	margin: 12.5px 6px;;
 }
 
-.codeblock .codeblock_name {
+.literate .codeblock .codeblock_name,
+.literate .codeblock .seealso {
 	color: #888;
 	font-style: italic;
 	font-size: 0.8em;
+	margin-bottom: 0;
 }
 
-.codeblock pre {
+.literate .codeblock {
 	margin-bottom: 1em;
 }
 
-.codeblock .nocode.pln {
+.literate .codeblock .nocode.pln {
 	font-style: italic;
 	color: #888;
+}
+
+.literate .codeblock .prettyprint.language-cpp {
+	padding: 0.1em 0.5em;
+	margin: 0;
+}
+
+.literate .caption {
+	text-align: center;
+	font-style: italic;
+	font-size: 0.9em;
+}
+
+.literate h1,
+.literate h2,
+.literate h3,
+.literate h4 {
+	margin-top: 30px;
 }
