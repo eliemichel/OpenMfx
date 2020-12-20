@@ -1,7 +1,7 @@
 
 @s Introduction
 
-The C++ SDK is the easiest way to create an Open Mesh Effect. We'll see in this tutorial how to write a simple plugins with a few effects bundled in it using the C++ SDK provided on top of the raw C API of Open Mesh Effect.
+Although one can use the raw C API, the C++ SDK is the easiest way to create an Open Mesh Effect plugin. We'll see in this tutorial how to write a simple plugins with a few effects bundled in it that you may then load as a modifier in [the Open Mesh Effect branch of Blender](https://github.com/eliemichel/OpenMeshEffectForBlender).
 
 **NB** This tutorial follows the principle of *literate programming*, which means that it is written primarily for human reading, but is also a complete and valid code base if one follows the `{Curly bracket titles}` to browse through code blocks. The code generated from this text is available [in the git repository](https://github.com/eliemichel/OpenMeshEffect/tree/master/doc/literate/build/TutorialCppSdk).
 
