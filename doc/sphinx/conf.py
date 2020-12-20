@@ -10,9 +10,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('./_ext'))
 
 
 # -- Project information -----------------------------------------------------
@@ -29,7 +29,8 @@ author = 'Elie Michel'
 # ones.
 extensions = [
 	"breathe",
-	"sphinxjp.themes.basicstrap"
+	"sphinxjp.themes.basicstrap",
+	"literate",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -69,3 +70,9 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_css_files = [
+    'extra.css',
+]
+
+literate_source_path = "../literate"

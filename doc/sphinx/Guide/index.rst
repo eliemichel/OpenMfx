@@ -13,3 +13,4 @@ Contents
 
    PluginGuide
    HostGuide
+   TutorialCppSdk

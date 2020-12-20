@@ -1,0 +1,493 @@
+
+This tutorial follows the principle of *literate programming*, which means that it is written primarily for human reading, but is also a complete and valid code base if one follows the `{Curly bracket titles}` to browse through code blocks.
+
+We'll see how to write a simple plugins with a few effects bundled in it using the C++ SDK provided on top of the raw C API of Open Mesh Effect.
+
+@s Project setup
+
+Create the root directory for your project. It usually starts with "Mfx":
+
+--- Create project
+mkdir MfxDiffParam
+cd MfxDiffParam
+---
+
+Optionally create a git repo:
+
+--- Initialize git repository
+git init
+---
+
+Get [the OpenMeshEffect repository](https://github.com/eliemichel/OpenMeshEffect), either as a submodule or by downloading it as a zip.
+
+--- Get OpenMeshEffect submodule
+git submodule add https://github.com/eliemichel/OpenMeshEffect
+---
+
+In this example, we'll use CMake as a build system, so create this minimal `CMakeLists.txt` file configuring the project:
+
+--- CMakeLists.txt
+cmake_minimum_required(VERSION 3.0...3.18.4)
+# Name of the project
+project(MfxDiffParam)
+
+# Add OpenMeshEffect to define CppPluginSupport, the C++ helper API
+add_subdirectory(OpenMeshEffect)
+
+# Define the plugin target, called for instance mfx_diffparam
+# You may list additional source files after "plugin.cpp"
+add_library(mfx_diffparam SHARED plugin.cpp)
+
+# Set up the target to depend on CppPluginSupport and output a file
+# called .ofx (rather than the standard .dll or .so)
+target_link_libraries(mfx_diffparam PRIVATE CppPluginSupport)
+set_target_properties(mfx_diffparam PROPERTIES SUFFIX ".ofx")
+---
+
+To build the plugin, follow the usual cmake workflow:
+
+--- Build plugin
+mkdir build
+cd build
+cmake ..
+cmake --build .
+---
+
+This CMakeList tells that the source code for the plugin will be in `plugin.cpp`, so create such a file.
+
+At the very least, this file must do two things:
+
+#### 1.a. Define effects.
+
+Effects are defined by subclassing the `MfxEffect` class provided by the CppPluginSupport:
+
+--- Define TranslateEffect
+#include <PluginSupport/MfxEffect>
+
+class TranslateEffect : public MfxEffect {
+	@{Behavior of TranslateEffect}
+};
+---
+
+#### 1.b. Register effects into the final binary
+
+This is actually a macro handling the boilerplate required to expose the correct symbols in the final library, but you don't have to bother about the details.
+
+--- plugin.cpp
+#include <PluginSupport/MfxRegister>
+
+@{Define TranslateEffect}
+@{Define ArrayEffect}
+
+MfxRegister(
+    TranslateEffect,
+    ArrayEffect
+);
+---
+
+@s Core components of an effect
+
+An effect class like `TranslateEffect` will at least override the two main methods `Describe` and `Cook`. The former defines the effect inputs, outputs and parameters, while the former implements the core process that computes the outputs.
+
+--- Behavior of TranslateEffect
+protected:
+OfxStatus Describe(OfxMeshEffectHandle descriptor) override {
+	@{Describe}
+}
+
+OfxStatus Cook(OfxMeshEffectHandle instance) override {
+	@{Cook}
+}
+---
+
+We may also override the `GetName()` method to set the name displayed to the end user when selecting the effect. 
+
+--- Behavior of TranslateEffect +=
+public:
+const char* GetName() override {
+	return "Translate";
+}
+---
+
+### 2.1. Describing the effect
+
+The `Describe` method is called only once upon loading, and does not depend on the actual content of the input.
+
+We first define a single input and output, using the standardized `kOfxMeshMainInput` and `kOfxMeshMainOutput` names, and we could add extra ones with arbitrary names:
+
+--- Describe
+AddInput(kOfxMeshMainInput);
+AddInput(kOfxMeshMainOutput);
+---
+
+**NB** What the API calls "input" is actually any kind of slot, including both inputs and outputs.
+
+Then we define a few parameters that will be exposed for the user to tune the behavior of our effect. The type of parameters is inferred from their default value.
+
+--- Describe +=
+// Add a vector3 parameter
+AddParam("translation", double3{0.0, 0.0, 0.0})
+.Label("Translation") // Name used for display
+.Range(double3{-10.0, -10.0, -10.0}, double3{10.0, 10.0, 10.0});
+
+// Add a bool parameter
+AddParam("tickme", false)
+.Label("Tick me!");
+---
+
+Finally, we tell that everything went OK. Other values are possible, in case of error. (See the definition of `OfxStatus` in ofxCore.h.)
+
+--- Describe +=
+return kOfxStatOK;
+---
+
+### 2.2. Cooking
+
+Once in the `Cook` we can have access to the parameter values and input data. We first retrieve these, then allocate the output mesh, and finally fill it. At the very end we also don't forget to release input/output memory.
+
+--- Cook
+@{Get Inputs}
+@{Get Parameters}
+@{Estimate output size}
+@{Allocate output}
+@{Fill in output}
+@{Release data}
+return kOfxStatOK;
+---
+
+#### 2.2.a. Get Inputs
+
+Getting the input is as fast as calling `GetInput` but then we need to think about what information we need from this input.
+
+--- Get Inputs
+MfxMesh input_mesh = GetInput(kOfxMeshMainInput).GetMesh();
+---
+
+An input contains *attributes* that are data attached to either points, vertices (a.k.a. face corners), faces or the mesh itself. Attribute could have any name, but some are standardized. For instance the point attribute `kOfxMeshAttribPointPosition` contains the position of points.
+
+--- Get Inputs +=
+MfxAttributeProps input_positions;
+input_mesh.GetPointAttribute(kOfxMeshAttribPointPosition)
+	.FetchProperties(input_positions);
+---
+
+**NB** The type `MfxAttributeProps` contains actual data and one should avoid copying it around, which is why it is not returned but rather provided by reference to `FetchProperties()`. Other types so far were blind handles occupying little memory.
+
+In our final example, we'll duplicate and translate the input geometry, but for now let's focus only on the translation, for which the position attribute is all we need.
+
+#### 2.2.b. Get Parameters
+
+Parameters are identified by the name used to create them. It is required to specify the type again though. From the handle returned by `GetParam()` one can get the current value of the parameter with `GetValue()`:
+
+--- Get Parameters
+MfxParam<double3> translation_param = GetParam<double3>("translation");
+double3 translation = translation_param.GetValue();
+---
+
+Or, in a more compact way:
+
+--- Get Parameters :=
+double3 translation = GetParam<double3>("translation").GetValue();
+---
+
+#### 2.2.c. Allocate Output
+
+Since in this first part we only translate the mesh, the size of the output is known already -- we copy properties from the input:
+
+--- Estimate output size
+MfxMeshProps input_mesh_props;
+input_mesh.FetchProperties(input_mesh_props);
+int output_point_count = input_mesh_props.pointCount;
+int output_vertex_count = input_mesh_props.vertexCount;
+int output_face_count = input_mesh_props.faceCount;
+
+// Extra properties related to memory usage optimization
+int output_no_loose_edge = input_mesh_props.noLooseEdge;
+int output_constant_face_count = input_mesh_props.constantFaceCount;
+---
+
+We can then allocate memory using the `Allocate()` method. Note that some objects like `MfxAttributes` have methods that can be called either only before or only after the memory allocation. Forwarding attributes, for instance, must occur priori to allocation (see bellow).
+
+--- Allocate output
+MfxMesh output_mesh = GetInput(kOfxMeshMainOutput).GetMesh();
+
+@{Forward Attributes}
+
+output_mesh.Allocate(
+	output_point_count,
+	output_vertex_count,
+	output_face_count,
+	output_no_loose_edge,
+	output_constant_face_count);
+---
+
+**NB** The last two arguments of `Allocate` are optional.
+
+An output mesh need at least the attributes `kOfxMeshAttribPointPosition` (on points), `kOfxMeshAttribVertexPoint` (on vertices) and `kOfxMeshAttribFaceCounts` (on faces, telling the number of corners per face). Although we'll modify the first one, the two others -- defining the connectivity of the mesh -- will remain identical. In such a case, we can *forward* them to the output, so that the same memory buffer is reused, without any copy:
+
+--- Forward Attributes
+output_mesh.GetVertexAttribute(kOfxMeshAttribVertexPoint)
+	.ForwardFrom(input_mesh.GetVertexAttribute(kOfxMeshAttribVertexPoint));
+
+output_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts)
+	.ForwardFrom(input_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts));
+---
+
+#### 2.2.c. Computing Output
+
+Once the output mesh has been allocated, we can get the `data` field of the `MfxAttributeProps` of the output points to a valid buffer that we can freely fill in.
+
+--- Fill in output
+MfxAttributeProps output_positions;
+output_mesh.GetPointAttribute(kOfxMeshAttribPointPosition)
+	.FetchProperties(output_positions);
+
+// (NB: This can totally benefit from parallelization using e.g. OpenMP)
+for (int i = 0 ; i < output_point_count ; ++i) {
+	float *in_p = reinterpret_cast<float*>(input_positions.data + i * input_positions.stride);
+	float *out_p = reinterpret_cast<float*>(output_positions.data + i * output_positions.stride);
+	out_p[0] = in_p[0] + translation[0];
+	out_p[1] = in_p[1] + translation[1];
+	out_p[2] = in_p[2] + translation[2];
+}
+---
+
+And finally we release the meshes. This will internally convert meshes to the host's representation (which for some attributes is the same).
+
+--- Release data
+output_mesh.Release();
+input_mesh.Release();
+---
+
+This concludes our first effect, which translates the object.
+
+@s Array Modifier
+
+We will now see a slightly more complicated example in which we will need to deal with the connectivity information that in the Translation example we could simply forward.
+
+### 3.1. Setup and describe
+
+The base skeleton remains similar:
+
+--- Define ArrayEffect
+class ArrayEffect : public MfxEffect {
+public:
+	const char* GetName() override {
+		return "Array";
+	}
+protected:
+	OfxStatus Describe(OfxMeshEffectHandle descriptor) override {
+		@{Describe ArrayEffect Inputs}
+		@{Describe ArrayEffect Parameters}
+		return kOfxStatOK;
+	}
+
+	OfxStatus Cook(OfxMeshEffectHandle instance) override {
+		@{Cook ArrayEffect}
+	}
+};
+---
+
+Nothing new in the description, we define the standard input/output and some parameters:
+
+--- Describe ArrayEffect Inputs
+AddInput(kOfxMeshMainInput);
+AddInput(kOfxMeshMainOutput);
+---
+
+--- Describe ArrayEffect Parameters
+// Number of copies
+AddParam("count", 2)
+.Label("Count")
+.Range(0, 2147483647);
+
+// Translation added at each copy
+AddParam("translation", double3{0.0, 0.0, 0.0})
+.Label("Translation")
+.Range(double3{-10.0, -10.0, -10.0}, double3{10.0, 10.0, 10.0});
+---
+
+### 3.2. Cooking output with varying connectivity
+
+The major change compared with the previous effect lies in the part that fills it in.
+
+--- Cook ArrayEffect
+@{Get Array inputs and parameters}
+@{Allocate Array output}
+@{Fill in Array output}
+
+output_mesh.Release();
+input_mesh.Release();
+return kOfxStatOK;
+---
+
+Getting input and parameter is pretty straightforward:
+
+--- Get Array inputs and parameters
+MfxMesh input_mesh = GetInput(kOfxMeshMainInput).GetMesh();
+MfxMeshProps input_props;
+input_mesh.FetchProperties(input_props);
+
+int count = GetParam<int>("count").GetValue();
+double3 translation = GetParam<double3>("translation").GetValue();
+---
+
+Allocating memory just requires to multiply everything by the `count`. We don't forward anything this time.
+
+--- Allocate Array output
+MfxMesh output_mesh = GetInput(kOfxMeshMainOutput).GetMesh();
+
+@{Add extra output attributes}
+
+output_mesh.Allocate(
+	input_props.pointCount * count,
+	input_props.vertexCount * count,
+	input_props.faceCount * count,
+	input_props.noLooseEdge,
+	input_props.constantFaceCount);
+---
+
+This time we need to fill not only the output positions but also the connectivity information. The latter is provided by first the `kOfxMeshAttribFaceCounts` that gives for each face its number of corners, or *vertices*. The vertices are organized sequentially: vertex 1 of face 1, vertex 2 of face 1, ..., vertex 1 of face 2, etc. Each vertex corresponds to a point given by `kOfxMeshAttribVertexPoint`. So we get these attributes both from the input and from the output:
+
+--- Fill in Array output
+MfxAttributeProps input_positions, input_vert_points, input_face_counts;
+input_mesh.GetPointAttribute(kOfxMeshAttribPointPosition).FetchProperties(input_positions);
+input_mesh.GetVertexAttribute(kOfxMeshAttribVertexPoint).FetchProperties(input_vert_points);
+input_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts).FetchProperties(input_face_counts);
+
+MfxAttributeProps output_positions, output_vert_points, output_face_counts;
+output_mesh.GetPointAttribute(kOfxMeshAttribPointPosition).FetchProperties(output_positions);
+output_mesh.GetVertexAttribute(kOfxMeshAttribVertexPoint).FetchProperties(output_vert_points);
+output_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts).FetchProperties(output_face_counts);
+---
+
+Important note: when all faces have the same number of vertices (typically they are all triangles or quads), the host may set the `constantFaceCount` property to a non negative value. In such a case, the `kOfxMeshAttribFaceCounts` attribute must not be used (in order to save up memory).
+
+--- Fill in Array output +=
+for (int k = 0 ; k < count ; ++k) {
+	@{Fill positions for the k-th copy}
+	@{Fill vert_points for the k-th copy}
+	if (input_props.constantFaceCount < 0) {
+		@{Fill face_counts for the k-th copy}
+	}
+}
+---
+
+Filling the output positions is not so different from the Translation effect, just be careful with the indices:
+
+--- Fill positions for the k-th copy
+for (int i = 0 ; i < input_props.pointCount ; ++i) {
+	int j = i + k * input_props.pointCount;
+	float *in_p = reinterpret_cast<float*>(input_positions.data + i * input_positions.stride);
+	float *out_p = reinterpret_cast<float*>(output_positions.data + j * output_positions.stride);
+	out_p[0] = in_p[0] + translation[0] * k;
+	out_p[1] = in_p[1] + translation[1] * k;
+	out_p[2] = in_p[2] + translation[2] * k;
+}
+---
+
+Each k-th copy of the vertex references the copy k-th copy of the points, so adds an offset `k * input_props.pointCount` to the value
+
+--- Fill vert_points for the k-th copy
+for (int i = 0 ; i < input_props.vertexCount ; ++i) {
+	int j = i + k * input_props.vertexCount;
+	int *in_p = reinterpret_cast<int*>(input_vert_points.data + i * input_vert_points.stride);
+	int *out_p = reinterpret_cast<int*>(output_vert_points.data + j * output_vert_points.stride);
+	out_p[0] = in_p[0] + k * input_props.pointCount;
+}
+---
+
+Face counts are just a simple repetition original values. If these values are contiguous in memory (i.e. the stride is `sizeof(int)`) this can be speed up using `memcpy`.
+
+--- Fill face_counts for the k-th copy
+for (int i = 0 ; i < input_props.faceCount ; ++i) {
+	int j = i + k * input_props.faceCount;
+	int *in_p = reinterpret_cast<int*>(input_face_counts.data + i * input_face_counts.stride);
+	int *out_p = reinterpret_cast<int*>(output_face_counts.data + j * output_face_counts.stride);
+	out_p[0] = in_p[0];
+}
+---
+
+@s Manipulating UVs
+
+We'll now add a feature to our Array effect: packing UVs of the instances so that they don't overlap. Let's first add an option to turn this on or off:
+
+--- Describe ArrayEffect Parameters +=
+AddParam("pack_uv", false)
+.Label("Pack UVs");
+---
+
+Then we will also need to tell the host that we will manipulate UV-related attributes. The attributes we've been using so far were the three mandatory attributes, so we did not have to, but for other attributes, one must call `RequestAttribute()`.
+
+--- Describe ArrayEffect Inputs :=
+AddInput(kOfxMeshMainInput)
+.RequestVertexAttribute(
+	"uv0",
+	2, kOfxMeshAttribTypeFloat,
+	kOfxMeshAttribSemanticTextureCoordinate,
+	false /* not mandatory */
+);
+
+AddInput(kOfxMeshMainOutput);
+---
+
+The semantic `kOfxMeshAttribSemanticTextureCoordinate` may allow the host to display a context sensitive attribute picker to the user. Here we mean that the attribute should ideally (not *must* because we did not ask it to be mandatory) be a float2, represent texture coordinates, and that we'll refer to it as "uv0" during the cooking step.
+
+We may now retrieve this attribute at cook time. Since this attribute was not declared mandatory, we must check whether it is available with `HasAttribute()`.
+
+--- Get Array inputs and parameters +=
+bool pack_uv = GetParam<bool>("pack_uv").GetValue();
+---
+
+--- Get Array inputs and parameters +=
+MfxAttributeProps input_uv;
+if (pack_uv && input_mesh.HasVertexAttribute("uv0")) {
+	input_mesh.GetVertexAttribute("uv0").FetchProperties(input_uv);
+	if (input_uv.componentCount < 2 || input_uv.type != MfxAttributeType::Float) {
+		pack_uv = false; // incompatible type, so we deactivate this feature
+	}
+} else {
+	pack_uv = false; // no uv available, so here again we deactivate this feature
+}
+---
+
+We must also add this UV attribute to the output. This must be done *before* memory allocation (so that there is memory allocated for this attribute).
+
+--- Add extra output attributes
+if (pack_uv) {
+	output_mesh.AddVertexAttribute(
+		"uv0",
+		2, kOfxMeshAttribTypeFloat,
+		kOfxMeshAttribSemanticTextureCoordinate
+	);
+}
+---
+
+Here again, a semantic hint is added to mean that this attribute should be interpreted by the host as a texture coordinate.
+
+**NB** While input attributes are requested in the `Describe` method, output attributes are created at cook time. This allows the effect to dynamically chose to add attributes or not.
+
+Once allocated, we can now manipulate UV data:
+
+--- Fill in Array output +=
+if (pack_uv) {
+	MfxAttributeProps output_uv;
+	output_mesh.GetVertexAttribute("uv0").FetchProperties(output_uv);
+
+	for (int k = 0 ; k < count ; ++k) {
+		@{Pack UVs of k-th instance}
+	}
+}
+---
+
+We simply move UVs of other instance along the U axis:
+
+--- Pack UVs of k-th instance
+for (int i = 0 ; i < input_props.vertexCount ; ++i) {
+	int j = i + k * input_props.vertexCount;
+	float *in_p = reinterpret_cast<float*>(input_uv.data + i * input_uv.stride);
+	float *out_p = reinterpret_cast<float*>(output_uv.data + j * output_uv.stride);
+	out_p[0] = in_p[0] + k;
+	out_p[1] = in_p[1];
+}
+---

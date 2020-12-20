@@ -1,0 +1,18 @@
+.navbar-nav li:first-child > :first-child {
+	margin: 12.5px 6px;;
+}
+
+.codeblock .codeblock_name {
+	color: #888;
+	font-style: italic;
+	font-size: 0.8em;
+}
+
+.codeblock pre {
+	margin-bottom: 1em;
+}
+
+.codeblock .nocode.pln {
+	font-style: italic;
+	color: #888;
+}
