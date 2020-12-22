@@ -23,10 +23,12 @@ option(OPENMESHEFFECT_BUILD_EXAMPLES "Build example projects" OFF)
 
 # Main target (C API)
 add_library(openmesheffect INTERFACE)
-target_include_directories(openmesheffect INTERFACE include)
+target_include_directories(openmesheffect INTERFACE include/)
+add_library(OpenMeshEffect::Core ALIAS openmesheffect)
 
 # C++ API
 add_subdirectory(CppPluginSupport)
+add_library(OpenMeshEffect::Sdk ALIAS CppPluginSupport)
 
 if (OPENMESHEFFECT_BUILD_EXAMPLES)
 	add_subdirectory(examples)
