@@ -21,9 +21,11 @@ file(GLOB SRC src/*.cpp src/*.h)
 # Dunno why we need to redefine this even though it has been defined
 # in parent directory but don't have time now to investigate. Redefining
 # here works even though it is not clean.
-add_library(openmesheffect INTERFACE)
-target_include_directories(openmesheffect INTERFACE ../include/)
-add_library(OpenMeshEffect::Core ALIAS openmesheffect)
+if (NOT TARGET OpenMeshEffect::Core)
+    add_library(openmesheffect INTERFACE)
+    target_include_directories(openmesheffect INTERFACE ../include/)
+    add_library(OpenMeshEffect::Core ALIAS openmesheffect)
+endif()
 
 add_library(CppPluginSupport "${SRC}")
 target_link_libraries(CppPluginSupport PUBLIC OpenMeshEffect::Core)
