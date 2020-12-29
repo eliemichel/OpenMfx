@@ -9,6 +9,11 @@ MfxMesh::MfxMesh(const MfxHost& host, OfxMeshHandle mesh, OfxPropertySetHandle p
 
 //-----------------------------------------------------------------------------
 
+bool MfxMesh::IsValid() const
+{
+	return NULL != m_mesh;
+}
+
 void MfxMesh::FetchProperties(MfxMeshProps& props)
 {
 	int noLooseEdge;
@@ -21,6 +26,11 @@ void MfxMesh::FetchProperties(MfxMeshProps& props)
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropAttributeCount, 0, &props.attributeCount));
 
     props.noLooseEdge = (bool)noLooseEdge;
+}
+
+void MfxMesh::FetchTransform(double** matrix)
+{
+	MFX_ENSURE(propertySuite->propGetPointer(m_properties, kOfxMeshPropTransformMatrix, 0, (void**)matrix));
 }
 
 MfxAttribute MfxMesh::GetAttribute(const char* attachment, const char* name)

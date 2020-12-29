@@ -13,6 +13,10 @@ MfxMesh MfxInput::GetMesh()
 	OfxTime time = 0;
 	OfxMeshHandle mesh;
 	OfxPropertySetHandle meshProps;
-	MFX_ENSURE(meshEffectSuite->inputGetMesh(m_input, time, &mesh, &meshProps));
+	OfxStatus status;
+	status = host().meshEffectSuite->inputGetMesh(m_input, time, &mesh, &meshProps);
+	if (kOfxStatOK != status) {
+		mesh = NULL;
+	}
 	return MfxMesh(host(), mesh, meshProps);
 }

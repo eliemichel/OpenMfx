@@ -23,9 +23,20 @@ private:
 
 public:
 	/**
+	 * A mesh may be invalid if its parent input is not connected to any incoming link.
+	 * If this returns false, none of the other methods must be called.
+	 */
+	bool IsValid() const;
+
+	/**
 	 * Populate the provided props structure with this mesh's properties
 	 */
 	void FetchProperties(MfxMeshProps& props);
+
+	/**
+	 * Populate the provided pointer to float array with this mesh's transform matrix
+	 */
+	void FetchTransform(double**matrix);
 
 	/**
 	 * Get an attribute of an input or output mesh.
