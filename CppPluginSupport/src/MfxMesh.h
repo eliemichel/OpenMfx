@@ -34,7 +34,8 @@ public:
 	void FetchProperties(MfxMeshProps& props);
 
 	/**
-	 * Populate the provided pointer to float array with this mesh's transform matrix
+	 * Populate the provided pointer to float array with this mesh's transform matrix.
+	 * Requires to have called RequestTransform during the describe action
 	 */
 	void FetchTransform(double**matrix);
 

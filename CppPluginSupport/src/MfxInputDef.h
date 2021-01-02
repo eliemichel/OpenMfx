@@ -46,6 +46,14 @@ public:
 	MfxInputDef & RequestFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
 	MfxInputDef & RequestMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
 
+	/**
+	 * Set the transform matrix dependency flag of this input.
+	 * By default, an input does not depend on the transform matrix and hence
+	 * the effect will not have access to the transform matrix, and not be recooked
+	 * when the transform changes.
+	 */
+	MfxInputDef& RequestTransform(bool request = true);
+
 private:
 	OfxMeshInputHandle m_input;
 	OfxPropertySetHandle m_properties;
