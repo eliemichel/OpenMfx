@@ -9,6 +9,7 @@
 
 #include "ofxCore.h"
 #include "ofxMeshEffect.h"
+#include "ofxMessage.h"
 
 #include <array>
 
@@ -160,6 +161,7 @@ protected:
 	const OfxMeshEffectSuiteV1 *meshEffectSuite = nullptr;
     const OfxPropertySuiteV1 *propertySuite = nullptr;
     const OfxParameterSuiteV1 *parameterSuite = nullptr;
+	const OfxMessageSuiteV2* messageSuite = nullptr;
 
 private:
 	MfxHost m_host;

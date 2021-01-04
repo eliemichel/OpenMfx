@@ -11,10 +11,12 @@ void MfxEffect::SetHost(OfxHost* host)
         m_host.propertySuite = static_cast<const OfxPropertySuiteV1*>(host->fetchSuite(host->host, kOfxPropertySuite, 1));
         m_host.parameterSuite = static_cast<const OfxParameterSuiteV1*>(host->fetchSuite(host->host, kOfxParameterSuite, 1));
         m_host.meshEffectSuite = static_cast<const OfxMeshEffectSuiteV1*>(host->fetchSuite(host->host, kOfxMeshEffectSuite, 1));
+        m_host.messageSuite = static_cast<const OfxMessageSuiteV2*>(host->fetchSuite(host->host, kOfxMessageSuite, 2));
         // aliases for more convenience
         propertySuite = m_host.propertySuite;
         parameterSuite = m_host.parameterSuite;
         meshEffectSuite = m_host.meshEffectSuite;
+        messageSuite = m_host.messageSuite;
     }
 }
 
