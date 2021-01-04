@@ -63,6 +63,8 @@ Mesh effects operate on mesh data represented by the ``OfxMeshHandle`` type:
 
 .. doxygendefine:: kOfxMeshPropTransformMatrix
 
+.. doxygendefine:: kOfxInputPropRequestGeometry
+
 .. doxygendefine:: kOfxInputPropRequestTransform
 
 

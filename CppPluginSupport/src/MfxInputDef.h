@@ -47,6 +47,14 @@ public:
 	MfxInputDef & RequestMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
 
 	/**
+	 * Set the geometry matrix dependency flag of this input.
+	 * By default, an input does depend on its geometry, but this may be turned off
+	 * when the input is used solely for its transform (which must be signaled with
+	 * RequestTransform).
+	 */
+	MfxInputDef& RequestGeometry(bool request = true);
+
+	/**
 	 * Set the transform matrix dependency flag of this input.
 	 * By default, an input does not depend on the transform matrix and hence
 	 * the effect will not have access to the transform matrix, and not be recooked

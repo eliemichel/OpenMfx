@@ -41,6 +41,12 @@ MfxInputDef& MfxInputDef::RequestMeshAttribute(const char* name, int componentCo
 	return RequestAttribute(kOfxMeshAttribMesh, name, componentCount, type, semantic, mandatory);
 }
 
+MfxInputDef& MfxInputDef::RequestGeometry(bool request)
+{
+	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxInputPropRequestGeometry, 0, request ? 1 : 0));
+	return *this;
+}
+
 MfxInputDef& MfxInputDef::RequestTransform(bool request)
 {
 	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxInputPropRequestTransform, 0, request ? 1 : 0));
