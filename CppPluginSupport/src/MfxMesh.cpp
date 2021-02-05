@@ -40,6 +40,10 @@ MfxAttribute MfxMesh::GetAttribute(const char* attachment, const char* name)
 	return MfxAttribute(host(), attribute);
 }
 
+MfxAttribute MfxMesh::GetAttribute(MfxAttributeAttachment attachment, const char *name) {
+    return GetAttribute(MfxAttribute::mfxAttrAttachmentAsString(attachment), name);
+}
+
 MfxAttribute MfxMesh::GetPointAttribute(const char* name)
 {
 	return GetAttribute(kOfxMeshAttribPoint, name);
@@ -72,6 +76,10 @@ bool MfxMesh::HasAttribute(const char* attachment, const char* name)
     } else {
         throw MfxSuiteException(status, "meshEffectSuite->meshGetAttribute(m_mesh, attachment, name, &attribute)");
     }
+}
+
+bool MfxMesh::HasAttribute(MfxAttributeAttachment attachment, const char* name) {
+    return HasAttribute(MfxAttribute::mfxAttrAttachmentAsString(attachment), name);
 }
 
 bool MfxMesh::HasPointAttribute(const char* name)
@@ -127,6 +135,30 @@ MfxAttribute MfxMesh::AddFaceAttribute(const char* name, int componentCount, con
 MfxAttribute MfxMesh::AddMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic)
 {
 	return AddAttribute(kOfxMeshAttribMesh, name, componentCount, type, semantic);
+}
+
+MfxAttribute MfxMesh::AddAttribute(MfxAttributeAttachment attachment, const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic) {
+    return AddAttribute(MfxAttribute::mfxAttrAttachmentAsString(attachment),
+                        name,
+                        componentCount,
+                        MfxAttribute::mfxAttrTypeAsString(type),
+                        MfxAttribute::mfxAttrSemanticAsString(semantic));
+}
+
+MfxAttribute MfxMesh::AddPointAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic) {
+    return AddAttribute(MfxAttributeAttachment::Point, name, componentCount, type, semantic);
+}
+
+MfxAttribute MfxMesh::AddVertexAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic) {
+    return AddAttribute(MfxAttributeAttachment::Vertex, name, componentCount, type, semantic);
+}
+
+MfxAttribute MfxMesh::AddFaceAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic) {
+    return AddAttribute(MfxAttributeAttachment::Face, name, componentCount, type, semantic);
+}
+
+MfxAttribute MfxMesh::AddMeshAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic) {
+    return AddAttribute(MfxAttributeAttachment::Mesh, name, componentCount, type, semantic);
 }
 
 void MfxMesh::Allocate(int pointCount, int vertCount, int faceCount, bool noLooseEdge, int constantFaceCount)

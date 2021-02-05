@@ -41,6 +41,31 @@ MfxInputDef& MfxInputDef::RequestMeshAttribute(const char* name, int componentCo
 	return RequestAttribute(kOfxMeshAttribMesh, name, componentCount, type, semantic, mandatory);
 }
 
+MfxInputDef& MfxInputDef::RequestAttribute(MfxAttributeAttachment attachment, const char *name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory) {
+    return RequestAttribute(MfxAttribute::mfxAttrAttachmentAsString(attachment),
+                            name,
+                            componentCount,
+                            MfxAttribute::mfxAttrTypeAsString(type),
+                            MfxAttribute::mfxAttrSemanticAsString(semantic),
+                            mandatory);
+}
+
+MfxInputDef& MfxInputDef::RequestPointAttribute(const char *name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory) {
+    return RequestAttribute(MfxAttributeAttachment::Point, name, componentCount, type, semantic, mandatory);
+}
+
+MfxInputDef& MfxInputDef::RequestVertexAttribute(const char *name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory) {
+    return RequestAttribute(MfxAttributeAttachment::Vertex, name, componentCount, type, semantic, mandatory);;
+}
+
+MfxInputDef& MfxInputDef::RequestFaceAttribute(const char *name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory) {
+    return RequestAttribute(MfxAttributeAttachment::Face, name, componentCount, type, semantic, mandatory);;
+}
+
+MfxInputDef& MfxInputDef::RequestMeshAttribute(const char *name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory) {
+    return RequestAttribute(MfxAttributeAttachment::Mesh, name, componentCount, type, semantic, mandatory);;
+}
+
 MfxInputDef& MfxInputDef::RequestGeometry(bool request)
 {
 	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxInputPropRequestGeometry, 0, request ? 1 : 0));

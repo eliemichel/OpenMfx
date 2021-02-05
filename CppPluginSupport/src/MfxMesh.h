@@ -46,7 +46,8 @@ public:
 	 * `Get*Attribute` methods are shortcuts for the different values allowed
 	 * for the `attachment` argument.
 	 */
-	MfxAttribute GetAttribute(const char* attachment, const char* name);
+    MfxAttribute GetAttribute(const char* attachment, const char* name);
+    MfxAttribute GetAttribute(MfxAttributeAttachment attachment, const char* name);
 	MfxAttribute GetPointAttribute(const char* name);
 	MfxAttribute GetVertexAttribute(const char* name);
 	MfxAttribute GetFaceAttribute(const char* name);
@@ -58,6 +59,7 @@ public:
 	 * for the `attachment` argument.
 	 */
     bool HasAttribute(const char* attachment, const char* name);
+    bool HasAttribute(MfxAttributeAttachment attachment, const char* name);
     bool HasPointAttribute(const char* name);
     bool HasVertexAttribute(const char* name);
     bool HasFaceAttribute(const char* name);
@@ -89,6 +91,12 @@ public:
 	MfxAttribute AddVertexAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 	MfxAttribute AddFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 	MfxAttribute AddMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
+
+    MfxAttribute AddAttribute(MfxAttributeAttachment attachment, const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
+    MfxAttribute AddPointAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
+    MfxAttribute AddVertexAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
+    MfxAttribute AddFaceAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
+    MfxAttribute AddMeshAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
 
 	/**
 	 * Allocate memory for new owned attributes according to the previously

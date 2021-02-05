@@ -7,6 +7,23 @@ enum class MfxAttributeType {
     Float,
 };
 
+enum class MfxAttributeAttachment {
+    Unknown = -1,
+    Point,
+    Vertex,
+    Face,
+    Mesh,
+};
+
+enum class MfxAttributeSemantic {
+    Unknown = -1,
+    None,
+    TextureCoordinate,
+    Normal,
+    Color,
+    Weight,
+};
+
 /**
  * Mfx*Props classes are a little different: for caching and convenience, they
  * store some data and care must be taken not to copy it around too much

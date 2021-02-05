@@ -10,17 +10,38 @@ struct MfxAttribute : public MfxBase
 {
 private:
 	friend class MfxMesh;
+	friend class MfxInputDef;
 	MfxAttribute(const MfxHost& host, OfxPropertySetHandle properties);
 
 	/**
 	 * Convert a type string from MeshEffect API to its local enum counterpart
 	 */
-	static MfxAttributeType mfxAttrAsEnum(const char* mfxType);
+	static MfxAttributeType mfxAttrTypeAsEnum(const char* mfxType);
+
+    /**
+     * Convert attribute attachment string from MeshEffect API to its local enum counterpart
+     */
+    static MfxAttributeAttachment mfxAttrAttachmentAsEnum(const char* mfxAttachment);
+
+    /**
+	 * Convert attribute semantic string from MeshEffect API to its local enum counterpart
+	 */
+    static MfxAttributeSemantic mfxAttrSemanticAsEnum(const char* mfxSemantic);
 
     /**
      * Convert local typestring enum to a type string from MeshEffect API
      */
-    static const char* mfxAttrAsString(MfxAttributeType mfxType);
+    static const char* mfxAttrTypeAsString(MfxAttributeType mfxType);
+
+    /**
+     * Convert local attachment enum to an attachment string from MeshEffect API
+     */
+    static const char* mfxAttrAttachmentAsString(MfxAttributeAttachment mfxAttachment);
+
+    /**
+     * Convert local semantic enum to a semantic string from MeshEffect API
+     */
+    static const char* mfxAttrSemanticAsString(MfxAttributeSemantic mfxSemantic);
 
 	/**
 	 * Copy attribute and try to cast. If number of component is different,

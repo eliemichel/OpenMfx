@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MfxBase.h"
-
+#include "MfxAttribute.h"
 
 #include "ofxCore.h"
 #include "ofxMeshEffect.h"
@@ -45,6 +45,13 @@ public:
 	MfxInputDef & RequestVertexAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
 	MfxInputDef & RequestFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
 	MfxInputDef & RequestMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory);
+
+    MfxInputDef & RequestAttribute(MfxAttributeAttachment attachment, const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory);
+
+    MfxInputDef & RequestPointAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory);
+    MfxInputDef & RequestVertexAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory);
+    MfxInputDef & RequestFaceAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory);
+    MfxInputDef & RequestMeshAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory);
 
 	/**
 	 * Set the geometry matrix dependency flag of this input.
