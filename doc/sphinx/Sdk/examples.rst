@@ -1,7 +1,7 @@
 .. _SdkExamples:
 
-Open Mesh Effect SDK Examples
-=============================
+OpenMfx SDK Examples
+====================
 
 Simple example
 --------------
@@ -39,4 +39,4 @@ Simple example
 Other examples
 --------------
 
-You can look at `MfxVCG <https://github.com/eliemichel/MfxVCG>`_ and `MfxVTK <https://github.com/tkarabela/MfxVTK>`_ as example of real-life Open Mesh Effect plugins actually using the "CppPluginSupport" Sdk.
+You can look at `MfxVCG <https://github.com/eliemichel/MfxVCG>`_ and `MfxVTK <https://github.com/tkarabela/MfxVTK>`_ as example of real-life OpenMfx plugins actually using the "CppPluginSupport" Sdk.

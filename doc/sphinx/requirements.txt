@@ -1,0 +1,4 @@
+sphinx
+breathe
+sphinxjp.themes.basicstrap
+myst-parser

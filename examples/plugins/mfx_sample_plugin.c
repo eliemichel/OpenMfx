@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019-2021 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,10 @@
 
 #include <stdio.h>
 #include <string.h>
+
+#define MFX_CHECK(op) status = op; \
+if (kOfxStatOK != status) \
+    printf("Suite method '" #op "' returned status %d (%s)\n", status, getOfxStateName(status));
 
 typedef struct PluginRuntime {
     OfxHost *host;
@@ -49,41 +53,31 @@ static OfxStatus plugin0_describe(const PluginRuntime *runtime, OfxMeshEffectHan
     OfxStatus status;
     OfxPropertySetHandle propHandle;
 
-    status = runtime->meshEffectSuite->getPropertySet(meshEffect, &propHandle);
-    printf("Suite method 'getPropertySet' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->getPropertySet(meshEffect, &propHandle));
 
-    status = runtime->propertySuite->propSetString(propHandle, kOfxMeshEffectPropContext, 0, kOfxMeshEffectContextFilter);
-    printf("Suite method 'propSetString' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->propertySuite->propSetString(propHandle, kOfxMeshEffectPropContext, 0, kOfxMeshEffectContextFilter));
 
     // Shall move into "describe in context" when it will exist
     OfxPropertySetHandle inputProperties;
-    status = runtime->meshEffectSuite->inputDefine(meshEffect, kOfxMeshMainInput, NULL, &inputProperties);
-    printf("Suite method 'inputDefine' returned status %d (%s)\n", status, getOfxStateName(status));
-
-    status = runtime->propertySuite->propSetString(inputProperties, kOfxPropLabel, 0, "Main Input");
-    printf("Suite method 'propSetString' returned status %d (%s)\n", status, getOfxStateName(status));
-
+    MFX_CHECK(runtime->meshEffectSuite->inputDefine(meshEffect, kOfxMeshMainInput, NULL, &inputProperties));
+    
+    MFX_CHECK(runtime->propertySuite->propSetString(inputProperties, kOfxPropLabel, 0, "Main Input"));
+    
     OfxPropertySetHandle outputProperties;
-    status = runtime->meshEffectSuite->inputDefine(meshEffect, kOfxMeshMainOutput, NULL, &outputProperties); // yes, output are also "inputs", I should change this name in the API
-    printf("Suite method 'inputDefine' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->inputDefine(meshEffect, kOfxMeshMainOutput, NULL, &outputProperties)); // yes, output are also "inputs", I should change this name in the API
 
-    status = runtime->propertySuite->propSetString(outputProperties, kOfxPropLabel, 0, "Main Output");
-    printf("Suite method 'propSetString' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->propertySuite->propSetString(outputProperties, kOfxPropLabel, 0, "Main Output"));
 
     // Declare parameters
     OfxParamSetHandle parameters;
     OfxParamHandle param;
-    status = runtime->meshEffectSuite->getParamSet(meshEffect, &parameters);
-    printf("Suite method 'getParamSet' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->getParamSet(meshEffect, &parameters));
 
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeDouble, "width", NULL);
-    printf("Suite method 'paramDefine' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeDouble, "width", NULL));
 
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeInteger, "steps", NULL);
-    printf("Suite method 'paramDefine' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeInteger, "steps", NULL));
 
-    status = runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeString, "path", NULL);
-    printf("Suite method 'paramDefine' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->parameterSuite->paramDefine(parameters, kOfxParamTypeString, "path", NULL));
 
     return kOfxStatOK;
 }
@@ -93,14 +87,12 @@ static OfxStatus plugin0_cook(PluginRuntime *runtime, OfxMeshEffectHandle meshEf
     OfxMeshInputHandle input, output;
     OfxPropertySetHandle propertySet;
 
-    status = runtime->meshEffectSuite->inputGetHandle(meshEffect, kOfxMeshMainInput, &input, &propertySet);
-    printf("Suite method 'inputGetHandle' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->inputGetHandle(meshEffect, kOfxMeshMainInput, &input, &propertySet));
     if (status != kOfxStatOK) {
         return kOfxStatErrUnknown;
     }
 
-    status = runtime->meshEffectSuite->inputGetHandle(meshEffect, kOfxMeshMainOutput, &output, &propertySet);
-    printf("Suite method 'inputGetHandle' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->inputGetHandle(meshEffect, kOfxMeshMainOutput, &output, &propertySet));
     if (status != kOfxStatOK) {
         return kOfxStatErrUnknown;
     }
@@ -108,40 +100,30 @@ static OfxStatus plugin0_cook(PluginRuntime *runtime, OfxMeshEffectHandle meshEf
     OfxTime time = 0;
     OfxMeshHandle input_mesh;
     OfxPropertySetHandle input_mesh_prop;
-    status = runtime->meshEffectSuite->inputGetMesh(input, time, &input_mesh, &input_mesh_prop);
-    printf("Suite method 'inputGetMesh' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->inputGetMesh(input, time, &input_mesh, &input_mesh_prop));
 
     int input_point_count;
-    status = runtime->propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropPointCount, 0, &input_point_count);
-    printf("Suite method 'propGetInt' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropPointCount, 0, &input_point_count));
 
     OfxPropertySetHandle pos_attrib;
-    status = runtime->meshEffectSuite->meshGetAttribute(input_mesh, kOfxMeshAttribPoint, kOfxMeshAttribPointPosition, &pos_attrib);
-    printf("Suite method 'meshGetAttribute' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->meshGetAttribute(input_mesh, kOfxMeshAttribPoint, kOfxMeshAttribPointPosition, &pos_attrib));
 
     float *input_points;
-    status = runtime->propertySuite->propGetPointer(pos_attrib, kOfxMeshAttribPropData, 0, (void**)&input_points);
-    printf("Suite method 'propGetPointer' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->propertySuite->propGetPointer(pos_attrib, kOfxMeshAttribPropData, 0, (void**)&input_points));
 
-    printf("DEBUG: Found %d in input mesh\n", input_point_count);
+    printf("DEBUG: Found %d points in input mesh\n", input_point_count);
 
-    // TODO: store input data
-
-    status = runtime->meshEffectSuite->inputReleaseMesh(input_mesh);
-    printf("Suite method 'inputReleaseMesh' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->inputReleaseMesh(input_mesh));
 
     // Get parameters
     OfxParamSetHandle parameters;
     OfxParamHandle param;
-    status = runtime->meshEffectSuite->getParamSet(meshEffect, &parameters);
-    printf("Suite method 'getParamSet' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->getParamSet(meshEffect, &parameters));
 
-    status = runtime->parameterSuite->paramGetHandle(parameters, "width", &param, NULL);
-    printf("Suite method 'paramGetHandle' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->parameterSuite->paramGetHandle(parameters, "width", &param, NULL));
 
     double width;
-    status = runtime->parameterSuite->paramGetValue(param, &width);
-    printf("Suite method 'paramGetValue' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->parameterSuite->paramGetValue(param, &width));
 
     printf("-- width parameter set to: %f\n", width);
 
@@ -149,54 +131,45 @@ static OfxStatus plugin0_cook(PluginRuntime *runtime, OfxMeshEffectHandle meshEf
 
     OfxMeshHandle output_mesh;
     OfxPropertySetHandle output_mesh_prop;
-    status = runtime->meshEffectSuite->inputGetMesh(output, time, &output_mesh, &output_mesh_prop);
-    printf("Suite method 'inputGetMesh' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->inputGetMesh(output, time, &output_mesh, &output_mesh_prop));
 
-    int output_point_count = 0, output_vertex_count = 0, output_face_count = 0;
+    int output_point_count = 0, output_corner_count = 0, output_face_count = 0;
 
     // TODO: Consolidate geo counts
     output_point_count = 4;
-    output_vertex_count = 4;
+    output_corner_count = 4;
     output_face_count = 1;
 
-    printf("DEBUG: Allocating output mesh data: %d points, %d vertices, %d faces\n", output_point_count, output_vertex_count, output_face_count);
+    printf("DEBUG: Allocating output mesh data: %d points, %d corners, %d faces\n", output_point_count, output_corner_count, output_face_count);
 
-    status = runtime->propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropPointCount, 0, output_point_count);
-    printf("Suite method 'propSetInt' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropPointCount, 0, output_point_count));
 
-    status = runtime->propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropVertexCount, 0, output_vertex_count);
-    printf("Suite method 'propSetInt' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropCornerCount, 0, output_corner_count));
 
-    status = runtime->propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropFaceCount, 0, output_face_count);
-    printf("Suite method 'propSetInt' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropFaceCount, 0, output_face_count));
 
-    status = runtime->meshEffectSuite->meshAlloc(output_mesh);
-    printf("Suite method 'meshAlloc' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->meshAlloc(output_mesh));
 
-    status = runtime->meshEffectSuite->meshGetAttribute(output_mesh, kOfxMeshAttribPoint, kOfxMeshAttribPointPosition, &pos_attrib);
-    printf("Suite method 'meshGetAttribute' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->meshGetAttribute(output_mesh, kOfxMeshAttribPoint, kOfxMeshAttribPointPosition, &pos_attrib));
 
-    OfxPropertySetHandle vertpoint_attrib;
-    status = runtime->meshEffectSuite->meshGetAttribute(output_mesh, kOfxMeshAttribPoint, kOfxMeshAttribVertexPoint, &vertpoint_attrib);
-    printf("Suite method 'meshGetAttribute' returned status %d (%s)\n", status, getOfxStateName(status));
+    OfxPropertySetHandle cornerpoint_attrib;
+    MFX_CHECK(runtime->meshEffectSuite->meshGetAttribute(output_mesh, kOfxMeshAttribPoint, kOfxMeshAttribCornerPoint, &cornerpoint_attrib));
 
-    OfxPropertySetHandle facecounts_attrib;
-    status = runtime->meshEffectSuite->meshGetAttribute(output_mesh, kOfxMeshAttribPoint, kOfxMeshAttribFaceCounts, &facecounts_attrib);
-    printf("Suite method 'meshGetAttribute' returned status %d (%s)\n", status, getOfxStateName(status));
+    OfxPropertySetHandle facesize_attrib;
+    MFX_CHECK(runtime->meshEffectSuite->meshGetAttribute(output_mesh, kOfxMeshAttribPoint, kOfxMeshAttribFaceSize, &facesize_attrib));
 
     float *output_points;
-    status = runtime->propertySuite->propGetPointer(pos_attrib, kOfxMeshAttribPropData, 0, (void**)&output_points);
-    printf("Suite method 'propGetPointer' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->propertySuite->propGetPointer(pos_attrib, kOfxMeshAttribPropData, 0, (void**)&output_points));
 
-    int *output_vertices;
-    status = runtime->propertySuite->propGetPointer(vertpoint_attrib, kOfxMeshAttribPropData, 0, (void**)&output_vertices);
-    printf("Suite method 'propGetPointer' returned status %d (%s)\n", status, getOfxStateName(status));
+    int *output_corners;
+    MFX_CHECK(runtime->propertySuite->propGetPointer(cornerpoint_attrib, kOfxMeshAttribPropData, 0, (void**)&output_corners));
 
     int *output_faces;
-    status = runtime->propertySuite->propGetPointer(facecounts_attrib, kOfxMeshAttribPropData, 0, (void**)&output_faces);
-    printf("Suite method 'propGetPointer' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->propertySuite->propGetPointer(facesize_attrib, kOfxMeshAttribPropData, 0, (void**)&output_faces));
 
-    // TODO: Fill data
+    // Warning! This example is simplistic and abusively assumes that data is contiguous.
+    // Even if it might be common, plugin developpers should use the stride of attributes.
+    
     output_points[0 * 3 + 0] = -1.0f;
     output_points[0 * 3 + 1] = -width;
     output_points[0 * 3 + 2] = 0.0f;
@@ -213,12 +186,11 @@ static OfxStatus plugin0_cook(PluginRuntime *runtime, OfxMeshEffectHandle meshEf
     output_points[3 * 3 + 1] = width;
     output_points[3 * 3 + 2] = 0.0f;
 
-    for (int i = 0 ; i < 4 ; ++i) output_vertices[i] = i;
+    for (int i = 0 ; i < 4 ; ++i) output_corners[i] = i;
 
     output_faces[0] = 4;
 
-    status = runtime->meshEffectSuite->inputReleaseMesh(output_mesh);
-    printf("Suite method 'inputReleaseMesh' returned status %d (%s)\n", status, getOfxStateName(status));
+    MFX_CHECK(runtime->meshEffectSuite->inputReleaseMesh(output_mesh));
 
     return kOfxStatOK;
 }

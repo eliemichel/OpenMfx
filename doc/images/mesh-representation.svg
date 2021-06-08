@@ -12,7 +12,7 @@
    viewBox="0 0 508 285.75"
    version="1.1"
    id="svg5265"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)"
    sodipodi:docname="mesh-representation.svg"
    inkscape:export-filename="C:\tmp\mesh-representation.png"
    inkscape:export-xdpi="96"
@@ -26,18 +26,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="1126.2335"
-     inkscape:cy="720.87232"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="958.03517"
+     inkscape:cy="472.10055"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g4423"
      inkscape:document-rotation="0"
      showgrid="false"
      units="px"
      inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata5262">
@@ -47,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -421,25 +421,25 @@
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.983px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.449577"
-         x="845.13477"
+         x="842.17285"
          y="245.26659"
          id="text1100"><tspan
            sodipodi:role="line"
            id="tspan1098"
-           x="845.13477"
+           x="842.17285"
            y="245.26659"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:Calibri;stroke-width:0.449577">Vertices</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:Calibri;stroke-width:0.449577">Corners</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.1603px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:'Calibri Italic';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.279008"
-         x="807.35803"
+         x="814.06415"
          y="256.90607"
          id="text1104"><tspan
            sodipodi:role="line"
            id="tspan1102"
-           x="807.35803"
+           x="814.06415"
            y="256.90607"
-           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Italic';stroke-width:0.279008">a.k.a. face corners, or &quot;loops&quot;</tspan></text>
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Italic';stroke-width:0.279008">a.k.a. vertices, or &quot;loops&quot;</tspan></text>
     </g>
     <g
        id="g1701"
@@ -1231,11 +1231,11 @@
       </g>
       <g
          id="g4014"
-         transform="translate(-11.326578,-80.539173)">
+         transform="translate(-8.6725414,-80.539173)">
         <rect
            style="fill:#f0f0f0;fill-opacity:1;stroke:none;stroke-width:0.264999;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            id="rect3982"
-           width="54.643158"
+           width="45.981525"
            height="13.607147"
            x="63.213737"
            y="233.87921"
@@ -1251,7 +1251,7 @@
              id="tspan3984"
              x="65.468315"
              y="245.35394"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text';fill:#43aa8b;fill-opacity:1;stroke-width:0.239771">FaceCounts</tspan></text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text';fill:#43aa8b;fill-opacity:1;stroke-width:0.239771">FaceSize</tspan></text>
         <text
            xml:space="preserve"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.32358px;line-height:1.25;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text';fill:#747474;fill-opacity:1;stroke:none;stroke-width:0.10809"
@@ -1266,7 +1266,7 @@
       </g>
       <g
          id="g4021"
-         transform="translate(50.933732,-104.72707)">
+         transform="translate(47.73153,-104.72707)">
         <rect
            style="fill:#f0f0f0;fill-opacity:1;stroke:none;stroke-width:0.264999;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            id="rect3992"
@@ -1286,7 +1286,7 @@
              id="tspan3994"
              x="65.468315"
              y="269.54184"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text';fill:#2877bf;fill-opacity:1;stroke-width:0.239771">VertexPoint</tspan></text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text';fill:#2877bf;fill-opacity:1;stroke-width:0.239771">CornerPoint</tspan></text>
         <text
            xml:space="preserve"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.32358px;line-height:1.25;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text';fill:#747474;fill-opacity:1;stroke:none;stroke-width:0.10809"
@@ -1665,7 +1665,7 @@
            id="tspan6728"
            x="65.468315"
            y="226.80231"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text';fill:#2877bf;fill-opacity:1;stroke-width:0.239771">VertexUV</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text';fill:#2877bf;fill-opacity:1;stroke-width:0.239771">CornerUV</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.32358px;line-height:1.25;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text';fill:#747474;fill-opacity:1;stroke:none;stroke-width:0.10809"
@@ -1793,7 +1793,7 @@
          id="tspan998-2"
          x="296.10776"
          y="224.23"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:Calibri;stroke-width:0.243408">Add arbitrary attributes to points, vertices or faces:</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:Calibri;stroke-width:0.243408">Add arbitrary attributes to points, corners or faces:</tspan></text>
     <g
        id="g6814"
        transform="translate(1.5119048)">
@@ -1807,16 +1807,16 @@
            id="tspan6338"
            x="2.1631062"
            y="13.666169"
-           style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Light';stroke-width:0.331412">Mesh representation in Open Mesh Effect</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Light';stroke-width:0.331412">Mesh representation in OpenMfx</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:5.67715px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:'Calibri Light';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.141929"
-         x="223.99188"
+         x="180.69421"
          y="7.0624185"
          id="text6798"><tspan
            sodipodi:role="line"
            id="tspan6796"
-           x="223.99188"
+           x="180.69421"
            y="7.0624185"
            style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Light';stroke-width:0.141929">1</tspan></text>
     </g>
@@ -1826,23 +1826,23 @@
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:7.5354px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:'Calibri Light';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.188386"
-         x="227.78912"
+         x="288.72656"
          y="27.095158"
          id="text6794"><tspan
            sodipodi:role="line"
            id="tspan6792"
-           x="227.78912"
+           x="288.72656"
            y="27.095158"
-           style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Light Italic';stroke-width:0.188386">a low-overhead mesh-processing plugin API available in Blender</tspan></text>
+           style="font-style:italic;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Light Italic';stroke-width:0.188386">a low-overhead mesh-processing plugin API</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:5.67715px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:'Calibri Light';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.141929"
-         x="223.99188"
+         x="284.92932"
          y="24.543818"
          id="text6802"><tspan
            sodipodi:role="line"
            id="tspan6800"
-           x="223.99188"
+           x="284.92932"
            y="24.543818"
            style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Light';stroke-width:0.141929">1</tspan></text>
     </g>

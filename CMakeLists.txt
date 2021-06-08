@@ -1,6 +1,6 @@
 # ***** BEGIN APACHE 2 LICENSE BLOCK *****
 #
-# Copyright 2019 Elie Michel
+# Copyright 2019-2021 Elie Michel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,19 +17,19 @@
 # ***** END APACHE 2 LICENSE BLOCK *****
 
 cmake_minimum_required(VERSION 3.0...3.18.4)
-project(OpenMeshEffect)
+project(OpenMfx)
 
-option(OPENMESHEFFECT_BUILD_EXAMPLES "Build example projects" OFF)
+option(OPENMFX_BUILD_EXAMPLES "Build example projects" OFF)
 
 # Main target (C API)
-add_library(openmesheffect INTERFACE)
-target_include_directories(openmesheffect INTERFACE include/)
-add_library(OpenMeshEffect::Core ALIAS openmesheffect)
+add_library(OpenMfx INTERFACE)
+target_include_directories(OpenMfx INTERFACE include/)
+add_library(OpenMfx::Core ALIAS OpenMfx)
 
 # C++ API
 add_subdirectory(CppPluginSupport)
-add_library(OpenMeshEffect::Sdk ALIAS CppPluginSupport)
+add_library(OpenMfx::Sdk ALIAS CppPluginSupport)
 
-if (OPENMESHEFFECT_BUILD_EXAMPLES)
+if (OPENMFX_BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif ()

@@ -1,12 +1,12 @@
-mkdir MfxTutorial
-cd MfxTutorial
+mkdir MfxTutorial
+cd MfxTutorial
 
-git init
-git submodule add https://github.com/eliemichel/OpenMeshEffect
+git init
+git submodule add https://github.com/eliemichel/OpenMeshEffect
 
-mkdir build
-cd build
-cmake ..
-cmake --build .
+mkdir build
+cd build
+cmake ..
+cmake --build .
 
 

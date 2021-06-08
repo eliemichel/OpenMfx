@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('./_ext'))
 # -- Project information -----------------------------------------------------
 
 project = 'Open Mesh Effect'
-copyright = '2020, Elie Michel'
+copyright = '2019-2021, Elie Michel'
 author = 'Elie Michel'
 
 
@@ -31,6 +31,7 @@ extensions = [
 	"breathe",
 	"sphinxjp.themes.basicstrap",
 	"literate",
+    "myst_parser",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -1,5 +1,1 @@
-
-OpenFX Mesh Effect API - Documentation
-======================================
-
-**The official documentation of the API is now located at https://openmesheffect.org**
+This page has been moved to [https://openmesheffect.org](https://openmesheffect.org).

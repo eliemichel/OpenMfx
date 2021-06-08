@@ -38,11 +38,12 @@ set(SRC
 )
 
 set(LIB
-  openmesheffect
+  OpenMfx::Core
 )
 
-add_library(openmesheffect_util "${SRC}")
-target_include_directories(openmesheffect_util PRIVATE "${INC_PRIV}" PUBLIC "${INC}")
-target_link_libraries(openmesheffect_util PRIVATE "${LIB}")
+add_library(Utils "${SRC}")
+target_include_directories(Utils PRIVATE "${INC_PRIV}" PUBLIC "${INC}")
+target_link_libraries(Utils PRIVATE "${LIB}")
 
-set_property(TARGET openmesheffect_util PROPERTY FOLDER "openmesheffect")
+set_property(TARGET Utils PROPERTY FOLDER "OpenMfx")
+add_library(OpenMfx::Utils ALIAS Utils)

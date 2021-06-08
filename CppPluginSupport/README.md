@@ -1,7 +1,7 @@
 CppPluginSupport
 ================
 
-*CppPluginSupport* is a small set of C++ classes reducing boilerplate when writing Open Mesh Effect plugins. Its used is not mandatory but there is only little reason not to use it.
+*CppPluginSupport* is a small set of C++ classes reducing boilerplate when writing OpenMfx plugins. Its used is not mandatory but there is only little reason not to use it.
 
 ## Usage
 

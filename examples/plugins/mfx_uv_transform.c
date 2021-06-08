@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2020 Elie Michel
+ * Copyright 2019-2021 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-/**
- * This plugin is a test for vertex attributes, transfering vertex colors to UVs.
  */
 
 #include <stdbool.h>
@@ -114,14 +110,14 @@ static OfxStatus cook(OfxMeshEffectHandle instance) {
     meshEffectSuite->inputGetMesh(output, time, &output_mesh, &output_mesh_prop);
 
     // Get input mesh data
-    int input_point_count = 0, input_vertex_count = 0, input_face_count = 0;
+    int input_point_count = 0, input_corner_count = 0, input_face_count = 0;
     propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropPointCount, 0, &input_point_count);
-    propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropVertexCount, 0, &input_vertex_count);
+    propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropCornerCount, 0, &input_corner_count);
     propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropFaceCount, 0, &input_face_count);
 
-    // Get vertex color
+    // Get Corner color
     OfxPropertySetHandle vcolor_attrib, uv_attrib;
-    status = meshEffectSuite->meshGetAttribute(input_mesh, kOfxMeshAttribVertex, "color0", &vcolor_attrib);
+    status = meshEffectSuite->meshGetAttribute(input_mesh, kOfxMeshAttribCorner, "color0", &vcolor_attrib);
 
     printf("Look for color0...\n");
     char *vcolor_data = NULL;
@@ -129,31 +125,31 @@ static OfxStatus cook(OfxMeshEffectHandle instance) {
       printf("found!\n");
       propertySuite->propGetPointer(vcolor_attrib, kOfxMeshAttribPropData, 0, (void**)&vcolor_data);
       meshEffectSuite->attributeDefine(output_mesh,
-                                       kOfxMeshAttribVertex,
+                                       kOfxMeshAttribCorner,
                                        "uv0",
                                        2,
                                        kOfxMeshAttribTypeFloat,
-                                       &uv_attrib,
-                                       kOfxMeshAttribSemanticTextureCoordinate);
+                                       kOfxMeshAttribSemanticTextureCoordinate,
+                                       &uv_attrib);
     }
     else {
       // DEBUG
       meshEffectSuite->attributeDefine(output_mesh,
-                                       kOfxMeshAttribVertex,
+                                       kOfxMeshAttribCorner,
                                        "uv0",
                                        2,
                                        kOfxMeshAttribTypeFloat,
-                                       &uv_attrib,
-                                       kOfxMeshAttribSemanticTextureCoordinate);
+                                       kOfxMeshAttribSemanticTextureCoordinate,
+                                       &uv_attrib);
     }
 
     // Allocate output mesh
     int output_point_count = input_point_count;
-    int output_vertex_count = input_vertex_count;
+    int output_corner_count = input_corner_count;
     int output_face_count = input_face_count;
 
     propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropPointCount, 0, output_point_count);
-    propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropVertexCount, 0, output_vertex_count);
+    propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropCornerCount, 0, output_corner_count);
     propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropFaceCount, 0, output_face_count);
 
     meshEffectSuite->meshAlloc(output_mesh);
@@ -163,15 +159,15 @@ static OfxStatus cook(OfxMeshEffectHandle instance) {
     getPointAttribute(output_mesh, kOfxMeshAttribPointPosition, &output_pos);
     copyAttribute(&output_pos, &input_pos, 0, input_point_count);
 
-    Attribute input_vertpoint, output_vertpoint;
-    getVertexAttribute(input_mesh, kOfxMeshAttribVertexPoint, &input_vertpoint);
-    getVertexAttribute(output_mesh, kOfxMeshAttribVertexPoint, &output_vertpoint);
-    copyAttribute(&output_vertpoint, &input_vertpoint, 0, input_vertex_count);
+    Attribute input_cornerpoint, output_cornerpoint;
+    getCornerAttribute(input_mesh, kOfxMeshAttribCornerPoint, &input_cornerpoint);
+    getCornerAttribute(output_mesh, kOfxMeshAttribCornerPoint, &output_cornerpoint);
+    copyAttribute(&output_cornerpoint, &input_cornerpoint, 0, input_corner_count);
 
-    Attribute input_facecounts, output_facecounts;
-    getFaceAttribute(input_mesh, kOfxMeshAttribFaceCounts, &input_facecounts);
-    getFaceAttribute(output_mesh, kOfxMeshAttribFaceCounts, &output_facecounts);
-    copyAttribute(&output_facecounts, &input_facecounts, 0, input_face_count);
+    Attribute input_facesize, output_facesize;
+    getFaceAttribute(input_mesh, kOfxMeshAttribFaceSize, &input_facesize);
+    getFaceAttribute(output_mesh, kOfxMeshAttribFaceSize, &output_facesize);
+    copyAttribute(&output_facesize, &input_facesize, 0, input_face_count);
 
     if (NULL != vcolor_data) {
       char *uv_data;
@@ -179,7 +175,7 @@ static OfxStatus cook(OfxMeshEffectHandle instance) {
       propertySuite->propGetInt(uv_attrib, kOfxMeshAttribPropComponentCount, 0, &uv_stride);
       propertySuite->propGetInt(vcolor_attrib, kOfxMeshAttribPropComponentCount, 0, &vcolor_stride);
       propertySuite->propGetPointer(uv_attrib, kOfxMeshAttribPropData, 0, (void**)&uv_data);
-      for (int i = 0; i < input_vertex_count; ++i) {
+      for (int i = 0; i < input_corner_count; ++i) {
         float *vcolor = (float *)(vcolor_data + vcolor_stride * i);
         float *uv = (float *)(uv_data + uv_stride * i);
         uv[0] = vcolor[0];
@@ -192,9 +188,9 @@ static OfxStatus cook(OfxMeshEffectHandle instance) {
       int uv_stride;
       propertySuite->propGetInt(uv_attrib, kOfxMeshAttribPropComponentCount, 0, &uv_stride);
       propertySuite->propGetPointer(uv_attrib, kOfxMeshAttribPropData, 0, (void**)&uv_data);
-      for (int i = 0; i < input_vertex_count; ++i) {
-        int vert = *(int *)input_vertpoint.data[i * input_vertpoint.stride];
-        float *P = (float *)input_pos.data[vert * input_pos.stride];
+      for (int i = 0; i < input_corner_count; ++i) {
+        int corner = *(int *)input_cornerpoint.data[i * input_cornerpoint.stride];
+        float *P = (float *)input_pos.data[corner * input_pos.stride];
         float *uv = (float *)(uv_data + uv_stride * i);
         uv[0] = P[0];
         uv[1] = P[1];
@@ -249,7 +245,7 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth) {
     static OfxPlugin plugin = {
         /* pluginApi */          kOfxMeshEffectPluginApi,
         /* apiVersion */         kOfxMeshEffectPluginApiVersion,
-        /* pluginIdentifier */   "VertexColor2Uv",
+        /* pluginIdentifier */   "CornerColor2Uv",
         /* pluginVersionMajor */ 1,
         /* pluginVersionMinor */ 0,
         /* setHost */            setHost,

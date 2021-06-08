@@ -1,9 +1,9 @@
 .. _SdkReferenceIndex:
 
-Open Mesh Effect SDK
-====================
+OpenMfx SDK
+===========
 
-The SDK is a C++ library that aims at making the development of plugins easier than using the raw Open Mesh Effect API. For the reference of the underlying C API, see :ref:`ApiReference`. The SDK for writing plugins is also known as "CppPluginSupport".
+The SDK is a C++ library that aims at making the development of plugins easier than using the raw OpenMfx API. For the reference of the underlying C API, see :ref:`ApiReference`. The SDK for writing plugins is also known as "CppPluginSupport".
 
 To get started with the SDK, it is recommended to follow the tutorial: the tutorial :ref:`TutorialCppSdk`.
 

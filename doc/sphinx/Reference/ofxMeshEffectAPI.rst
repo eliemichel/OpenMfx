@@ -51,7 +51,7 @@ Mesh effects operate on mesh data represented by the ``OfxMeshHandle`` type:
 
 .. doxygendefine:: kOfxMeshPropPointCount
 
-.. doxygendefine:: kOfxMeshPropVertexCount
+.. doxygendefine:: kOfxMeshPropCornerCount
 
 .. doxygendefine:: kOfxMeshPropFaceCount
 
@@ -59,7 +59,7 @@ Mesh effects operate on mesh data represented by the ``OfxMeshHandle`` type:
 
 .. doxygendefine:: kOfxMeshPropNoLooseEdge
 
-.. doxygendefine:: kOfxMeshPropConstantFaceCount
+.. doxygendefine:: kOfxMeshPropConstantFaceSize
 
 .. doxygendefine:: kOfxMeshPropTransformMatrix
 
@@ -85,13 +85,13 @@ Some hosts may give a special meaning to ``kOfxMeshMainInput`` and ``kOfxMeshMai
 Custom Attributes
 -----------------
 
-The Open Mesh Effect API supports attaching any custom attribute to either points, vertices or faces. A fourth attribute attachment is for attributes with only one instance (the equivalent of detail attributes in Houdini). Some of these attributes are conventional and expected to always be present.
+The OpenMfx API supports attaching any custom attribute to either points, corners or faces. A fourth attribute attachment is for attributes with only one instance (the equivalent of detail attributes in Houdini). Some of these attributes are conventional and expected to always be present.
 
 **Attribute attachments:**
 
 .. doxygendefine:: kOfxMeshAttribPoint
 
-.. doxygendefine:: kOfxMeshAttribVertex
+.. doxygendefine:: kOfxMeshAttribCorner
 
 .. doxygendefine:: kOfxMeshAttribFace
 
@@ -101,9 +101,9 @@ The Open Mesh Effect API supports attaching any custom attribute to either point
 
 .. doxygendefine:: kOfxMeshAttribPointPosition
 
-.. doxygendefine:: kOfxMeshAttribVertexPoint
+.. doxygendefine:: kOfxMeshAttribCornerPoint
 
-.. doxygendefine:: kOfxMeshAttribFaceCounts
+.. doxygendefine:: kOfxMeshAttribFaceSize
 
 **Attribute request:**
 

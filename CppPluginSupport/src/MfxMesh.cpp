@@ -19,10 +19,10 @@ void MfxMesh::FetchProperties(MfxMeshProps& props)
 	int noLooseEdge;
 
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropPointCount, 0, &props.pointCount));
-	MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropVertexCount, 0, &props.vertexCount));
+	MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropCornerCount, 0, &props.cornerCount));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropFaceCount, 0, &props.faceCount));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropNoLooseEdge, 0, &noLooseEdge));
-    MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropConstantFaceCount, 0, &props.constantFaceCount));
+    MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropConstantFaceSize, 0, &props.constantFaceSize));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshPropAttributeCount, 0, &props.attributeCount));
 
     props.noLooseEdge = (bool)noLooseEdge;
@@ -45,9 +45,9 @@ MfxAttribute MfxMesh::GetPointAttribute(const char* name)
 	return GetAttribute(kOfxMeshAttribPoint, name);
 }
 
-MfxAttribute MfxMesh::GetVertexAttribute(const char* name)
+MfxAttribute MfxMesh::GetCornerAttribute(const char* name)
 {
-	return GetAttribute(kOfxMeshAttribVertex, name);
+	return GetAttribute(kOfxMeshAttribCorner, name);
 }
 
 MfxAttribute MfxMesh::GetFaceAttribute(const char* name)
@@ -79,9 +79,9 @@ bool MfxMesh::HasPointAttribute(const char* name)
     return HasAttribute(kOfxMeshAttribPoint, name);
 }
 
-bool MfxMesh::HasVertexAttribute(const char* name)
+bool MfxMesh::HasCornerAttribute(const char* name)
 {
-    return HasAttribute(kOfxMeshAttribVertex, name);
+    return HasAttribute(kOfxMeshAttribCorner, name);
 }
 
 bool MfxMesh::HasFaceAttribute(const char* name)
@@ -114,9 +114,9 @@ MfxAttribute MfxMesh::AddPointAttribute(const char* name, int componentCount, co
 	return AddAttribute(kOfxMeshAttribPoint, name, componentCount, type, semantic);
 }
 
-MfxAttribute MfxMesh::AddVertexAttribute(const char* name, int componentCount, const char* type, const char* semantic)
+MfxAttribute MfxMesh::AddCornerAttribute(const char* name, int componentCount, const char* type, const char* semantic)
 {
-	return AddAttribute(kOfxMeshAttribVertex, name, componentCount, type, semantic);
+	return AddAttribute(kOfxMeshAttribCorner, name, componentCount, type, semantic);
 }
 
 MfxAttribute MfxMesh::AddFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic)
@@ -129,12 +129,12 @@ MfxAttribute MfxMesh::AddMeshAttribute(const char* name, int componentCount, con
 	return AddAttribute(kOfxMeshAttribMesh, name, componentCount, type, semantic);
 }
 
-void MfxMesh::Allocate(int pointCount, int vertCount, int faceCount, bool noLooseEdge, int constantFaceCount)
+void MfxMesh::Allocate(int pointCount, int cornerCount, int faceCount, bool noLooseEdge, int constantFaceSize)
 {
 	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropPointCount, 0, pointCount));
-	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropVertexCount, 0, vertCount));
+	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropCornerCount, 0, cornerCount));
     MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropFaceCount, 0, faceCount));
     MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropNoLooseEdge, 0, (int)noLooseEdge));
-    MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropConstantFaceCount, 0, constantFaceCount));
+    MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshPropConstantFaceSize, 0, constantFaceSize));
 	MFX_ENSURE(meshEffectSuite->meshAlloc(m_mesh));
 }

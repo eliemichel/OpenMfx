@@ -3,7 +3,7 @@
 Actions Passed to a Mesh Effect
 ===============================
 
-OpenFX defines a unified way to interact with plug-ins through the notion of `action <https://openfx.readthedocs.io/en/master/Reference/ofxCoreAPI.html#the-plug-in-main-entry-point-and-actions>`_. Actions passed to an Open Mesh Effect's plug-in main entry point are either some actions from OpenFX core, used with the same meaning, or dedicated actions.
+OpenFX defines a unified way to interact with plug-ins through the notion of `action <https://openfx.readthedocs.io/en/master/Reference/ofxCoreAPI.html#the-plug-in-main-entry-point-and-actions>`_. Actions passed to an OpenMfx' plug-in main entry point are either some actions from OpenFX core, used with the same meaning, or dedicated actions.
 
 For generic actions, the ``handle`` passed to to main entry point is an
 :cpp:type:`OfxMeshEffectHandle`.

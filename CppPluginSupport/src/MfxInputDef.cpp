@@ -26,9 +26,9 @@ MfxInputDef& MfxInputDef::RequestPointAttribute(const char* name, int componentC
 	return RequestAttribute(kOfxMeshAttribPoint, name, componentCount, type, semantic, mandatory);
 }
 
-MfxInputDef& MfxInputDef::RequestVertexAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory)
+MfxInputDef& MfxInputDef::RequestCornerAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory)
 {
-	return RequestAttribute(kOfxMeshAttribVertex, name, componentCount, type, semantic, mandatory);
+	return RequestAttribute(kOfxMeshAttribCorner, name, componentCount, type, semantic, mandatory);
 }
 
 MfxInputDef& MfxInputDef::RequestFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory)

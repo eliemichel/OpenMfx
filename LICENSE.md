@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The Mesh Effect API introduced in this repository is released by Elie Michel under similar terms:
 
 ```
-Copyright (c) 2019, Elie Michel, All rights reserved.
+Copyright (c) 2019-2021, Elie Michel, All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -66,7 +66,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The example host and plugins are released by Elie Michel under the terms of the Apache 2 license:
 
 ```
-Copyright 2019 Elie Michel
+Copyright 2019-2021 Elie Michel
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ limitations under the License.
 
 ```
 The Open Mesh Effect logo.
-Copyright (c) 2019 Elie Michel
+Copyright (c) 2019-2021 Elie Michel
 
 You may reuse the logo provided that:
 

@@ -48,7 +48,7 @@ public:
 	 */
 	MfxAttribute GetAttribute(const char* attachment, const char* name);
 	MfxAttribute GetPointAttribute(const char* name);
-	MfxAttribute GetVertexAttribute(const char* name);
+	MfxAttribute GetCornerAttribute(const char* name);
 	MfxAttribute GetFaceAttribute(const char* name);
 	MfxAttribute GetMeshAttribute(const char* name);
 
@@ -59,7 +59,7 @@ public:
 	 */
     bool HasAttribute(const char* attachment, const char* name);
     bool HasPointAttribute(const char* name);
-    bool HasVertexAttribute(const char* name);
+    bool HasCornerAttribute(const char* name);
     bool HasFaceAttribute(const char* name);
     bool HasMeshAttribute(const char* name);
 
@@ -86,7 +86,7 @@ public:
 	 */
 	MfxAttribute AddAttribute(const char* attachment, const char* name, int componentCount, const char *type, const char* semantic = NULL);
 	MfxAttribute AddPointAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
-	MfxAttribute AddVertexAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
+	MfxAttribute AddCornerAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 	MfxAttribute AddFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 	MfxAttribute AddMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
 
@@ -97,7 +97,7 @@ public:
 	 * forwarded from the input) and will hence not be newly allocate.
 	 * Call **only for output** meshes.
 	 */
-    void Allocate(int pointCount, int vertCount, int faceCount, bool noLooseEdge=true, int constantFaceCount=-1);
+    void Allocate(int pointCount, int cornerCount, int faceCount, bool noLooseEdge=true, int constantFaceSize=-1);
 
 private:
 	OfxMeshHandle m_mesh;
