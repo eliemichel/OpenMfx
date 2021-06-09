@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('./_ext'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Open Mesh Effect'
+project = 'OpenMfx'
 copyright = '2019-2021, Elie Michel'
 author = 'Elie Michel'
 
@@ -44,10 +44,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # Breathe Configuration
 breathe_projects = {
-	"OpenMeshEffect": "../doxygen/output/xml",
+	"OpenMfx": "../doxygen/output/xml",
 	"SDK": "../doxygen/output-sdk/xml"
 }
-breathe_default_project = "OpenMeshEffect"
+breathe_default_project = "OpenMfx"
 
 breathe_default_members = ('members', 'protected-members', 'undoc-members')
 
