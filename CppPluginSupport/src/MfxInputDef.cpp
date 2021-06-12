@@ -1,4 +1,5 @@
 #include "MfxInputDef.h"
+#include "MfxAttribute.h"
 #include "macros.h"
 
 MfxInputDef::MfxInputDef(const MfxHost& host, OfxMeshInputHandle input, OfxPropertySetHandle properties)
@@ -15,30 +16,33 @@ MfxInputDef & MfxInputDef::Label(const char *label)
 	return *this;
 }
 
-MfxInputDef& MfxInputDef::RequestAttribute(const char* attachment, const char* name, int componentCount, const char* type, const char* semantic, bool mandatory)
+MfxInputDef& MfxInputDef::RequestAttribute(MfxAttributeAttachment attachment, const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory)
 {
-	MFX_ENSURE(meshEffectSuite->inputRequestAttribute(m_input, attachment, name, componentCount, type, semantic, mandatory));
+	const char* mfxAttachment = MfxAttribute::attributeAttachmentAsString(attachment);
+	const char* mfxType = MfxAttribute::attributeTypeAsString(type);
+	const char* mfxSemantic = MfxAttribute::attributeSemanticAsString(semantic);
+	MFX_ENSURE(meshEffectSuite->inputRequestAttribute(m_input, mfxAttachment, name, componentCount, mfxType, mfxSemantic, mandatory));
 	return *this;
 }
 
-MfxInputDef& MfxInputDef::RequestPointAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory)
+MfxInputDef& MfxInputDef::RequestPointAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory)
 {
-	return RequestAttribute(kOfxMeshAttribPoint, name, componentCount, type, semantic, mandatory);
+	return RequestAttribute(MfxAttributeAttachment::Point, name, componentCount, type, semantic, mandatory);
 }
 
-MfxInputDef& MfxInputDef::RequestCornerAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory)
+MfxInputDef& MfxInputDef::RequestCornerAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory)
 {
-	return RequestAttribute(kOfxMeshAttribCorner, name, componentCount, type, semantic, mandatory);
+	return RequestAttribute(MfxAttributeAttachment::Corner, name, componentCount, type, semantic, mandatory);
 }
 
-MfxInputDef& MfxInputDef::RequestFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory)
+MfxInputDef& MfxInputDef::RequestFaceAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory)
 {
-	return RequestAttribute(kOfxMeshAttribFace, name, componentCount, type, semantic, mandatory);
+	return RequestAttribute(MfxAttributeAttachment::Face, name, componentCount, type, semantic, mandatory);
 }
 
-MfxInputDef& MfxInputDef::RequestMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic, bool mandatory)
+MfxInputDef& MfxInputDef::RequestMeshAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory)
 {
-	return RequestAttribute(kOfxMeshAttribMesh, name, componentCount, type, semantic, mandatory);
+	return RequestAttribute(MfxAttributeAttachment::Mesh, name, componentCount, type, semantic, mandatory);
 }
 
 MfxInputDef& MfxInputDef::RequestGeometry(bool request)

@@ -8,36 +8,6 @@ MfxAttribute::MfxAttribute(const MfxHost& host, OfxPropertySetHandle properties)
 	, m_properties(properties)
 {}
 
-MfxAttributeType MfxAttribute::mfxAttrAsEnum(const char* mfxType)
-{
-    if (0 == strcmp(mfxType, kOfxMeshAttribTypeUByte)) {
-        return MfxAttributeType::UByte;
-    }
-    if (0 == strcmp(mfxType, kOfxMeshAttribTypeInt)) {
-        return MfxAttributeType::Int;
-    }
-    if (0 == strcmp(mfxType, kOfxMeshAttribTypeFloat)) {
-        return MfxAttributeType::Float;
-    }
-    printf("Warning: unknown attribute type: %s\n", mfxType);
-    return MfxAttributeType::Unknown;
-}
-
-const char *MfxAttribute::mfxAttrAsString(MfxAttributeType mfxType) {
-    switch (mfxType) {
-        case MfxAttributeType::UByte:
-            return kOfxMeshAttribTypeUByte;
-        case MfxAttributeType::Int:
-            return kOfxMeshAttribTypeInt;
-        case MfxAttributeType::Float:
-            return kOfxMeshAttribTypeFloat;
-        case MfxAttributeType::Unknown:
-        default:
-            printf("Warning: unknown attribute type: %d\n", (int)mfxType);
-            return "";
-    }
-}
-
 OfxStatus MfxAttribute::copyAttributeData(MfxAttributeProps& destination, const MfxAttributeProps& source, int start, int count)
 {
     // TODO: use at least OpenMP
@@ -105,12 +75,12 @@ void MfxAttribute::FetchProperties(MfxAttributeProps& props)
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshAttribPropComponentCount, 0, &props.componentCount));
     MFX_ENSURE(propertySuite->propGetPointer(m_properties, kOfxMeshAttribPropData, 0, (void**)&props.data));
     MFX_ENSURE(propertySuite->propGetInt(m_properties, kOfxMeshAttribPropIsOwner, 0, &isOwner));
-    props.type = mfxAttrAsEnum(type);
+    props.type = attributeTypeAsEnum(type);
     props.isOwner = (bool)isOwner;
 }
 
 void MfxAttribute::SetProperties(const MfxAttributeProps &props) {
-    const char* type = mfxAttrAsString(props.type);
+    const char* type = attributeTypeAsString(props.type);
 
     MFX_ENSURE(propertySuite->propSetString(m_properties, kOfxMeshAttribPropType, 0, type));
     MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshAttribPropStride, 0, props.stride));
@@ -135,4 +105,105 @@ void MfxAttribute::ForwardFrom(MfxAttribute &other) {
     destinationProps.isOwner = false;
 
     SetProperties(destinationProps);
+}
+
+//-----------------------------------------------------------------------------
+
+MfxAttributeType MfxAttribute::attributeTypeAsEnum(const char* mfxType)
+{
+    if (0 == strcmp(mfxType, kOfxMeshAttribTypeUByte)) {
+        return MfxAttributeType::UByte;
+    }
+    if (0 == strcmp(mfxType, kOfxMeshAttribTypeInt)) {
+        return MfxAttributeType::Int;
+    }
+    if (0 == strcmp(mfxType, kOfxMeshAttribTypeFloat)) {
+        return MfxAttributeType::Float;
+    }
+    printf("Warning: unknown attribute type: %s\n", mfxType);
+    return MfxAttributeType::Unknown;
+}
+
+const char* MfxAttribute::attributeTypeAsString(MfxAttributeType type) {
+    switch (type) {
+    case MfxAttributeType::UByte:
+        return kOfxMeshAttribTypeUByte;
+    case MfxAttributeType::Int:
+        return kOfxMeshAttribTypeInt;
+    case MfxAttributeType::Float:
+        return kOfxMeshAttribTypeFloat;
+    case MfxAttributeType::Unknown:
+    default:
+        printf("Warning: unknown attribute type: %d\n", (int)type);
+        return "";
+    }
+}
+
+MfxAttributeAttachment MfxAttribute::attributeAttachmentAsEnum(const char* mfxAttachment) {
+    if (0 == strcmp(mfxAttachment, kOfxMeshAttribPoint)) {
+        return MfxAttributeAttachment::Point;
+    }
+    if (0 == strcmp(mfxAttachment, kOfxMeshAttribCorner)) {
+        return MfxAttributeAttachment::Corner;
+    }
+    if (0 == strcmp(mfxAttachment, kOfxMeshAttribFace)) {
+        return MfxAttributeAttachment::Face;
+    }
+    if (0 == strcmp(mfxAttachment, kOfxMeshAttribMesh)) {
+        return MfxAttributeAttachment::Mesh;
+    }
+    printf("Warning: unknown attribute attachment: %s\n", mfxAttachment);
+    return MfxAttributeAttachment::Mesh;
+}
+
+const char* MfxAttribute::attributeAttachmentAsString(MfxAttributeAttachment attachment) {
+    switch (attachment) {
+    case MfxAttributeAttachment::Point:
+        return kOfxMeshAttribPoint;
+    case MfxAttributeAttachment::Corner:
+        return kOfxMeshAttribCorner;
+    case MfxAttributeAttachment::Face:
+        return kOfxMeshAttribFace;
+    case MfxAttributeAttachment::Mesh:
+    default:
+        return kOfxMeshAttribMesh;
+    }
+}
+
+MfxAttributeSemantic MfxAttribute::attributeSemanticAsEnum(const char* mfxSemantic) {
+    if (nullptr == mfxSemantic) {
+        return MfxAttributeSemantic::None;
+    }
+    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticTextureCoordinate)) {
+        return MfxAttributeSemantic::TextureCoordinate;
+    }
+    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticNormal)) {
+        return MfxAttributeSemantic::Normal;
+    }
+    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticColor)) {
+        return MfxAttributeSemantic::Color;
+    }
+    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticWeight)) {
+        return MfxAttributeSemantic::Weight;
+    }
+    printf("Warning: unknown attribute semantic: %s\n", mfxSemantic);
+    return MfxAttributeSemantic::None;
+}
+
+const char* MfxAttribute::attributeSemanticAsString(MfxAttributeSemantic semantic) {
+    switch (semantic) {
+    case MfxAttributeSemantic::TextureCoordinate:
+        return kOfxMeshAttribSemanticTextureCoordinate;
+    case MfxAttributeSemantic::Normal:
+        return kOfxMeshAttribSemanticNormal;
+    case MfxAttributeSemantic::Color:
+        return kOfxMeshAttribSemanticColor;
+    case MfxAttributeSemantic::Weight:
+        return kOfxMeshAttribSemanticWeight;
+    case MfxAttributeSemantic::None:
+        return nullptr;
+    default:
+        printf("Warning: unknown attribute semantic: %d\n", (int)semantic);
+        return nullptr;
+    }
 }

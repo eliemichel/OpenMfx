@@ -7,6 +7,21 @@ enum class MfxAttributeType {
     Float,
 };
 
+enum class MfxAttributeAttachment {
+    Point,
+    Corner,
+    Face,
+    Mesh,
+};
+
+enum class MfxAttributeSemantic {
+    None = -1,
+    TextureCoordinate,
+    Normal,
+    Color,
+    Weight,
+};
+
 /**
  * Mfx*Props classes are a little different: for caching and convenience, they
  * store some data and care must be taken not to copy it around too much
@@ -14,7 +29,13 @@ enum class MfxAttributeType {
  */
 struct MfxAttributeProps
 {
-    MfxAttributeProps() : type(MfxAttributeType::Unknown), stride(0), componentCount(0), data(NULL), isOwner(false) {}
+    MfxAttributeProps()
+        : type(MfxAttributeType::Unknown)
+        , stride(0)
+        , componentCount(0)
+        , data(NULL)
+        , isOwner(false)
+    {}
 
     MfxAttributeType type;
     int stride;

@@ -13,16 +13,6 @@ private:
 	MfxAttribute(const MfxHost& host, OfxPropertySetHandle properties);
 
 	/**
-	 * Convert a type string from MeshEffect API to its local enum counterpart
-	 */
-	static MfxAttributeType mfxAttrAsEnum(const char* mfxType);
-
-    /**
-     * Convert local typestring enum to a type string from MeshEffect API
-     */
-    static const char* mfxAttrAsString(MfxAttributeType mfxType);
-
-	/**
 	 * Copy attribute and try to cast. If number of component is different,
 	 * copy the common components only.
 	 */
@@ -49,6 +39,38 @@ public:
      * Note that the buffer in source attribute must already be allocated.
      */
     void ForwardFrom(MfxAttribute& other);
+
+public:
+	/**
+	 * Convert a type string from MeshEffect API to its local enum counterpart
+	 */
+	static MfxAttributeType attributeTypeAsEnum(const char* mfxType);
+
+	/**
+	 * Convert local typestring enum to a type string from MeshEffect API
+	 */
+	static const char* attributeTypeAsString(MfxAttributeType type);
+
+	/**
+	 * Convert an attachment string from MeshEffect API to its local enum counterpart
+	 */
+	static MfxAttributeAttachment attributeAttachmentAsEnum(const char* mfxAttachment);
+
+	/**
+	 * Convert local attachment enum to an attachment string from MeshEffect API
+	 */
+	static const char* attributeAttachmentAsString(MfxAttributeAttachment attachment);
+
+	/**
+	 * Convert a semantic string from MeshEffect API to its local enum counterpart
+	 */
+	static MfxAttributeSemantic attributeSemanticAsEnum(const char* mfxSemantic);
+
+	/**
+	 * Convert local semantic enum to a semantic string from MeshEffect API
+	 */
+	static const char* attributeSemanticAsString(MfxAttributeSemantic semantic);
+
 
 private:
 	OfxPropertySetHandle m_properties;

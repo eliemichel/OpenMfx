@@ -46,7 +46,7 @@ public:
 	 * `Get*Attribute` methods are shortcuts for the different values allowed
 	 * for the `attachment` argument.
 	 */
-	MfxAttribute GetAttribute(const char* attachment, const char* name);
+	MfxAttribute GetAttribute(MfxAttributeAttachment attachment, const char* name);
 	MfxAttribute GetPointAttribute(const char* name);
 	MfxAttribute GetCornerAttribute(const char* name);
 	MfxAttribute GetFaceAttribute(const char* name);
@@ -57,7 +57,7 @@ public:
 	 * `Has*Attribute` methods are shortcuts for the different values allowed
 	 * for the `attachment` argument.
 	 */
-    bool HasAttribute(const char* attachment, const char* name);
+    bool HasAttribute(MfxAttributeAttachment attachment, const char* name);
     bool HasPointAttribute(const char* name);
     bool HasCornerAttribute(const char* name);
     bool HasFaceAttribute(const char* name);
@@ -84,11 +84,11 @@ public:
 	 * 
 	 * TODO: Have the type argument use MfxAttributeType enum as defined in MfxAttributeProps.h
 	 */
-	MfxAttribute AddAttribute(const char* attachment, const char* name, int componentCount, const char *type, const char* semantic = NULL);
-	MfxAttribute AddPointAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
-	MfxAttribute AddCornerAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
-	MfxAttribute AddFaceAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
-	MfxAttribute AddMeshAttribute(const char* name, int componentCount, const char* type, const char* semantic = NULL);
+	MfxAttribute AddAttribute(MfxAttributeAttachment attachment, const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
+	MfxAttribute AddPointAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
+	MfxAttribute AddCornerAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
+	MfxAttribute AddFaceAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
+	MfxAttribute AddMeshAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
 
 	/**
 	 * Allocate memory for new owned attributes according to the previously
