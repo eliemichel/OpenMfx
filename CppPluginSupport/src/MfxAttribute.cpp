@@ -97,7 +97,7 @@ void MfxAttribute::CopyFrom(MfxAttribute& other, int start, int count)
     copyAttributeData(destinationProps, sourceProps, start, count);
 }
 
-void MfxAttribute::ForwardFrom(MfxAttribute &other) {
+void MfxAttribute::ForwardFrom(MfxAttribute &&other) {
     MfxAttributeProps sourceProps, destinationProps;
     other.FetchProperties(sourceProps);
 

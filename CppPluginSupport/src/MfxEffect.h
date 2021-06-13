@@ -55,23 +55,23 @@ protected:
 
 	/// Equivalent of the \ref kOfxActionDescribe
 	virtual OfxStatus Describe(OfxMeshEffectHandle descriptor)
-	{ return kOfxStatOK; }
+	{ (void)descriptor; return kOfxStatOK; }
 
 	/// Equivalent of the \ref kOfxActionCreateInstance
 	virtual OfxStatus CreateInstance(OfxMeshEffectHandle instance)
-	{ return kOfxStatOK; }
+	{ (void)instance; return kOfxStatOK; }
 
 	/// Equivalent of the \ref kOfxActionDestroyInstance
 	virtual OfxStatus DestroyInstance(OfxMeshEffectHandle instance)
-	{ return kOfxStatOK; }
+	{ (void)instance; return kOfxStatOK; }
 
 	/// Equivalent of the \ref kOfxMeshEffectActionCook
 	virtual OfxStatus Cook(OfxMeshEffectHandle instance)
-	{ return kOfxStatOK; }
+	{ (void)instance; return kOfxStatOK; }
 
 	/// Equivalent of the \ref kOfxMeshEffectActionIsIdentity
     virtual OfxStatus IsIdentity(OfxMeshEffectHandle instance)
-    { return kOfxStatReplyDefault; }
+    { (void)instance; return kOfxStatReplyDefault; }
 
 protected:
 	// Utility methods to be used during the Describe() action only:

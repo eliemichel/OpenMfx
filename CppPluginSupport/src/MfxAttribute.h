@@ -38,7 +38,7 @@ public:
      * Forward attribute data, pointing to existing buffers instead of copying.
      * Note that the buffer in source attribute must already be allocated.
      */
-    void ForwardFrom(MfxAttribute& other);
+    void ForwardFrom(MfxAttribute&& other);
 
 public:
 	/**

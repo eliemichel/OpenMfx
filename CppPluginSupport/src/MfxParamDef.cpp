@@ -76,6 +76,14 @@ MfxParamDef<double3> & MfxParamDef<double3>::Range(const double3 & minimum, cons
 	return *this;
 }
 
+template <>
+MfxParamDef<bool> & MfxParamDef<bool>::Range(const bool & minimum, const bool & maximum)
+{
+	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxParamPropMin, 0, minimum));
+	MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxParamPropMax, 0, maximum));
+	return *this;
+}
+
 //-----------------------------------------------------------------------------
 
 // Explicit instantiations
