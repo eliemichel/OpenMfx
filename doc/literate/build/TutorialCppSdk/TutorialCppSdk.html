@@ -79,9 +79,9 @@ body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{fo
 <section>
 <h1></h1>
 <a name="1:1"><div class="section"><h4>1. Introduction</h4></a>
-<p>Although one can use the raw C API, the C++ SDK is the easiest way to create an Open Mesh Effect plugin. We'll see in this tutorial how to write a simple plugins with a few effects bundled in it that you may then load as a modifier in <a href="https://github.com/eliemichel/OpenMeshEffectForBlender">the Open Mesh Effect branch of Blender</a>.
+<p>Although one can use the raw C API, the C++ SDK is the easiest way to create an Open Mesh Effect plugin. We'll see in this tutorial how to write a simple plugins with a few effects bundled in it that you may then load as a modifier in <a href="https://github.com/eliemichel/OpenMfxForBlender">the OpenMfx branch of Blender</a>.
 </p>
-<p><strong>NB</strong> This tutorial follows the principle of <em>literate programming</em>, which means that it is written primarily for human reading, but is also a complete and valid code base if one follows the <code>{Curly bracket titles}</code> to browse through code blocks. The code generated from this text is available <a href="https://github.com/eliemichel/OpenMeshEffect/tree/master/doc/literate/build/TutorialCppSdk">in the git repository</a>.
+<p><strong>NB</strong> This tutorial follows the principle of <em>literate programming</em>, which means that it is written primarily for human reading, but is also a complete and valid code base if one follows the <code>{Curly bracket titles}</code> to browse through code blocks. The code generated from this text is available <a href="https://github.com/eliemichel/OpenMfx/tree/master/doc/literate/build/TutorialCppSdk">in the git repository</a>.
 </p>
 <p><img src="../_static/TutorialCppSdk/modifier.png" alt="Our plugin once loaded in Blender. It contains a &#39;Translate&#39; and an &#39;Array&#39; effects.">
 </p>
@@ -92,11 +92,11 @@ body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{fo
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{<strong>setup.sh</strong> <a href="TutorialCppSdk.html#1:2">2</a>}</span>
+<span class="codeblock_name" id="codeblock-1:1">{<strong>setup.sh</strong> <a href="TutorialCppSdk.html#codeblock-1:1">1</a>}</span>
 <pre class="prettyprint">
-<span class="nocode pln">{Create project, <a href="TutorialCppSdk.html#1:2">2</a>}</span>
-<span class="nocode pln">{Get OpenMeshEffect SDK, <a href="TutorialCppSdk.html#1:2">2</a>}</span>
-<span class="nocode pln">{Build plugin, <a href="TutorialCppSdk.html#1:2">2</a>}</span>
+<span class="nocode pln">{Create project, <a href="TutorialCppSdk.html#codeblock-1:2">2</a>}</span>
+<span class="nocode pln">{Get OpenMfx SDK, <a href="TutorialCppSdk.html#codeblock-1:3">3</a>}</span>
+<span class="nocode pln">{Build plugin, <a href="TutorialCppSdk.html#codeblock-1:5">5</a>}</span>
 </pre>
 
 
@@ -106,49 +106,49 @@ body{min-width:200px;max-width:850px;margin:0 auto;padding:30px;}.chapter-nav{fo
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Create project <a href="TutorialCppSdk.html#1:2">2</a>}</span>
+<span class="codeblock_name" id="codeblock-1:2">{Create project <a href="TutorialCppSdk.html#codeblock-1:2">2</a>}</span>
 <pre class="prettyprint">
-mkdir MfxTutorial
-cd MfxTutorial
+mkdir MfxTutorial
+cd MfxTutorial
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:1">1</a></p>
 </div>
-<p>Get <a href="https://github.com/eliemichel/OpenMeshEffect">the OpenMeshEffect repository</a>, either as a submodule or by <a href="https://github.com/eliemichel/OpenMeshEffect/archive/master.zip">downloading it as a zip</a>. This contains C++ SDK in the <code>CppPluginSupport</code> subdirectory.
+<p>Get <a href="https://github.com/eliemichel/OpenMfx">the OpenMfx repository</a>, either as a submodule or by <a href="https://github.com/eliemichel/OpenMfx/archive/master.zip">downloading it as a zip</a>. This contains C++ SDK in the <code>CppPluginSupport</code> subdirectory.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Get OpenMeshEffect SDK <a href="TutorialCppSdk.html#1:2">2</a>}</span>
+<span class="codeblock_name" id="codeblock-1:3">{Get OpenMfx SDK <a href="TutorialCppSdk.html#codeblock-1:3">3</a>}</span>
 <pre class="prettyprint">
-git init
-git submodule add https://github.com/eliemichel/OpenMeshEffect
+git init
+git submodule add https://github.com/eliemichel/OpenMfx
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:1">1</a></p>
 </div>
 <p>In this example, we'll use CMake as a build system, so create this minimal <code>CMakeLists.txt</code> file configuring the project:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{<strong>CMakeLists.txt</strong> <a href="TutorialCppSdk.html#1:2">2</a>}</span>
+<span class="codeblock_name" id="codeblock-1:4">{<strong>CMakeLists.txt</strong> <a href="TutorialCppSdk.html#codeblock-1:4">4</a>}</span>
 <pre class="prettyprint">
-cmake_minimum_required(VERSION 3.0...3.18.4)
-# Name of the project
-project(MfxTutorial)
-
-# Add OpenMeshEffect to define CppPluginSupport, the C++ helper API
-add_subdirectory(OpenMeshEffect)
-
-# Define the plugin target, called for instance mfx_tutorial
-# You may list additional source files after "plugin.cpp"
-add_library(mfx_tutorial SHARED plugin.cpp)
-
-# Set up the target to depend on CppPluginSupport and output a file
-# called .ofx (rather than the standard .dll or .so)
-target_link_libraries(mfx_tutorial PRIVATE CppPluginSupport)
-set_target_properties(mfx_tutorial PROPERTIES SUFFIX ".ofx")
+cmake_minimum_required(VERSION 3.0...3.18.4)
+# Name of the project
+project(MfxTutorial)
+
+# Add OpenMfx to define CppPluginSupport, the C++ helper API
+add_subdirectory(OpenMfx)
+
+# Define the plugin target, called for instance mfx_tutorial
+# You may list additional source files after "plugin.cpp"
+add_library(mfx_tutorial SHARED plugin.cpp)
+
+# Set up the target to depend on CppPluginSupport and output a file
+# called .ofx (rather than the standard .dll or .so)
+target_link_libraries(mfx_tutorial PRIVATE CppPluginSupport)
+set_target_properties(mfx_tutorial PROPERTIES SUFFIX ".ofx")
 </pre>
 
 
@@ -158,16 +158,16 @@ set_target_properties(mfx_tutorial PROPERTIES SUFFIX ".ofx")
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Build plugin <a href="TutorialCppSdk.html#1:2">2</a>}</span>
+<span class="codeblock_name" id="codeblock-1:5">{Build plugin <a href="TutorialCppSdk.html#codeblock-1:5">5</a>}</span>
 <pre class="prettyprint">
-mkdir build
-cd build
-cmake ..
-cmake --build .
+mkdir build
+cd build
+cmake ..
+cmake --build .
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:1">1</a></p>
 </div>
 <p>This CMakeList tells that the source code for the plugin will be in <code>plugin.cpp</code>, so create such a file.
 </p>
@@ -177,33 +177,33 @@ cmake --build .
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Define TranslateEffect <a href="TutorialCppSdk.html#1:2">2</a>}</span>
+<span class="codeblock_name" id="codeblock-1:6">{Define TranslateEffect <a href="TutorialCppSdk.html#codeblock-1:6">6</a>}</span>
 <pre class="prettyprint">
-#include &lt;PluginSupport/MfxEffect&gt;
-
-class TranslateEffect : public MfxEffect {
-<span class="nocode pln">	{Behavior of TranslateEffect, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-};
+#include &lt;PluginSupport/MfxEffect&gt;
+
+class TranslateEffect : public MfxEffect {
+<span class="nocode pln">	{Behavior of TranslateEffect, <a href="TutorialCppSdk.html#codeblock-1:8">8</a>}</span>
+};
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:7">7</a></p>
 </div>
 <p><strong>(ii) Register effects into the final binary.</strong> This is actually a macro handling the boilerplate required to expose the correct symbols in the final library, but you don't have to bother about the details.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{<strong>plugin.cpp</strong> <a href="TutorialCppSdk.html#1:2">2</a>}</span>
+<span class="codeblock_name" id="codeblock-1:7">{<strong>plugin.cpp</strong> <a href="TutorialCppSdk.html#codeblock-1:7">7</a>}</span>
 <pre class="prettyprint">
-#include &lt;PluginSupport/MfxRegister&gt;
-
-<span class="nocode pln">{Define TranslateEffect, <a href="TutorialCppSdk.html#1:2">2</a>}</span>
-<span class="nocode pln">{Define ArrayEffect, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-
-MfxRegister(
-    TranslateEffect,
-    ArrayEffect
-);
+#include &lt;PluginSupport/MfxRegister&gt;
+
+<span class="nocode pln">{Define TranslateEffect, <a href="TutorialCppSdk.html#codeblock-1:6">6</a>}</span>
+<span class="nocode pln">{Define ArrayEffect, <a href="TutorialCppSdk.html#codeblock-1:23">23</a>}</span>
+
+MfxRegister(
+    TranslateEffect,
+    ArrayEffect
+);
 </pre>
 
 
@@ -215,35 +215,35 @@ MfxRegister(
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Behavior of TranslateEffect <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:8">{Behavior of TranslateEffect <a href="TutorialCppSdk.html#codeblock-1:8">8</a>}</span>
 <pre class="prettyprint">
-protected:
-OfxStatus Describe(OfxMeshEffectHandle descriptor) override {
-<span class="nocode pln">	{Describe, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-}
-
-OfxStatus Cook(OfxMeshEffectHandle instance) override {
-<span class="nocode pln">	{Cook, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-}
+protected:
+OfxStatus Describe(OfxMeshEffectHandle descriptor) override {
+<span class="nocode pln">	{Describe, <a href="TutorialCppSdk.html#codeblock-1:10">10</a>}</span>
+}
+
+OfxStatus Cook(OfxMeshEffectHandle instance) override {
+<span class="nocode pln">	{Cook, <a href="TutorialCppSdk.html#codeblock-1:13">13</a>}</span>
+}
 </pre>
+<p class="seealso">Added to in section <a href="TutorialCppSdk.html#codeblock-1:9">9</a></p>
 
-
-<p class="seealso">Used in section <a href="TutorialCppSdk.html#1:2">2</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:6">6</a></p>
 </div>
 <p>We may also override the <code>GetName()</code> method to set the name displayed to the end user when selecting the effect. 
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Behavior of TranslateEffect <a href="TutorialCppSdk.html#1:3">3</a>} +=</span>
+<span class="codeblock_name" >{Behavior of TranslateEffect <a href="TutorialCppSdk.html#codeblock-1:8">8</a>} +=</span>
 <pre class="prettyprint">
-public:
-const char* GetName() override {
-	return "Translate";
-}
+public:
+const char* GetName() override {
+	return "Translate";
+}
 </pre>
+<p class="seealso">Added to in section <a href="TutorialCppSdk.html#codeblock-1:9">9</a></p>
 
-
-<p class="seealso">Used in section <a href="TutorialCppSdk.html#1:2">2</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:6">6</a></p>
 </div>
 <h3> 3.1. Describing the effect</h3>
 <p>The <code>Describe</code> method is called only once upon loading, and does not depend on the actual content of the input.
@@ -252,14 +252,14 @@ const char* GetName() override {
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Describe <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:10">{Describe <a href="TutorialCppSdk.html#codeblock-1:10">10</a>}</span>
 <pre class="prettyprint">
-AddInput(kOfxMeshMainInput);
-AddInput(kOfxMeshMainOutput);
+AddInput(kOfxMeshMainInput);
+AddInput(kOfxMeshMainOutput);
 </pre>
+<p class="seealso">Added to in sections <a href="TutorialCppSdk.html#codeblock-1:11">11</a> and <a href="TutorialCppSdk.html#codeblock-1:12">12</a></p>
 
-
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:8">8</a></p>
 </div>
 <p><strong>NB</strong> What the API calls "input" is actually any kind of slot, including both inputs and outputs.
 </p>
@@ -267,78 +267,78 @@ AddInput(kOfxMeshMainOutput);
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Describe <a href="TutorialCppSdk.html#1:3">3</a>} +=</span>
+<span class="codeblock_name" >{Describe <a href="TutorialCppSdk.html#codeblock-1:10">10</a>} +=</span>
 <pre class="prettyprint">
-// Add a vector3 parameter
-AddParam("translation", double3{0.0, 0.0, 0.0})
-.Label("Translation") // Name used for display
-.Range(double3{-10.0, -10.0, -10.0}, double3{10.0, 10.0, 10.0});
-
-// Add a bool parameter
-AddParam("tickme", false)
-.Label("Tick me!");
+// Add a vector3 parameter
+AddParam("translation", double3{0.0, 0.0, 0.0})
+.Label("Translation") // Name used for display
+.Range(double3{-10.0, -10.0, -10.0}, double3{10.0, 10.0, 10.0});
+
+// Add a bool parameter
+AddParam("tickme", false)
+.Label("Tick me!");
 </pre>
+<p class="seealso">Added to in sections <a href="TutorialCppSdk.html#codeblock-1:11">11</a> and <a href="TutorialCppSdk.html#codeblock-1:12">12</a></p>
 
-
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:8">8</a></p>
 </div>
 <p>Finally, we tell that everything went OK. Other values are possible, in case of error. (See the definition of <code>OfxStatus</code> in ofxCore.h.)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Describe <a href="TutorialCppSdk.html#1:3">3</a>} +=</span>
+<span class="codeblock_name" >{Describe <a href="TutorialCppSdk.html#codeblock-1:10">10</a>} +=</span>
 <pre class="prettyprint">
-return kOfxStatOK;
+return kOfxStatOK;
 </pre>
+<p class="seealso">Added to in sections <a href="TutorialCppSdk.html#codeblock-1:11">11</a> and <a href="TutorialCppSdk.html#codeblock-1:12">12</a></p>
 
-
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:8">8</a></p>
 </div>
 <h3> 3.2. Cooking</h3>
 <p>Once in the <code>Cook</code> we can have access to the parameter values and input data. We first retrieve these, then allocate the output mesh, and finally fill it. At the very end we also don't forget to release input/output memory.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Cook <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:13">{Cook <a href="TutorialCppSdk.html#codeblock-1:13">13</a>}</span>
 <pre class="prettyprint">
-<span class="nocode pln">{Get Inputs, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-<span class="nocode pln">{Get Parameters, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-<span class="nocode pln">{Estimate output size, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-<span class="nocode pln">{Allocate output, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-<span class="nocode pln">{Fill in output, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-<span class="nocode pln">{Release data, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-return kOfxStatOK;
+<span class="nocode pln">{Get Inputs, <a href="TutorialCppSdk.html#codeblock-1:14">14</a>}</span>
+<span class="nocode pln">{Get Parameters, <a href="TutorialCppSdk.html#codeblock-1:16">16</a>}</span>
+<span class="nocode pln">{Estimate output size, <a href="TutorialCppSdk.html#codeblock-1:18">18</a>}</span>
+<span class="nocode pln">{Allocate output, <a href="TutorialCppSdk.html#codeblock-1:19">19</a>}</span>
+<span class="nocode pln">{Fill in output, <a href="TutorialCppSdk.html#codeblock-1:21">21</a>}</span>
+<span class="nocode pln">{Release data, <a href="TutorialCppSdk.html#codeblock-1:22">22</a>}</span>
+return kOfxStatOK;
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:8">8</a></p>
 </div>
 <h4> 3.2.a. Get Inputs</h4>
 <p>Getting the input is as fast as calling <code>GetInput</code> but then we need to think about what information we need from this input.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Get Inputs <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:14">{Get Inputs <a href="TutorialCppSdk.html#codeblock-1:14">14</a>}</span>
 <pre class="prettyprint">
-MfxMesh input_mesh = GetInput(kOfxMeshMainInput).GetMesh();
+MfxMesh input_mesh = GetInput(kOfxMeshMainInput).GetMesh();
 </pre>
+<p class="seealso">Added to in section <a href="TutorialCppSdk.html#codeblock-1:15">15</a></p>
 
-
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:13">13</a></p>
 </div>
-<p>An input contains <em>attributes</em> that are data attached to either points, vertices (a.k.a. face corners), faces or the mesh itself. Attribute could have any name, but some are standardized. For instance the point attribute <code>kOfxMeshAttribPointPosition</code> contains the position of points.
+<p>An input contains <em>attributes</em> that are data attached to either points, (face) corners, faces or the mesh itself. Attribute could have any name, but some are standardized. For instance the point attribute <code>kOfxMeshAttribPointPosition</code> contains the position of points.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Get Inputs <a href="TutorialCppSdk.html#1:3">3</a>} +=</span>
+<span class="codeblock_name" >{Get Inputs <a href="TutorialCppSdk.html#codeblock-1:14">14</a>} +=</span>
 <pre class="prettyprint">
-MfxAttributeProps input_positions;
-input_mesh.GetPointAttribute(kOfxMeshAttribPointPosition)
-	.FetchProperties(input_positions);
+MfxAttributeProps input_positions;
+input_mesh.GetPointAttribute(kOfxMeshAttribPointPosition)
+	.FetchProperties(input_positions);
 </pre>
+<p class="seealso">Added to in section <a href="TutorialCppSdk.html#codeblock-1:15">15</a></p>
 
-
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:13">13</a></p>
 </div>
 <p><strong>NB</strong> The type <code>MfxAttributeProps</code> contains actual data and one should avoid copying it around, which is why it is not returned but rather provided by reference to <code>FetchProperties()</code>. Other types so far were blind handles occupying little memory.
 </p>
@@ -349,127 +349,127 @@ input_mesh.GetPointAttribute(kOfxMeshAttribPointPosition)
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Get Parameters <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:16">{Get Parameters <a href="TutorialCppSdk.html#codeblock-1:16">16</a>}</span>
 <pre class="prettyprint">
-MfxParam&lt;double3&gt; translation_param = GetParam&lt;double3&gt;("translation");
-double3 translation = translation_param.GetValue();
+MfxParam&lt;double3&gt; translation_param = GetParam&lt;double3&gt;("translation");
+double3 translation = translation_param.GetValue();
 </pre>
 
-
-
+<p class="seealso">Redefined in section <a href="TutorialCppSdk.html#codeblock-1:17">17</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:13">13</a></p>
 </div>
 <p>Or, in a more compact way:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Get Parameters <a href="TutorialCppSdk.html#1:3">3</a>} :=</span>
+<span class="codeblock_name" >{Get Parameters <a href="TutorialCppSdk.html#codeblock-1:16">16</a>} :=</span>
 <pre class="prettyprint">
-double3 translation = GetParam&lt;double3&gt;("translation").GetValue();
+double3 translation = GetParam&lt;double3&gt;("translation").GetValue();
 </pre>
 
-
-
+<p class="seealso">Redefined in section <a href="TutorialCppSdk.html#codeblock-1:17">17</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:13">13</a></p>
 </div>
 <h4> 3.2.c. Allocate Output</h4>
 <p>Since in this first part we only translate the mesh, the size of the output is known already -- we copy properties from the input:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Estimate output size <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:18">{Estimate output size <a href="TutorialCppSdk.html#codeblock-1:18">18</a>}</span>
 <pre class="prettyprint">
-MfxMeshProps input_mesh_props;
-input_mesh.FetchProperties(input_mesh_props);
-int output_point_count = input_mesh_props.pointCount;
-int output_vertex_count = input_mesh_props.vertexCount;
-int output_face_count = input_mesh_props.faceCount;
-
-// Extra properties related to memory usage optimization
-int output_no_loose_edge = input_mesh_props.noLooseEdge;
-int output_constant_face_count = input_mesh_props.constantFaceCount;
+MfxMeshProps input_mesh_props;
+input_mesh.FetchProperties(input_mesh_props);
+int output_point_count = input_mesh_props.pointCount;
+int output_corner_count = input_mesh_props.cornerCount;
+int output_face_count = input_mesh_props.faceCount;
+
+// Extra properties related to memory usage optimization
+int output_no_loose_edge = input_mesh_props.noLooseEdge;
+int output_constant_face_size = input_mesh_props.constantFaceSize;
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:13">13</a></p>
 </div>
 <p>We can then allocate memory using the <code>Allocate()</code> method. Note that some objects like <code>MfxAttributes</code> have methods that can be called either only before or only after the memory allocation. Forwarding attributes, for instance, must occur priori to allocation (see bellow).
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Allocate output <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:19">{Allocate output <a href="TutorialCppSdk.html#codeblock-1:19">19</a>}</span>
 <pre class="prettyprint">
-MfxMesh output_mesh = GetInput(kOfxMeshMainOutput).GetMesh();
-
-<span class="nocode pln">{Forward Attributes, <a href="TutorialCppSdk.html#1:3">3</a>}</span>
-
-output_mesh.Allocate(
-	output_point_count,
-	output_vertex_count,
-	output_face_count,
-	output_no_loose_edge,
-	output_constant_face_count);
+MfxMesh output_mesh = GetInput(kOfxMeshMainOutput).GetMesh();
+
+<span class="nocode pln">{Forward Attributes, <a href="TutorialCppSdk.html#codeblock-1:20">20</a>}</span>
+
+output_mesh.Allocate(
+	output_point_count,
+	output_corner_count,
+	output_face_count,
+	output_no_loose_edge,
+	output_constant_face_size);
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:13">13</a></p>
 </div>
 <p><strong>NB</strong> The last two arguments of <code>Allocate</code> are optional, we'll come back on them later on.
 </p>
-<p>An output mesh needs at least the attributes <code>kOfxMeshAttribPointPosition</code> (on points), <code>kOfxMeshAttribVertexPoint</code> (on vertices) and <code>kOfxMeshAttribFaceCounts</code> (on faces, telling the number of corners per face).
+<p>An output mesh needs at least the attributes <code>kOfxMeshAttribPointPosition</code> (on points), <code>kOfxMeshAttribCornerPoint</code> (on corners) and <code>kOfxMeshPropFaceSize</code> (on faces, telling the number of corners per face).
 </p>
-<p><img src="../_static/TutorialCppSdk/main-attributes.png" alt="A mesh is at least defined by these three attributes. Vertices are listed in the same order then faces, their number being given by the face counts attribute.">
+<p><img src="../_static/TutorialCppSdk/main-attributes.png" alt="A mesh is at least defined by these three attributes. Corners are listed in the same order then faces, their number being given by the face size attribute.">
 </p>
 <p>Although we'll modify the position of the points, the two others attributes -- defining the connectivity of the mesh -- will remain identical. In such a case, we can <em>forward</em> them to the output, so that the same memory buffer is reused, without any copy:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Forward Attributes <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:20">{Forward Attributes <a href="TutorialCppSdk.html#codeblock-1:20">20</a>}</span>
 <pre class="prettyprint">
-output_mesh.GetVertexAttribute(kOfxMeshAttribVertexPoint)
-	.ForwardFrom(input_mesh.GetVertexAttribute(kOfxMeshAttribVertexPoint));
-
-output_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts)
-	.ForwardFrom(input_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts));
+output_mesh.GetCornerAttribute(kOfxMeshAttribCornerPoint)
+	.ForwardFrom(input_mesh.GetCornerAttribute(kOfxMeshAttribCornerPoint));
+
+output_mesh.GetFaceAttribute(kOfxMeshAttribFaceSize)
+	.ForwardFrom(input_mesh.GetFaceAttribute(kOfxMeshAttribFaceSize));
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:19">19</a></p>
 </div>
 <h4> 3.2.d. Computing Output</h4>
 <p>Once the output mesh has been allocated, we can get the <code>data</code> field of the <code>MfxAttributeProps</code> of the output points to a valid buffer that we can freely fill in.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Fill in output <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:21">{Fill in output <a href="TutorialCppSdk.html#codeblock-1:21">21</a>}</span>
 <pre class="prettyprint">
-MfxAttributeProps output_positions;
-output_mesh.GetPointAttribute(kOfxMeshAttribPointPosition)
-	.FetchProperties(output_positions);
-
-// (NB: This can totally benefit from parallelization using e.g. OpenMP)
-for (int i = 0 ; i &lt; output_point_count ; ++i) {
-	float *in_p = reinterpret_cast&lt;float*&gt;(input_positions.data + i * input_positions.stride);
-	float *out_p = reinterpret_cast&lt;float*&gt;(output_positions.data + i * output_positions.stride);
-	out_p[0] = in_p[0] + translation[0];
-	out_p[1] = in_p[1] + translation[1];
-	out_p[2] = in_p[2] + translation[2];
-}
+MfxAttributeProps output_positions;
+output_mesh.GetPointAttribute(kOfxMeshAttribPointPosition)
+	.FetchProperties(output_positions);
+
+// (NB: This can totally benefit from parallelization using e.g. OpenMP)
+for (int i = 0 ; i &lt; output_point_count ; ++i) {
+	float *in_p = reinterpret_cast&lt;float*&gt;(input_positions.data + i * input_positions.stride);
+	float *out_p = reinterpret_cast&lt;float*&gt;(output_positions.data + i * output_positions.stride);
+	out_p[0] = in_p[0] + translation[0];
+	out_p[1] = in_p[1] + translation[1];
+	out_p[2] = in_p[2] + translation[2];
+}
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:13">13</a></p>
 </div>
 <p>And finally we release the meshes. This will internally convert meshes to the host's representation (which for some attributes is the same).
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Release data <a href="TutorialCppSdk.html#1:3">3</a>}</span>
+<span class="codeblock_name" id="codeblock-1:22">{Release data <a href="TutorialCppSdk.html#codeblock-1:22">22</a>}</span>
 <pre class="prettyprint">
-output_mesh.Release();
-input_mesh.Release();
+output_mesh.Release();
+input_mesh.Release();
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:13">13</a></p>
 </div>
 <p>This concludes our first effect, which translates the object.
 </p>
@@ -483,207 +483,207 @@ input_mesh.Release();
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Define ArrayEffect <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:23">{Define ArrayEffect <a href="TutorialCppSdk.html#codeblock-1:23">23</a>}</span>
 <pre class="prettyprint">
-class ArrayEffect : public MfxEffect {
-public:
-	const char* GetName() override {
-		return "Array";
-	}
-protected:
-	OfxStatus Describe(OfxMeshEffectHandle descriptor) override {
-<span class="nocode pln">		{Describe ArrayEffect Inputs, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-<span class="nocode pln">		{Describe ArrayEffect Parameters, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-		return kOfxStatOK;
-	}
-
-	OfxStatus Cook(OfxMeshEffectHandle instance) override {
-<span class="nocode pln">		{Cook ArrayEffect, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-	}
-};
+class ArrayEffect : public MfxEffect {
+public:
+	const char* GetName() override {
+		return "Array";
+	}
+protected:
+	OfxStatus Describe(OfxMeshEffectHandle descriptor) override {
+<span class="nocode pln">		{Describe ArrayEffect Inputs, <a href="TutorialCppSdk.html#codeblock-1:24">24</a>}</span>
+<span class="nocode pln">		{Describe ArrayEffect Parameters, <a href="TutorialCppSdk.html#codeblock-1:25">25</a>}</span>
+		return kOfxStatOK;
+	}
+
+	OfxStatus Cook(OfxMeshEffectHandle instance) override {
+<span class="nocode pln">		{Cook ArrayEffect, <a href="TutorialCppSdk.html#codeblock-1:26">26</a>}</span>
+	}
+};
 </pre>
 
 
-<p class="seealso">Used in section <a href="TutorialCppSdk.html#1:2">2</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:7">7</a></p>
 </div>
 <p>Nothing new in the description, we define the standard input/output and some parameters:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Describe ArrayEffect Inputs <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:24">{Describe ArrayEffect Inputs <a href="TutorialCppSdk.html#codeblock-1:24">24</a>}</span>
 <pre class="prettyprint">
-AddInput(kOfxMeshMainInput);
-AddInput(kOfxMeshMainOutput);
+AddInput(kOfxMeshMainInput);
+AddInput(kOfxMeshMainOutput);
 </pre>
 
-<p class="seealso">Redefined in section <a href="TutorialCppSdk.html#1:5">5</a></p>
-
+<p class="seealso">Redefined in section <a href="TutorialCppSdk.html#codeblock-1:35">35</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:23">23</a></p>
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Describe ArrayEffect Parameters <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:25">{Describe ArrayEffect Parameters <a href="TutorialCppSdk.html#codeblock-1:25">25</a>}</span>
 <pre class="prettyprint">
-// Number of copies
-AddParam("count", 2)
-.Label("Count")
-.Range(0, 2147483647);
-
-// Translation added at each copy
-AddParam("translation", double3{0.0, 0.0, 0.0})
-.Label("Translation")
-.Range(double3{-10.0, -10.0, -10.0}, double3{10.0, 10.0, 10.0});
+// Number of copies
+AddParam("count", 2)
+.Label("Count")
+.Range(0, 2147483647);
+
+// Translation added at each copy
+AddParam("translation", double3{0.0, 0.0, 0.0})
+.Label("Translation")
+.Range(double3{-10.0, -10.0, -10.0}, double3{10.0, 10.0, 10.0});
 </pre>
-<p class="seealso">Added to in section <a href="TutorialCppSdk.html#1:5">5</a></p>
+<p class="seealso">Added to in section <a href="TutorialCppSdk.html#codeblock-1:34">34</a></p>
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:23">23</a></p>
 </div>
 <h3> 4.2. Cooking output with varying connectivity</h3>
 <p>The major change compared with the previous effect lies in the part that fills it in.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Cook ArrayEffect <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:26">{Cook ArrayEffect <a href="TutorialCppSdk.html#codeblock-1:26">26</a>}</span>
 <pre class="prettyprint">
-<span class="nocode pln">{Get Array inputs and parameters, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-<span class="nocode pln">{Allocate Array output, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-<span class="nocode pln">{Fill in Array output, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-
-output_mesh.Release();
-input_mesh.Release();
-return kOfxStatOK;
+<span class="nocode pln">{Get Array inputs and parameters, <a href="TutorialCppSdk.html#codeblock-1:27">27</a>}</span>
+<span class="nocode pln">{Allocate Array output, <a href="TutorialCppSdk.html#codeblock-1:28">28</a>}</span>
+<span class="nocode pln">{Fill in Array output, <a href="TutorialCppSdk.html#codeblock-1:29">29</a>}</span>
+
+output_mesh.Release();
+input_mesh.Release();
+return kOfxStatOK;
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:23">23</a></p>
 </div>
 <p>Getting input and parameter is pretty straightforward:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Get Array inputs and parameters <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:27">{Get Array inputs and parameters <a href="TutorialCppSdk.html#codeblock-1:27">27</a>}</span>
 <pre class="prettyprint">
-MfxMesh input_mesh = GetInput(kOfxMeshMainInput).GetMesh();
-MfxMeshProps input_props;
-input_mesh.FetchProperties(input_props);
-
-int count = GetParam&lt;int&gt;("count").GetValue();
-double3 translation = GetParam&lt;double3&gt;("translation").GetValue();
+MfxMesh input_mesh = GetInput(kOfxMeshMainInput).GetMesh();
+MfxMeshProps input_props;
+input_mesh.FetchProperties(input_props);
+
+int count = GetParam&lt;int&gt;("count").GetValue();
+double3 translation = GetParam&lt;double3&gt;("translation").GetValue();
 </pre>
-<p class="seealso">Added to in section <a href="TutorialCppSdk.html#1:5">5</a></p>
+<p class="seealso">Added to in sections <a href="TutorialCppSdk.html#codeblock-1:36">36</a> and <a href="TutorialCppSdk.html#codeblock-1:37">37</a></p>
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:26">26</a></p>
 </div>
 <p>Allocating memory just requires to multiply everything by the <code>count</code>. We don't forward anything this time.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Allocate Array output <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:28">{Allocate Array output <a href="TutorialCppSdk.html#codeblock-1:28">28</a>}</span>
 <pre class="prettyprint">
-MfxMesh output_mesh = GetInput(kOfxMeshMainOutput).GetMesh();
-
-<span class="nocode pln">{Add extra output attributes, <a href="TutorialCppSdk.html#1:5">5</a>}</span>
-
-output_mesh.Allocate(
-	input_props.pointCount * count,
-	input_props.vertexCount * count,
-	input_props.faceCount * count,
-	input_props.noLooseEdge,
-	input_props.constantFaceCount);
+MfxMesh output_mesh = GetInput(kOfxMeshMainOutput).GetMesh();
+
+<span class="nocode pln">{Add extra output attributes, <a href="TutorialCppSdk.html#codeblock-1:38">38</a>}</span>
+
+output_mesh.Allocate(
+	input_props.pointCount * count,
+	input_props.cornerCount * count,
+	input_props.faceCount * count,
+	input_props.noLooseEdge,
+	input_props.constantFaceSize);
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:26">26</a></p>
 </div>
-<p>This time we need to fill not only the output positions but also the connectivity information. The latter is provided by first the <code>kOfxMeshAttribFaceCounts</code> that gives for each face its number of corners, or <em>vertices</em>. The vertices are organized sequentially: vertex 1 of face 1, vertex 2 of face 1, ..., vertex 1 of face 2, etc. Each vertex corresponds to a point given by <code>kOfxMeshAttribVertexPoint</code>. So we get these attributes both from the input and from the output:
+<p>This time we need to fill not only the output positions but also the connectivity information. The latter is provided by first the <code>kOfxMeshAttribFaceSize</code> that gives for each face its number of corners, or <em>vertices</em>. The vertices are organized sequentially: corner 1 of face 1, corner 2 of face 1, ..., corner 1 of face 2, etc. Each corner corresponds to a point given by <code>kOfxMeshAttribCornerPoint</code>. So we get these attributes both from the input and from the output:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Fill in Array output <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:29">{Fill in Array output <a href="TutorialCppSdk.html#codeblock-1:29">29</a>}</span>
 <pre class="prettyprint">
-MfxAttributeProps input_positions, input_vert_points, input_face_counts;
-input_mesh.GetPointAttribute(kOfxMeshAttribPointPosition).FetchProperties(input_positions);
-input_mesh.GetVertexAttribute(kOfxMeshAttribVertexPoint).FetchProperties(input_vert_points);
-input_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts).FetchProperties(input_face_counts);
-
-MfxAttributeProps output_positions, output_vert_points, output_face_counts;
-output_mesh.GetPointAttribute(kOfxMeshAttribPointPosition).FetchProperties(output_positions);
-output_mesh.GetVertexAttribute(kOfxMeshAttribVertexPoint).FetchProperties(output_vert_points);
-output_mesh.GetFaceAttribute(kOfxMeshAttribFaceCounts).FetchProperties(output_face_counts);
+MfxAttributeProps input_positions, input_corner_points, input_face_size;
+input_mesh.GetPointAttribute(kOfxMeshAttribPointPosition).FetchProperties(input_positions);
+input_mesh.GetCornerAttribute(kOfxMeshAttribCornerPoint).FetchProperties(input_corner_points);
+input_mesh.GetFaceAttribute(kOfxMeshAttribFaceSize).FetchProperties(input_face_size);
+
+MfxAttributeProps output_positions, output_corner_points, output_face_size;
+output_mesh.GetPointAttribute(kOfxMeshAttribPointPosition).FetchProperties(output_positions);
+output_mesh.GetCornerAttribute(kOfxMeshAttribCornerPoint).FetchProperties(output_corner_points);
+output_mesh.GetFaceAttribute(kOfxMeshAttribFaceSize).FetchProperties(output_face_size);
 </pre>
-<p class="seealso">Added to in section <a href="TutorialCppSdk.html#1:5">5</a></p>
+<p class="seealso">Added to in sections <a href="TutorialCppSdk.html#codeblock-1:30">30</a> and <a href="TutorialCppSdk.html#codeblock-1:39">39</a></p>
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:26">26</a></p>
 </div>
-<p>Important note: when all faces have the same number of vertices (typically they are all triangles or quads), the host may set the <code>constantFaceCount</code> property to a non negative value. In such a case, the <code>kOfxMeshAttribFaceCounts</code> attribute must not be used (in order to save up memory).
+<p>Important note: when all faces have the same number of vertices (typically they are all triangles or quads), the host may set the <code>constantFaceSize</code> property to a non negative value. In such a case, the <code>kOfxMeshAttribFaceSize</code> attribute must not be used (in order to save up memory).
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Fill in Array output <a href="TutorialCppSdk.html#1:4">4</a>} +=</span>
+<span class="codeblock_name" >{Fill in Array output <a href="TutorialCppSdk.html#codeblock-1:29">29</a>} +=</span>
 <pre class="prettyprint">
-for (int k = 0 ; k &lt; count ; ++k) {
-<span class="nocode pln">	{Fill positions for the k-th copy, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-<span class="nocode pln">	{Fill vert_points for the k-th copy, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-	if (input_props.constantFaceCount &lt; 0) {
-<span class="nocode pln">		{Fill face_counts for the k-th copy, <a href="TutorialCppSdk.html#1:4">4</a>}</span>
-	}
-}
+for (int k = 0 ; k &lt; count ; ++k) {
+<span class="nocode pln">	{Fill positions for the k-th copy, <a href="TutorialCppSdk.html#codeblock-1:31">31</a>}</span>
+<span class="nocode pln">	{Fill vert_points for the k-th copy, <a href="TutorialCppSdk.html#codeblock-1:32">32</a>}</span>
+	if (input_props.constantFaceSize &lt; 0) {
+<span class="nocode pln">		{Fill face_size for the k-th copy, <a href="TutorialCppSdk.html#codeblock-1:33">33</a>}</span>
+	}
+}
 </pre>
-<p class="seealso">Added to in section <a href="TutorialCppSdk.html#1:5">5</a></p>
+<p class="seealso">Added to in sections <a href="TutorialCppSdk.html#codeblock-1:30">30</a> and <a href="TutorialCppSdk.html#codeblock-1:39">39</a></p>
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:26">26</a></p>
 </div>
 <p>Filling the output positions is not so different from the Translation effect, just be careful with the indices:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Fill positions for the k-th copy <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:31">{Fill positions for the k-th copy <a href="TutorialCppSdk.html#codeblock-1:31">31</a>}</span>
 <pre class="prettyprint">
-for (int i = 0 ; i &lt; input_props.pointCount ; ++i) {
-	int j = i + k * input_props.pointCount;
-	float *in_p = reinterpret_cast&lt;float*&gt;(input_positions.data + i * input_positions.stride);
-	float *out_p = reinterpret_cast&lt;float*&gt;(output_positions.data + j * output_positions.stride);
-	out_p[0] = in_p[0] + translation[0] * k;
-	out_p[1] = in_p[1] + translation[1] * k;
-	out_p[2] = in_p[2] + translation[2] * k;
-}
+for (int i = 0 ; i &lt; input_props.pointCount ; ++i) {
+	int j = i + k * input_props.pointCount;
+	float *in_p = reinterpret_cast&lt;float*&gt;(input_positions.data + i * input_positions.stride);
+	float *out_p = reinterpret_cast&lt;float*&gt;(output_positions.data + j * output_positions.stride);
+	out_p[0] = in_p[0] + translation[0] * k;
+	out_p[1] = in_p[1] + translation[1] * k;
+	out_p[2] = in_p[2] + translation[2] * k;
+}
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:30">30</a></p>
 </div>
-<p>Each k-th copy of the vertex references the copy k-th copy of the points, so adds an offset <code>k * input_props.pointCount</code> to the value
+<p>Each k-th copy of the corner references the copy k-th copy of the points, so adds an offset <code>k * input_props.pointCount</code> to the value
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Fill vert_points for the k-th copy <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:32">{Fill vert_points for the k-th copy <a href="TutorialCppSdk.html#codeblock-1:32">32</a>}</span>
 <pre class="prettyprint">
-for (int i = 0 ; i &lt; input_props.vertexCount ; ++i) {
-	int j = i + k * input_props.vertexCount;
-	int *in_p = reinterpret_cast&lt;int*&gt;(input_vert_points.data + i * input_vert_points.stride);
-	int *out_p = reinterpret_cast&lt;int*&gt;(output_vert_points.data + j * output_vert_points.stride);
-	out_p[0] = in_p[0] + k * input_props.pointCount;
-}
+for (int i = 0 ; i &lt; input_props.cornerCount ; ++i) {
+	int j = i + k * input_props.cornerCount;
+	int *in_p = reinterpret_cast&lt;int*&gt;(input_corner_points.data + i * input_corner_points.stride);
+	int *out_p = reinterpret_cast&lt;int*&gt;(output_corner_points.data + j * output_corner_points.stride);
+	out_p[0] = in_p[0] + k * input_props.pointCount;
+}
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:30">30</a></p>
 </div>
-<p>Face counts are just a simple repetition original values. If these values are contiguous in memory (i.e. the stride is <code>sizeof(int)</code>) this can be speed up using <code>memcpy</code>.
+<p>Face sizes are just a simple repetition original values. If these values are contiguous in memory (i.e. the stride is <code>sizeof(int)</code>) this can be speed up using <code>memcpy</code>.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Fill face_counts for the k-th copy <a href="TutorialCppSdk.html#1:4">4</a>}</span>
+<span class="codeblock_name" id="codeblock-1:33">{Fill face_size for the k-th copy <a href="TutorialCppSdk.html#codeblock-1:33">33</a>}</span>
 <pre class="prettyprint">
-for (int i = 0 ; i &lt; input_props.faceCount ; ++i) {
-	int j = i + k * input_props.faceCount;
-	int *in_p = reinterpret_cast&lt;int*&gt;(input_face_counts.data + i * input_face_counts.stride);
-	int *out_p = reinterpret_cast&lt;int*&gt;(output_face_counts.data + j * output_face_counts.stride);
-	out_p[0] = in_p[0];
-}
+for (int i = 0 ; i &lt; input_props.faceCount ; ++i) {
+	int j = i + k * input_props.faceCount;
+	int *in_p = reinterpret_cast&lt;int*&gt;(input_face_size.data + i * input_face_size.stride);
+	int *out_p = reinterpret_cast&lt;int*&gt;(output_face_size.data + j * output_face_size.stride);
+	out_p[0] = in_p[0];
+}
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:30">30</a></p>
 </div>
 </div>
 <a name="1:5"><div class="section"><h4>5. Manipulating UVs</h4></a>
@@ -691,84 +691,84 @@ for (int i = 0 ; i &lt; input_props.faceCount ; ++i) {
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Describe ArrayEffect Parameters <a href="TutorialCppSdk.html#1:4">4</a>} +=</span>
+<span class="codeblock_name" >{Describe ArrayEffect Parameters <a href="TutorialCppSdk.html#codeblock-1:25">25</a>} +=</span>
 <pre class="prettyprint">
-AddParam("offset_uv", false)
-.Label("Offset UVs");
+AddParam("offset_uv", false)
+.Label("Offset UVs");
 </pre>
+<p class="seealso">Added to in section <a href="TutorialCppSdk.html#codeblock-1:34">34</a></p>
 
-
-<p class="seealso">Used in section <a href="TutorialCppSdk.html#1:4">4</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:23">23</a></p>
 </div>
 <p>Then we will also need to tell the host that we will manipulate UV-related attributes. The attributes we've been using so far were the three mandatory attributes, so we did not have to, but for other attributes, one must call <code>RequestAttribute()</code>.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Describe ArrayEffect Inputs <a href="TutorialCppSdk.html#1:4">4</a>} :=</span>
+<span class="codeblock_name" >{Describe ArrayEffect Inputs <a href="TutorialCppSdk.html#codeblock-1:24">24</a>} :=</span>
 <pre class="prettyprint">
-AddInput(kOfxMeshMainInput)
-.RequestVertexAttribute(
-	"uv0",
-	2, kOfxMeshAttribTypeFloat,
-	kOfxMeshAttribSemanticTextureCoordinate,
-	false /* not mandatory */
-);
-
-AddInput(kOfxMeshMainOutput);
+AddInput(kOfxMeshMainInput)
+.RequestCornerAttribute(
+	"uv0",
+	2, MfxAttributeType::Float,
+	MfxAttributeSemantic::TextureCoordinate,
+	false /* not mandatory */
+);
+
+AddInput(kOfxMeshMainOutput);
 </pre>
 
-
-<p class="seealso">Used in section <a href="TutorialCppSdk.html#1:4">4</a></p>
+<p class="seealso">Redefined in section <a href="TutorialCppSdk.html#codeblock-1:35">35</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:23">23</a></p>
 </div>
-<p>The semantic <code>kOfxMeshAttribSemanticTextureCoordinate</code> may allow the host to display a context sensitive attribute picker to the user. Here we mean that the attribute should ideally (not <em>must</em> because we did not ask it to be mandatory) be a float2, represent texture coordinates, and that we'll refer to it as "uv0" during the cooking step.
+<p>The semantic <code>MfxAttributeSemantic::TextureCoordinate</code> may allow the host to display a context sensitive attribute picker to the user. Here we mean that the attribute should ideally (not <em>must</em> because we did not ask it to be mandatory) be a float2, represent texture coordinates, and that we'll refer to it as "uv0" during the cooking step.
 </p>
 <p>We may now retrieve this attribute at cook time. Since this attribute was not declared mandatory, we must check whether it is available with <code>HasAttribute()</code>.
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Get Array inputs and parameters <a href="TutorialCppSdk.html#1:4">4</a>} +=</span>
+<span class="codeblock_name" >{Get Array inputs and parameters <a href="TutorialCppSdk.html#codeblock-1:27">27</a>} +=</span>
 <pre class="prettyprint">
-bool offset_uv = GetParam&lt;bool&gt;("offset_uv").GetValue();
+bool offset_uv = GetParam&lt;bool&gt;("offset_uv").GetValue();
 </pre>
+<p class="seealso">Added to in sections <a href="TutorialCppSdk.html#codeblock-1:36">36</a> and <a href="TutorialCppSdk.html#codeblock-1:37">37</a></p>
 
-
-<p class="seealso">Used in section <a href="TutorialCppSdk.html#1:4">4</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:26">26</a></p>
 </div>
 
 <div class="codeblock">
-<span class="codeblock_name">{Get Array inputs and parameters <a href="TutorialCppSdk.html#1:4">4</a>} +=</span>
+<span class="codeblock_name" >{Get Array inputs and parameters <a href="TutorialCppSdk.html#codeblock-1:27">27</a>} +=</span>
 <pre class="prettyprint">
-MfxAttributeProps input_uv;
-if (offset_uv &amp;&amp; input_mesh.HasVertexAttribute("uv0")) {
-	input_mesh.GetVertexAttribute("uv0").FetchProperties(input_uv);
-	if (input_uv.componentCount &lt; 2 || input_uv.type != MfxAttributeType::Float) {
-		offset_uv = false; // incompatible type, so we deactivate this feature
-	}
-} else {
-	offset_uv = false; // no uv available, so here again we deactivate this feature
-}
+MfxAttributeProps input_uv;
+if (offset_uv &amp;&amp; input_mesh.HasCornerAttribute("uv0")) {
+	input_mesh.GetCornerAttribute("uv0").FetchProperties(input_uv);
+	if (input_uv.componentCount &lt; 2 || input_uv.type != MfxAttributeType::Float) {
+		offset_uv = false; // incompatible type, so we deactivate this feature
+	}
+} else {
+	offset_uv = false; // no uv available, so here again we deactivate this feature
+}
 </pre>
+<p class="seealso">Added to in sections <a href="TutorialCppSdk.html#codeblock-1:36">36</a> and <a href="TutorialCppSdk.html#codeblock-1:37">37</a></p>
 
-
-<p class="seealso">Used in section <a href="TutorialCppSdk.html#1:4">4</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:26">26</a></p>
 </div>
 <p>We must also add this UV attribute to the output. This must be done <em>before</em> memory allocation (so that there is memory allocated for this attribute).
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Add extra output attributes <a href="TutorialCppSdk.html#1:5">5</a>}</span>
+<span class="codeblock_name" id="codeblock-1:38">{Add extra output attributes <a href="TutorialCppSdk.html#codeblock-1:38">38</a>}</span>
 <pre class="prettyprint">
-if (offset_uv) {
-	output_mesh.AddVertexAttribute(
-		"uv0",
-		2, kOfxMeshAttribTypeFloat,
-		kOfxMeshAttribSemanticTextureCoordinate
-	);
-}
+if (offset_uv) {
+	output_mesh.AddCornerAttribute(
+		"uv0",
+		2, MfxAttributeType::Float,
+		MfxAttributeSemantic::TextureCoordinate
+	);
+}
 </pre>
 
 
-<p class="seealso">Used in section <a href="TutorialCppSdk.html#1:4">4</a></p>
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:28">28</a></p>
 </div>
 <p>Here again, a semantic hint is added to mean that this attribute should be interpreted by the host as a texture coordinate.
 </p>
@@ -778,45 +778,45 @@ if (offset_uv) {
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Fill in Array output <a href="TutorialCppSdk.html#1:4">4</a>} +=</span>
+<span class="codeblock_name" >{Fill in Array output <a href="TutorialCppSdk.html#codeblock-1:29">29</a>} +=</span>
 <pre class="prettyprint">
-if (offset_uv) {
-	MfxAttributeProps output_uv;
-	output_mesh.GetVertexAttribute("uv0").FetchProperties(output_uv);
-
-	for (int k = 0 ; k &lt; count ; ++k) {
-<span class="nocode pln">		{Offset UVs of k-th instance, <a href="TutorialCppSdk.html#1:5">5</a>}</span>
-	}
-}
-</pre>
-<p class="seealso">Added to in section <a href="TutorialCppSdk.html#1:4">4</a></p>
+if (offset_uv) {
+	MfxAttributeProps output_uv;
+	output_mesh.GetCornerAttribute("uv0").FetchProperties(output_uv);
 
-<p class="seealso">Used in section <a href="TutorialCppSdk.html#1:4">4</a></p>
+	for (int k = 0 ; k &lt; count ; ++k) {
+<span class="nocode pln">		{Offset UVs of k-th instance, <a href="TutorialCppSdk.html#codeblock-1:40">40</a>}</span>
+	}
+}
+</pre>
+<p class="seealso">Added to in sections <a href="TutorialCppSdk.html#codeblock-1:30">30</a> and <a href="TutorialCppSdk.html#codeblock-1:39">39</a></p>
+
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:26">26</a></p>
 </div>
 <p>We simply move UVs of other instance along the U axis:
 </p>
 
 <div class="codeblock">
-<span class="codeblock_name">{Offset UVs of k-th instance <a href="TutorialCppSdk.html#1:5">5</a>}</span>
+<span class="codeblock_name" id="codeblock-1:40">{Offset UVs of k-th instance <a href="TutorialCppSdk.html#codeblock-1:40">40</a>}</span>
 <pre class="prettyprint">
-for (int i = 0 ; i &lt; input_props.vertexCount ; ++i) {
-	int j = i + k * input_props.vertexCount;
-	float *in_p = reinterpret_cast&lt;float*&gt;(input_uv.data + i * input_uv.stride);
-	float *out_p = reinterpret_cast&lt;float*&gt;(output_uv.data + j * output_uv.stride);
-	out_p[0] = in_p[0] + k;
-	out_p[1] = in_p[1];
-}
+for (int i = 0 ; i &lt; input_props.cornerCount ; ++i) {
+	int j = i + k * input_props.cornerCount;
+	float *in_p = reinterpret_cast&lt;float*&gt;(input_uv.data + i * input_uv.stride);
+	float *out_p = reinterpret_cast&lt;float*&gt;(output_uv.data + j * output_uv.stride);
+	out_p[0] = in_p[0] + k;
+	out_p[1] = in_p[1];
+}
 </pre>
 
 
-
+<p class="seealso">Used in section <a href="TutorialCppSdk.html#codeblock-1:39">39</a></p>
 </div>
 <p><img src="../_static/TutorialCppSdk/final.png" alt="The final plugin used in Blender">
 </p>
 
 </div>
 <a name="1:6"><div class="section"><h4>6. Conclusion</h4></a>
-<p>You are thus able to write Open Mesh Effect plugins for any compatible host using C++. If you encounter any issue during the process feel free to report it on GitHub: <a href="https://github.com/eliemichel/OpenMeshEffect/issues">github.com/eliemichel/OpenMeshEffect/issues</a>.
+<p>You are thus able to write Open Mesh Effect plugins for any compatible host using C++. If you encounter any issue during the process feel free to report it on GitHub: <a href="https://github.com/eliemichel/OpenMfx/issues">github.com/eliemichel/OpenMfx/issues</a>.
 </p>
 
 </div>
