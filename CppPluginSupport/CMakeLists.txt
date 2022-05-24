@@ -16,7 +16,7 @@
 #
 # ***** END APACHE 2 LICENSE BLOCK *****
 
-file(GLOB SRC src/*.cpp src/*.h)
+file(GLOB SRC src/*/*.cpp src/*/*.h)
 
 # Dunno why we need to redefine this even though it has been defined
 # in parent directory but don't have time now to investigate. Redefining
