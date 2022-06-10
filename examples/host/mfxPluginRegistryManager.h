@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,12 @@
 
 #include "mfxPluginRegistry.h"
 
+/**
+ * This file exposes the 2 key methods of the PluginRegistryPool singleton to C files.
+ * XXX This is more or less obsolete as no C code uses it, but could still turn out to
+ * be useful one day (why not removing it in the meantime?)
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -39,7 +45,7 @@ extern "C" {
  */
 PluginRegistry *get_registry(const char *ofx_filepath);
 
-void release_registry(const char *ofx_filepath);
+void release_registry(const PluginRegistry *registry);
 
 #ifdef __cplusplus
 }

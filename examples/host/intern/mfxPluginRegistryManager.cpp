@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,15 @@
  * limitations under the License.
  */
 
-/** \file
- * \ingroup openmesheffect
- *
- * This is an implementation of an OpenFX host specialized toward the Mesh
- * Effect API (rather than the Image Effect API like most OpenFX host
- * implementations are.)
- */
+#include "mfxPluginRegistryManager.h"
+#include "PluginRegistryManager.h"
 
-#ifndef __MFX_HOST_H__
-#define __MFX_HOST_H__
-
-/**
- * This file defines the public C API for the Open Mesh Effect Host
- */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifdef __cplusplus
+PluginRegistry *get_registry(const char *ofx_filepath)
+{
+  return OpenMfx::PluginRegistryManager::GetInstance().getRegistry(ofx_filepath);
 }
-#endif
 
-#endif // __MFX_HOST_H__
+void release_registry(const PluginRegistry*registry)
+{
+  OpenMfx::PluginRegistryManager::GetInstance().releaseRegistry(registry);
+}

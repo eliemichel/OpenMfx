@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 #include <string.h>
 
-#include "util/memory_util.h"
-
 #include "mesh.h"
+#include "propertySuite.h"
+#include "meshEffectSuite.h"
+
+using namespace OpenMfx;
 
 // // OfxInputStruct
 
@@ -33,4 +35,20 @@ OfxMeshStruct::~OfxMeshStruct()
 void OfxMeshStruct::deep_copy_from(const OfxMeshStruct &other) {
   this->properties.deep_copy_from(other.properties);
   this->attributes.deep_copy_from(other.attributes);
+}
+
+void OfxMeshStruct::free_owned_data()
+{
+    void* data;
+    int is_owner;
+    for (int i = 0; i < attributes.count(); ++i) {
+        OfxAttributeStruct& attribute = attributes[i];
+        propGetPointer(&attribute.properties, kOfxMeshAttribPropData, 0, &data);
+        propGetInt(&attribute.properties, kOfxMeshAttribPropIsOwner, 0, &is_owner);
+        if (is_owner && NULL != data) {
+            delete[] static_cast<char*>(data);  // delete on void* is undefined behaviour
+        }
+        propSetPointer(&attribute.properties, kOfxMeshAttribPropData, 0, NULL);
+        propSetInt(&attribute.properties, kOfxMeshAttribPropIsOwner, 0, 0);
+    }
 }

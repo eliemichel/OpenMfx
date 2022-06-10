@@ -21,6 +21,8 @@
 
 // OpenFX Internal Extensions
 
+#include "ofxMeshEffect.h"
+
 /**
  * Implementation specific extensions to OpenFX Mesh Effect API.
  * These MUST NOT be used by plugins, but are here for communication between
@@ -35,7 +37,8 @@
  */
 #define kOfxMeshPropInternalData "OfxMeshPropInternalData"
 /**
- * Pointer to current ofx host
+ * As a member of a mesh effect, pointer to current raw ofx host
+ * As a member of a host, pointer to the C++ MfxHost
  */
 #define kOfxMeshPropHostHandle "OfxMeshPropHostHandle"
 
@@ -64,6 +67,19 @@ typedef OfxStatus (*BeforeMeshReleaseCbFunc)(OfxHost*, OfxMeshHandle);
 #define kOfxHostPropBeforeMeshGetCb "OfxHostPropBeforeMeshGetCb"
 
 typedef OfxStatus (*BeforeMeshGetCbFunc)(OfxHost*, OfxMeshHandle);
+
+/**
+ * Custom callback called before allocating mesh data.
+ * This can be used to allocate the mesh on host side rather than using the default
+ * allocation mechanism of the MfxHost.
+ *
+ * Callback signature must be:
+ *   OfxStatus callback(OfxHost *host, OfxPropertySetHandle meshHandle);
+ * (type BeforeMeshAllocateCbFunc)
+ */
+#define kOfxHostPropBeforeMeshAllocateCb "OfxHostPropBeforeMeshAllocateCb"
+
+typedef OfxStatus (*BeforeMeshAllocateCbFunc)(OfxHost*, OfxMeshHandle);
 
 /**
  * Internal property on attributes that are used to store attribute requests
