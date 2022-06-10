@@ -12,3 +12,5 @@ To begin with, there are sample plugins in the OpenMfx repository: `examples/plu
 `MfxVTK <https://github.com/tkarabela/MfxVTK>`_ provides effects from the `Visualization ToolKit <https://gitlab.kitware.com/vtk/vtk>`_ as an OpenMfx plug-in.
 
 `MfxHoudini <https://github.com/eliemichel/MfxHoudini>`_ is an OpenMfx plug-in that calls the `Houdini Engine <https://www.sidefx.com/products/houdini-engine/>`_ to be able to run any Houdini Digital Asset as a mesh effect.
+
+`MfxExamples <https://github.com/eliemichel/MfxExamples>`_ is a simple repository using the C++ SDK that one can use as a starter pack.
