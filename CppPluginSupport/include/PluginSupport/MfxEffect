@@ -1,1 +1,1 @@
-#include "../../src/MfxEffect.h"
+#include "../../src/PluginSupport/MfxEffect.h"

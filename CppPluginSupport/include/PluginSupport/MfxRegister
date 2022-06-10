@@ -1,1 +1,1 @@
-#include "../../src/MfxRegister.h"
+#include "../../src/PluginSupport/MfxRegister.h"

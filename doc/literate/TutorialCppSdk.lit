@@ -1,7 +1,7 @@
 
 @s Introduction
 
-Although one can use the raw C API, the C++ SDK is the easiest way to create an Open Mesh Effect plugin. We'll see in this tutorial how to write a simple plugins with a few effects bundled in it that you may then load as a modifier in [the Open Mesh Effect branch of Blender](https://github.com/eliemichel/OpenMfxForBlender).
+Although one can use the raw C API, the C++ SDK is the easiest way to create an OpenMfx plugin. We'll see in this tutorial how to write a simple plugins with a few effects bundled in it that you may then load as a modifier in [the OpenMfx branch of Blender](https://github.com/eliemichel/OpenMfxForBlender).
 
 **NB** This tutorial follows the principle of *literate programming*, which means that it is written primarily for human reading, but is also a complete and valid code base if one follows the `{Curly bracket titles}` to browse through code blocks. The code generated from this text is available [in the git repository](https://github.com/eliemichel/OpenMfx/tree/master/doc/literate/build/TutorialCppSdk).
 
@@ -206,7 +206,7 @@ int output_face_count = input_mesh_props.faceCount;
 
 // Extra properties related to memory usage optimization
 int output_no_loose_edge = input_mesh_props.noLooseEdge;
-int output_constant_face_count = input_mesh_props.constantFaceSize;
+int output_constant_face_size = input_mesh_props.constantFaceSize;
 ---
 
 We can then allocate memory using the `Allocate()` method. Note that some objects like `MfxAttributes` have methods that can be called either only before or only after the memory allocation. Forwarding attributes, for instance, must occur priori to allocation (see bellow).
@@ -221,14 +221,14 @@ output_mesh.Allocate(
 	output_corner_count,
 	output_face_count,
 	output_no_loose_edge,
-	output_constant_face_count);
+	output_constant_face_size);
 ---
 
 **NB** The last two arguments of `Allocate` are optional, we'll come back on them later on.
 
 An output mesh needs at least the attributes `kOfxMeshAttribPointPosition` (on points), `kOfxMeshAttribCornerPoint` (on corners) and `kOfxMeshAttribFaceSize` (on faces, telling the number of corners per face).
 
-![A mesh is at least defined by these three attributes. Corners are listed in the same order then faces, their number being given by the face counts attribute.](../_static/TutorialCppSdk/main-attributes.png)
+![A mesh is at least defined by these three attributes. Corners are listed in the same order then faces, their number being given by the face size attribute.](../_static/TutorialCppSdk/main-attributes.png)
 
 Although we'll modify the position of the points, the two others attributes -- defining the connectivity of the mesh -- will remain identical. In such a case, we can *forward* them to the output, so that the same memory buffer is reused, without any copy:
 
@@ -404,7 +404,7 @@ for (int i = 0 ; i < input_props.cornerCount ; ++i) {
 }
 ---
 
-Face counts are just a simple repetition original values. If these values are contiguous in memory (i.e. the stride is `sizeof(int)`) this can be speed up using `memcpy`.
+Face sizes are just a simple repetition original values. If these values are contiguous in memory (i.e. the stride is `sizeof(int)`) this can be speed up using `memcpy`.
 
 --- Fill face_size for the k-th copy
 for (int i = 0 ; i < input_props.faceCount ; ++i) {
@@ -430,15 +430,15 @@ Then we will also need to tell the host that we will manipulate UV-related attri
 AddInput(kOfxMeshMainInput)
 .RequestCornerAttribute(
 	"uv0",
-	2, kOfxMeshAttribTypeFloat,
-	kOfxMeshAttribSemanticTextureCoordinate,
+	2, MfxAttributeType::Float,
+	MfxAttributeSemantic::TextureCoordinate,
 	false /* not mandatory */
 );
 
 AddInput(kOfxMeshMainOutput);
 ---
 
-The semantic `kOfxMeshAttribSemanticTextureCoordinate` may allow the host to display a context sensitive attribute picker to the user. Here we mean that the attribute should ideally (not *must* because we did not ask it to be mandatory) be a float2, represent texture coordinates, and that we'll refer to it as "uv0" during the cooking step.
+The semantic `MfxAttributeSemantic::TextureCoordinate` may allow the host to display a context sensitive attribute picker to the user. Here we mean that the attribute should ideally (not *must* because we did not ask it to be mandatory) be a float2, represent texture coordinates, and that we'll refer to it as "uv0" during the cooking step.
 
 We may now retrieve this attribute at cook time. Since this attribute was not declared mandatory, we must check whether it is available with `HasAttribute()`.
 
@@ -464,8 +464,8 @@ We must also add this UV attribute to the output. This must be done *before* mem
 if (offset_uv) {
 	output_mesh.AddCornerAttribute(
 		"uv0",
-		2, kOfxMeshAttribTypeFloat,
-		kOfxMeshAttribSemanticTextureCoordinate
+		2, MfxAttributeType::Float,
+		MfxAttributeSemantic::TextureCoordinate
 	);
 }
 ---
