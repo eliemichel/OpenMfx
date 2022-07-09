@@ -42,4 +42,11 @@ struct MfxAttributeProps
     int componentCount;
     char* data;
     bool isOwner;
+
+    /**
+     * Compute a pointer to the index-th element of the data buffer.
+     * The template argument should be set with respect to `type`.
+     */
+    template<typename T>
+    T* at(int index) { return reinterpret_cast<T*>(data + index * stride); }
 };

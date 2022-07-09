@@ -45,11 +45,30 @@ public:
 	 * extra information like type, component count, stride, etc.
 	 * `Get*Attribute` methods are shortcuts for the different values allowed
 	 * for the `attachment` argument.
+	 * If the queried attribute does not exist, this throws a
+	 * \ref MfxSuiteException, you can use \ref HasAttribute to avoid throwing
+	 * this exception.
 	 */
 	MfxAttribute GetAttribute(MfxAttributeAttachment attachment, const char* name);
+
+	/**
+	 * Specialization of \ref GetAttribute for point attributes.
+	 */
 	MfxAttribute GetPointAttribute(const char* name);
+
+	/**
+	 * Specialization of \ref GetAttribute for corner attributes.
+	 */
 	MfxAttribute GetCornerAttribute(const char* name);
+
+	/**
+	 * Specialization of \ref GetAttribute for face attributes.
+	 */
 	MfxAttribute GetFaceAttribute(const char* name);
+
+	/**
+	 * Specialization of \ref GetAttribute for global mesh attributes.
+	 */
 	MfxAttribute GetMeshAttribute(const char* name);
 
 	/**
@@ -58,9 +77,25 @@ public:
 	 * for the `attachment` argument.
 	 */
     bool HasAttribute(MfxAttributeAttachment attachment, const char* name);
+
+    /**
+	 * Specialization of \ref HasAttribute for point attributes.
+	 */
     bool HasPointAttribute(const char* name);
+
+    /**
+	 * Specialization of \ref HasAttribute for corner attributes.
+	 */
     bool HasCornerAttribute(const char* name);
+
+    /**
+	 * Specialization of \ref HasAttribute for face attributes.
+	 */
     bool HasFaceAttribute(const char* name);
+
+    /**
+	 * Specialization of \ref HasAttribute for global mesh attributes.
+	 */
     bool HasMeshAttribute(const char* name);
 
 	/**
@@ -80,15 +115,55 @@ public:
 	 *
 	 * \see attributeDefine from ofxMeshEffect.h for more information.
 	 *
-	 * Call **only for output** meshes and before allocation:
-	 * 
-	 * TODO: Have the type argument use MfxAttributeType enum as defined in MfxAttributeProps.h
+	 * Call **only for output** meshes and before allocation.
 	 */
-	MfxAttribute AddAttribute(MfxAttributeAttachment attachment, const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
-	MfxAttribute AddPointAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
-	MfxAttribute AddCornerAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
-	MfxAttribute AddFaceAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
-	MfxAttribute AddMeshAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic = MfxAttributeSemantic::None);
+	MfxAttribute AddAttribute(
+		MfxAttributeAttachment attachment,
+		const char* name,
+		int componentCount,
+		MfxAttributeType type,
+		MfxAttributeSemantic semantic = MfxAttributeSemantic::None
+	);
+
+	/**
+	 * Specialization of \ref AddAttribute for point attributes.
+	 */
+	MfxAttribute AddPointAttribute(
+		const char* name,
+		int componentCount,
+		MfxAttributeType type,
+		MfxAttributeSemantic semantic = MfxAttributeSemantic::None
+	);
+
+	/**
+	 * Specialization of \ref AddAttribute for corner attributes.
+	 */
+	MfxAttribute AddCornerAttribute(
+		const char* name,
+		int componentCount,
+		MfxAttributeType type,
+		MfxAttributeSemantic semantic = MfxAttributeSemantic::None
+	);
+
+	/**
+	 * Specialization of \ref AddAttribute for face attributes.
+	 */
+	MfxAttribute AddFaceAttribute(
+		const char* name,
+		int componentCount,
+		MfxAttributeType type,
+		MfxAttributeSemantic semantic = MfxAttributeSemantic::None
+	);
+
+	/**
+	 * Specialization of \ref AddAttribute for global mesh attributes.
+	 */
+	MfxAttribute AddMeshAttribute(
+		const char* name,
+		int componentCount,
+		MfxAttributeType type,
+		MfxAttributeSemantic semantic = MfxAttributeSemantic::None
+	);
 
 	/**
 	 * Allocate memory for new owned attributes according to the previously
@@ -97,7 +172,13 @@ public:
 	 * forwarded from the input) and will hence not be newly allocate.
 	 * Call **only for output** meshes.
 	 */
-    void Allocate(int pointCount, int cornerCount, int faceCount, bool noLooseEdge=true, int constantFaceSize=-1);
+    void Allocate(
+    	int pointCount,
+    	int cornerCount,
+    	int faceCount,
+    	bool noLooseEdge=true,
+    	int constantFaceSize=-1
+    );
 
 private:
 	OfxMeshHandle m_mesh;

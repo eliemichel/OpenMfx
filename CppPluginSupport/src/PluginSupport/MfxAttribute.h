@@ -6,6 +6,11 @@
 #include "ofxCore.h"
 #include "ofxMeshEffect.h"
 
+/**
+ * An attribute is part of a mesh, it is an information attached to either each
+ * point, each corner, each face or only once for the whole mesh.
+ * See \ref MfxMesh::GetAttribute to get attribute objects.
+ */
 struct MfxAttribute : public MfxBase
 {
 private:
