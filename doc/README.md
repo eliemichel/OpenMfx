@@ -27,7 +27,11 @@ cd ../sphinx
 make html
 ```
 
-The documentation is generated in the `sphinx/_build/html` directory.
+The documentation is generated in the `sphinx/_build/html` directory, and can be uploaded using:
+
+```
+rsync -avz sphinx/_build/html/ exppad:/home/elie/www/openmesheffect
+```
 
 ### Misc
 
