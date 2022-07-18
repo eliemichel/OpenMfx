@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "iterator": "cpp",
-        "xhash": "cpp",
-        "xtree": "cpp",
-        "xutility": "cpp"
-    }
-}
