@@ -40,7 +40,15 @@ public:
 	void FetchTransform(double**matrix);
 
 	/**
-	 * Get an attribute of an input or output mesh.
+	 * Get an attribute of an input or output mesh by index.
+	 * The returned \ref MfxAttribute can be used to get the data buffer and
+	 * extra information like type, component count, stride, etc.
+	 * If the index is out of range, this throws a \ref MfxSuiteException.
+	 */
+	MfxAttribute GetAttributeByIndex(int index);
+		
+	/**
+	 * Get an attribute of an input or output mesh by attachment and name.
 	 * The returned \ref MfxAttribute can be used to get the data buffer and
 	 * extra information like type, component count, stride, etc.
 	 * `Get*Attribute` methods are shortcuts for the different values allowed

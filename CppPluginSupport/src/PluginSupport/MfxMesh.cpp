@@ -33,6 +33,13 @@ void MfxMesh::FetchTransform(double** matrix)
 	MFX_ENSURE(propertySuite->propGetPointer(m_properties, kOfxMeshPropTransformMatrix, 0, (void**)matrix));
 }
 
+MfxAttribute MfxMesh::GetAttributeByIndex(int index)
+{
+	OfxPropertySetHandle attribute;
+	MFX_ENSURE(meshEffectSuite->meshGetAttributeByIndex(m_mesh, index, &attribute));
+	return MfxAttribute(host(), attribute);
+}
+
 MfxAttribute MfxMesh::GetAttribute(MfxAttributeAttachment attachment, const char* name)
 {
 	const char* mfxAttachment = MfxAttribute::attributeAttachmentAsString(attachment);

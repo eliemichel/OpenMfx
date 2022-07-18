@@ -754,7 +754,30 @@ By default, the attribute data is not owned by the mesh (kOfxMeshAttribPropIsOwn
                               const char *semantic,
                               OfxPropertySetHandle *attributeHandle);
 
-  /** @brief Get an attribute handle from a mesh
+  /** @brief Get an attribute handle by index from a mesh
+
+      \arg meshHandle       - mesh handle
+      \arg index            - attribute index
+      \arg attributeHandle  - property set for returning attribute properties
+
+\pre
+ - meshHandle was returned by inputGetMesh
+ - attachment is a valid attachment
+
+\post
+ - attributeHandle is a valid attribute handle
+
+@returns
+- ::kOfxStatOK - the attribute was successfully fetched and returned in the handle,
+- ::kOfxStatErrBadIndex - the attribute could not be fetched because it does not exist, or the
+                          attachment is not valid.
+- ::kOfxStatErrBadHandle - the mesh handle was invalid,
+ */
+  OfxStatus(*meshGetAttributeByIndex)(OfxMeshHandle meshHandle,
+                               int index,
+                               OfxPropertySetHandle *attributeHandle);
+
+  /** @brief Get an attribute handle by name and attachment from a mesh 
 
       \arg meshHandle       - mesh handle
       \arg attachment       - attribute attachment (see \ref MeshAttrib)
