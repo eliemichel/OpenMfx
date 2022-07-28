@@ -59,6 +59,7 @@ const OfxMeshEffectSuiteV1 gMeshEffectSuiteV1 = {
     /* inputGetMesh */ inputGetMesh,
     /* inputReleaseMesh */ inputReleaseMesh,
     /* attributeDefine */ attributeDefine,
+    /* meshGetAttributeByIndex */ meshGetAttributeByIndex,
     /* meshGetAttribute */ meshGetAttribute,
     /* meshGetPropertySet */ meshGetPropertySet,
     /* meshAlloc */ meshAlloc,
@@ -287,6 +288,19 @@ OfxStatus attributeDefine(OfxMeshHandle meshHandle,
   }
   return kOfxStatOK;
 }
+
+OfxStatus meshGetAttributeByIndex(OfxMeshHandle meshHandle,
+                           int index,
+                           OfxPropertySetHandle *attributeHandle)
+{
+  if (index < 0 || index >= meshHandle->attributes.count()) {
+    return kOfxStatErrBadIndex;
+  }
+
+  *attributeHandle = &meshHandle->attributes[index].properties;
+  return kOfxStatOK;
+}
+
 
 OfxStatus meshGetAttribute(OfxMeshHandle meshHandle,
                            const char *attachment,
