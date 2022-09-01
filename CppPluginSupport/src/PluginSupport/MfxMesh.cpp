@@ -28,6 +28,14 @@ void MfxMesh::FetchProperties(MfxMeshProps& props)
     props.noLooseEdge = (bool)noLooseEdge;
 }
 
+MfxMesh MfxMesh::AllocateAndFetchIOMap(){
+	OfxMeshHandle map;
+	OfxPropertySetHandle meshProps;
+	MFX_ENSURE(propertySuite->propGetPointer(m_properties, kOfxMeshPropIOMap, 0, (void**)&map));
+	MFX_ENSURE(meshEffectSuite->meshGetPropertySet(map, &meshProps));
+	return MfxMesh(host(), map, meshProps);
+}
+
 void MfxMesh::FetchTransform(double** matrix)
 {
 	MFX_ENSURE(propertySuite->propGetPointer(m_properties, kOfxMeshPropTransformMatrix, 0, (void**)matrix));

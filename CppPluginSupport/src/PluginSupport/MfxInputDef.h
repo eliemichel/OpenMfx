@@ -46,6 +46,8 @@ public:
 	MfxInputDef & RequestFaceAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory);
 	MfxInputDef & RequestMeshAttribute(const char* name, int componentCount, MfxAttributeType type, MfxAttributeSemantic semantic, bool mandatory);
 
+	MfxInputDef& RequestIOMap(bool request = true);
+
 	/**
 	 * Set the geometry matrix dependency flag of this input.
 	 * By default, an input does depend on its geometry, but this may be turned off
