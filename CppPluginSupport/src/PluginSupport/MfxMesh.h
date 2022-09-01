@@ -36,7 +36,7 @@ public:
 	/**
 	 * Get the attribute map
 	 */
-	MfxMesh AllocateAndFetchIOMap();
+	MfxMesh AllocateAndFetchIOMap(int output_points_count, int origin_points_pool_size);
 
 	/**
 	 * Populate the provided pointer to float array with this mesh's transform matrix.

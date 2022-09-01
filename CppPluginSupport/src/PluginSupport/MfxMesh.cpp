@@ -28,11 +28,17 @@ void MfxMesh::FetchProperties(MfxMeshProps& props)
     props.noLooseEdge = (bool)noLooseEdge;
 }
 
-MfxMesh MfxMesh::AllocateAndFetchIOMap(){
+MfxMesh MfxMesh::AllocateAndFetchIOMap(int output_points_count, int origin_points_pool_size) {
 	OfxMeshHandle map;
 	OfxPropertySetHandle meshProps;
 	MFX_ENSURE(propertySuite->propGetPointer(m_properties, kOfxMeshPropIOMap, 0, (void**)&map));
 	MFX_ENSURE(meshEffectSuite->meshGetPropertySet(map, &meshProps));
+
+	MFX_ENSURE(propertySuite->propSetInt(meshProps, "OfxMeshPropIsAttributeMap", 0, 1));
+	MFX_ENSURE(propertySuite->propSetInt(meshProps, "OfxMeshPropOutputPointsCount", 0, output_points_count));
+	MFX_ENSURE(propertySuite->propSetInt(meshProps, "OfxMeshPropOriginPointsTotalPoolSize", 0, origin_points_pool_size));
+	MFX_ENSURE(meshEffectSuite->meshAlloc(map));
+
 	return MfxMesh(host(), map, meshProps);
 }
 

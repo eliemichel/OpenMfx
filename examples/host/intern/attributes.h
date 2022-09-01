@@ -46,11 +46,20 @@ enum class AttributeType {
   Float,  // kOfxMeshAttribTypeFloat
 };
 
+enum class AttributeSemantic {
+  None = -1,
+  TextureCoordinate,
+  Normal,
+  Color,
+  Weight,
+};
+
 }  // namespace OpenMfx
 
 struct OfxAttributeStruct {
   using AttributeType = OpenMfx::AttributeType;
   using AttributeAttachment = OpenMfx::AttributeAttachment;
+  using AttributeSemantic = OpenMfx::AttributeSemantic;
 
   OfxAttributeStruct();
 
@@ -64,7 +73,9 @@ struct OfxAttributeStruct {
 
   void deep_copy_from(const OfxAttributeStruct &other);
 
-  AttributeType type();
+  AttributeType type() const;
+  int componentCount() const;
+  AttributeSemantic semantic() const;
   AttributeAttachment attachment() const
   {
     return m_attachment;
@@ -84,7 +95,12 @@ struct OfxAttributeStruct {
  public:
   static AttributeAttachment attachmentAsEnum(const char *mfxAttachment);
   static AttributeType typeAsEnum(const char *mfxType);
+  static AttributeSemantic semanticAsEnum(const char* mfxSemantic);
   static int byteSizeOf(AttributeType type);
+
+  static const char* attachmentAsString(AttributeAttachment attachment);
+  static const char* typeAsString(AttributeType type);
+  static const char* semanticAsString(AttributeSemantic semantic);
 
  public:
   OfxPropertySetStruct properties;
