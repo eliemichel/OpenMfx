@@ -17,9 +17,19 @@
 # ***** END APACHE 2 LICENSE BLOCK *****
 
 cmake_minimum_required(VERSION 3.0...3.24)
-project(OpenMfx)
+project(
+	OpenMfx
+	VERSION 1.0
+	DESCRIPTION "A low-overhead mesh-processing plug-in API for cross-software procedural effects"
+	HOMEPAGE_URL "https://openmesheffect.org"
+	LANGUAGES C CXX
+)
+
+include(cmake/utils.cmake)
 
 option(OPENMFX_BUILD_EXAMPLES "Build example projects" OFF)
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Main target (C API)
 add_library(OpenMfx INTERFACE)
@@ -27,8 +37,7 @@ target_include_directories(OpenMfx INTERFACE include/)
 add_library(OpenMfx::Core ALIAS OpenMfx)
 
 # C++ API
-add_subdirectory(CppPluginSupport)
-add_library(OpenMfx::Sdk ALIAS CppPluginSupport)
+add_subdirectory(sdk)
 
 if (OPENMFX_BUILD_EXAMPLES)
 	add_subdirectory(examples)

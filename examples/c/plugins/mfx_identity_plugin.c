@@ -19,14 +19,23 @@
  * available attributes but there is no mechanism yet to query the list of existing attributes.
  */
 
-#include <stdbool.h>
-#include <string.h>
+#include <OpenMfx/Sdk/C/Common>
+#include <OpenMfx/Sdk/C/Plugin>
 
 #include "ofxCore.h"
 #include "ofxMeshEffect.h"
-#include "util/plugin_support.h"
 
-static OfxStatus describe(PluginRuntime *runtime, OfxMeshEffectHandle descriptor) {
+#include <stdbool.h>
+#include <string.h>
+
+#define getPointAttribute(...) mfxGetPointAttribute(runtime, __VA_ARGS__)
+#define getCornerAttribute(...) mfxGetCornerAttribute(runtime, __VA_ARGS__)
+#define getFaceAttribute(...) mfxGetFaceAttribute(runtime, __VA_ARGS__)
+#define copyAttribute(...) mfxCopyAttribute(__VA_ARGS__)
+
+static MfxPluginRuntime gRuntime;
+
+static OfxStatus describe(const MfxPluginRuntime* runtime, OfxMeshEffectHandle descriptor) {
     bool missing_suite =
         NULL == runtime->propertySuite ||
         NULL == runtime->parameterSuite ||
@@ -48,7 +57,7 @@ static OfxStatus describe(PluginRuntime *runtime, OfxMeshEffectHandle descriptor
     return kOfxStatOK;
 }
 
-static OfxStatus cook(PluginRuntime *runtime, OfxMeshEffectHandle instance) {
+static OfxStatus cook(const MfxPluginRuntime *runtime, OfxMeshEffectHandle instance) {
     const OfxMeshEffectSuiteV1 *meshEffectSuite = runtime->meshEffectSuite;
     const OfxPropertySuiteV1 *propertySuite = runtime->propertySuite;
     OfxTime time = 0;
@@ -92,17 +101,17 @@ static OfxStatus cook(PluginRuntime *runtime, OfxMeshEffectHandle instance) {
 
     // Fill in output data
 
-    Attribute input_pos, output_pos;
+    MfxAttributeProperties input_pos, output_pos;
     getPointAttribute(input_mesh, kOfxMeshAttribPointPosition, &input_pos);
     getPointAttribute(output_mesh, kOfxMeshAttribPointPosition, &output_pos);
     //copyAttribute(&output_pos, &input_pos, 0, input_point_count); // (uncomment when copying data)
 
-    Attribute input_cornerpoints, output_cornerpoint;
+    MfxAttributeProperties input_cornerpoints, output_cornerpoint;
     getPointAttribute(input_mesh, kOfxMeshAttribCornerPoint, &input_cornerpoints);
     getPointAttribute(output_mesh, kOfxMeshAttribCornerPoint, &output_cornerpoint);
     copyAttribute(&output_cornerpoint, &input_cornerpoints, 0, input_corner_count);
 
-    Attribute input_facesize, output_facesize;
+    MfxAttributeProperties input_facesize, output_facesize;
     getPointAttribute(input_mesh, kOfxMeshAttribFaceSize, &input_facesize);
     getPointAttribute(output_mesh, kOfxMeshAttribFaceSize, &output_facesize);
     copyAttribute(&output_facesize, &input_facesize, 0, input_face_count);
@@ -154,8 +163,7 @@ OfxExport int OfxGetNumberOfPlugins(void) {
 }
 
 OfxExport OfxPlugin *OfxGetPlugin(int nth) {
-    (void)nth;
-    static OfxPlugin plugin = {
+    static OfxPlugin plugin[] = { {
         /* pluginApi */          kOfxMeshEffectPluginApi,
         /* apiVersion */         kOfxMeshEffectPluginApiVersion,
         /* pluginIdentifier */   "MirrorPlugin",
@@ -163,6 +171,6 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth) {
         /* pluginVersionMinor */ 0,
         /* setHost */            setHost,
         /* mainEntry */          mainEntry
-    };
-    return &plugin;
+    } };
+    return &plugin[nth];
 }

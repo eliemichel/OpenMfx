@@ -78,7 +78,7 @@ target_link_libraries(
     OpenMfx::Core
 )
 
-set_property(TARGET OpenMfx_Sdk_Cpp_Host PROPERTY FOLDER "OpenMfx")
+set_property(TARGET OpenMfx_Sdk_Cpp_Host PROPERTY FOLDER "OpenMfx/Sdk/Cpp")
 add_library(OpenMfx::Sdk::Cpp::Host ALIAS OpenMfx_Sdk_Cpp_Host)
 # Alternate target alias for backward compatibility
 add_library(OpenMfx::Host ALIAS OpenMfx_Sdk_Cpp_Host)

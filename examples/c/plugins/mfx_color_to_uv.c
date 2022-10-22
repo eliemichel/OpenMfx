@@ -18,13 +18,22 @@
  * This plugin is a test for corner attributes, transfering corner colors to UVs.
  */
 
+#include <OpenMfx/Sdk/C/Common>
+#include <OpenMfx/Sdk/C/Plugin>
+
+#include "ofxCore.h"
+#include "ofxMeshEffect.h"
+
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
 
-#include "ofxCore.h"
-#include "ofxMeshEffect.h"
-#include "util/plugin_support.h"
+#define getPointAttribute(...) mfxGetPointAttribute(runtime, __VA_ARGS__)
+#define getCornerAttribute(...) mfxGetCornerAttribute(runtime, __VA_ARGS__)
+#define getFaceAttribute(...) mfxGetFaceAttribute(runtime, __VA_ARGS__)
+#define copyAttribute(...) mfxCopyAttribute(__VA_ARGS__)
+
+static MfxPluginRuntime gRuntime;
 
 static OfxStatus load() {
     return kOfxStatOK;
@@ -34,16 +43,16 @@ static OfxStatus unload() {
     return kOfxStatOK;
 }
 
-static OfxStatus describe(OfxMeshEffectHandle descriptor) {
+static OfxStatus describe(const MfxPluginRuntime* runtime, OfxMeshEffectHandle descriptor) {
     bool missing_suite =
-        NULL == gRuntime.propertySuite ||
-        NULL == gRuntime.parameterSuite ||
-        NULL == gRuntime.meshEffectSuite;
+        NULL == runtime->propertySuite ||
+        NULL == runtime->parameterSuite ||
+        NULL == runtime->meshEffectSuite;
     if (missing_suite) {
         return kOfxStatErrMissingHostFeature;
     }
-    const OfxMeshEffectSuiteV1 *meshEffectSuite = gRuntime.meshEffectSuite;
-    const OfxPropertySuiteV1 *propertySuite = gRuntime.propertySuite;
+    const OfxMeshEffectSuiteV1 *meshEffectSuite = runtime->meshEffectSuite;
+    const OfxPropertySuiteV1 *propertySuite = runtime->propertySuite;
 
     OfxPropertySetHandle inputProperties;
     meshEffectSuite->inputDefine(descriptor, kOfxMeshMainInput, NULL, &inputProperties);
@@ -57,16 +66,18 @@ static OfxStatus describe(OfxMeshEffectHandle descriptor) {
 }
 
 static OfxStatus createInstance(OfxMeshEffectHandle instance) {
+    (void)instance;
     return kOfxStatOK;
 }
 
 static OfxStatus destroyInstance(OfxMeshEffectHandle instance) {
+    (void)instance;
     return kOfxStatOK;
 }
 
-static OfxStatus cook(OfxMeshEffectHandle instance) {
-    const OfxMeshEffectSuiteV1 *meshEffectSuite = gRuntime.meshEffectSuite;
-    const OfxPropertySuiteV1 *propertySuite = gRuntime.propertySuite;
+static OfxStatus cook(const MfxPluginRuntime *runtime, OfxMeshEffectHandle instance) {
+    const OfxMeshEffectSuiteV1 *meshEffectSuite = runtime->meshEffectSuite;
+    const OfxPropertySuiteV1 *propertySuite = runtime->propertySuite;
     OfxTime time = 0;
     OfxStatus status;
 
@@ -118,23 +129,23 @@ static OfxStatus cook(OfxMeshEffectHandle instance) {
 
 
     // Fill in output data
-    Attribute input_pos, output_pos;
+    MfxAttributeProperties input_pos, output_pos;
     getPointAttribute(input_mesh, kOfxMeshAttribPointPosition, &input_pos);
     getPointAttribute(output_mesh, kOfxMeshAttribPointPosition, &output_pos);
     copyAttribute(&output_pos, &input_pos, 0, input_point_count);
 
-    Attribute input_cornerpoint, output_cornerpoint;
+    MfxAttributeProperties input_cornerpoint, output_cornerpoint;
     getCornerAttribute(input_mesh, kOfxMeshAttribCornerPoint, &input_cornerpoint);
     getCornerAttribute(output_mesh, kOfxMeshAttribCornerPoint, &output_cornerpoint);
     copyAttribute(&output_cornerpoint, &input_cornerpoint, 0, input_corner_count);
 
-    Attribute input_facesize, output_facesize;
+    MfxAttributeProperties input_facesize, output_facesize;
     getFaceAttribute(input_mesh, kOfxMeshAttribFaceSize, &input_facesize);
     getFaceAttribute(output_mesh, kOfxMeshAttribFaceSize, &output_facesize);
     copyAttribute(&output_facesize, &input_facesize, 0, input_face_count);
 
     if (NULL != vcolor_data) {
-      Attribute input_color, output_uv;
+      MfxAttributeProperties input_color, output_uv;
       getCornerAttribute(input_mesh, "color0", &input_color);
       getCornerAttribute(output_mesh, "uv0", &output_uv);
       copyAttribute(&output_uv, &input_color, 0, input_corner_count);
@@ -150,6 +161,8 @@ static OfxStatus mainEntry(const char *action,
                            const void *handle,
                            OfxPropertySetHandle inArgs,
                            OfxPropertySetHandle outArgs) {
+    (void)inArgs;
+    (void)outArgs;
     if (0 == strcmp(action, kOfxActionLoad)) {
         return load();
     }
@@ -157,7 +170,7 @@ static OfxStatus mainEntry(const char *action,
         return unload();
     }
     if (0 == strcmp(action, kOfxActionDescribe)) {
-        return describe((OfxMeshEffectHandle)handle);
+        return describe(&gRuntime, (OfxMeshEffectHandle)handle);
     }
     if (0 == strcmp(action, kOfxActionCreateInstance)) {
         return createInstance((OfxMeshEffectHandle)handle);
@@ -166,7 +179,7 @@ static OfxStatus mainEntry(const char *action,
         return destroyInstance((OfxMeshEffectHandle)handle);
     }
     if (0 == strcmp(action, kOfxMeshEffectActionCook)) {
-        return cook((OfxMeshEffectHandle)handle);
+        return cook(&gRuntime, (OfxMeshEffectHandle)handle);
     }
     return kOfxStatReplyDefault;
 }
@@ -185,7 +198,7 @@ OfxExport int OfxGetNumberOfPlugins(void) {
 }
 
 OfxExport OfxPlugin *OfxGetPlugin(int nth) {
-    static OfxPlugin plugin = {
+    static OfxPlugin plugin[] = { {
         /* pluginApi */          kOfxMeshEffectPluginApi,
         /* apiVersion */         kOfxMeshEffectPluginApiVersion,
         /* pluginIdentifier */   "CornerColor2Uv",
@@ -193,6 +206,6 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth) {
         /* pluginVersionMinor */ 0,
         /* setHost */            setHost,
         /* mainEntry */          mainEntry
-    };
-    return &plugin;
+    } };
+    return &plugin[nth];
 }

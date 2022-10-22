@@ -1,6 +1,6 @@
 # ***** BEGIN APACHE 2 LICENSE BLOCK *****
 #
-# Copyright 2019-2021 Elie Michel
+# Copyright 2019-2022 Elie Michel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,26 +16,59 @@
 #
 # ***** END APACHE 2 LICENSE BLOCK *****
 
-set(INC
-  .
-)
+macro(add_mfx_plugin Target)
+	set(options)
+  set(oneValueArgs)
+  set(multiValueArgs SRC LIBS)
+  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-macro(MFX_PLUGIN TARGET SRC LIB)
-	add_library(${TARGET} SHARED ${SRC})
-	target_include_directories(${TARGET} PRIVATE "${INC}")
-	target_link_libraries(${TARGET} PRIVATE "${LIB}")
-	set_property(TARGET ${TARGET} PROPERTY FOLDER "openmesheffect")
-	set_target_properties(${TARGET} PROPERTIES SUFFIX ".ofx" PREFIX "")
+	add_library(${Target} SHARED ${ARG_SRC})
+	set_target_properties(${Target} PROPERTIES SUFFIX ".ofx" PREFIX "")
+
+	target_link_libraries(
+		${Target}
+		PRIVATE
+			OpenMfx::Sdk::C::Plugin
+			${ARG_LIBS}
+	)
+
+	set_property(TARGET ${Target} PROPERTY FOLDER "OpenMfx/Examples")
+	target_treat_warnings_as_errors(${Target})
 endmacro()
 
-set(LIB
-  OpenMfx::Core
-  OpenMfx::Utils
+add_mfx_plugin(
+	plugin_sample_plugin
+	SRC
+		mfx_sample_plugin.c
 )
 
-MFX_PLUGIN(openmfx_sample_plugin mfx_sample_plugin.c "${LIB}")
-MFX_PLUGIN(openmfx_test_parameters_plugin mfx_test_parameters_plugin.c "${LIB}")
-MFX_PLUGIN(openmfx_identity_plugin mfx_identity_plugin.c "${LIB}")
-MFX_PLUGIN(openmfx_mirror_plugin mfx_mirror_plugin.c "${LIB}")
-MFX_PLUGIN(openmfx_color_to_uv mfx_color_to_uv.c "${LIB}")
-MFX_PLUGIN(openmfx_uv_transform mfx_uv_transform.c "${LIB}")
+add_mfx_plugin(
+	plugin_test_parameters_plugin
+	SRC
+		mfx_test_parameters_plugin.c
+)
+
+add_mfx_plugin(
+	plugin_identity_plugin
+	SRC
+		mfx_identity_plugin.c
+)
+
+add_mfx_plugin(
+	plugin_mirror_plugin
+	SRC
+		mfx_mirror_plugin.c
+)
+
+add_mfx_plugin(
+	plugin_color_to_uv
+	SRC
+		mfx_color_to_uv.c
+)
+
+add_mfx_plugin(
+	plugin_uv_transform
+	SRC
+		mfx_uv_transform.c
+)
+

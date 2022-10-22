@@ -18,7 +18,7 @@
  * Test plugin using all supported parameters types.
  */
 
-#include "util/ofx_util.h"
+#include <OpenMfx/Sdk/C/Common>
 
 #include "ofxCore.h"
 #include "ofxParam.h"
@@ -29,12 +29,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-
-#define MFX_CHECK(expr) \
-  status = runtime->expr; \
-  if (kOfxStatOK != status) { \
-    printf("%s returned error status: %d (%s)\n", #expr, status, getOfxStateName(status)); \
-  }
+#define ENSURE(XXX) MFX_ENSURE(runtime->XXX)
 
 typedef struct PluginRuntime {
     OfxHost *host;
@@ -61,77 +56,75 @@ static OfxStatus plugin0_describe(const PluginRuntime *runtime, OfxMeshEffectHan
         return kOfxStatErrMissingHostFeature;
     }
 
-    OfxStatus status;
     OfxPropertySetHandle propHandle;
 
-    MFX_CHECK(meshEffectSuite->getPropertySet(meshEffect, &propHandle));
+    ENSURE(meshEffectSuite->getPropertySet(meshEffect, &propHandle));
 
-    MFX_CHECK(propertySuite->propSetString(propHandle, kOfxMeshEffectPropContext, 0, kOfxMeshEffectContextFilter));
+    ENSURE(propertySuite->propSetString(propHandle, kOfxMeshEffectPropContext, 0, kOfxMeshEffectContextFilter));
 
     // Shall move into "describe in context" when it will exist
     OfxPropertySetHandle inputProperties;
-    MFX_CHECK(meshEffectSuite->inputDefine(meshEffect, kOfxMeshMainInput, NULL, &inputProperties));
+    ENSURE(meshEffectSuite->inputDefine(meshEffect, kOfxMeshMainInput, NULL, &inputProperties));
 
-    MFX_CHECK(propertySuite->propSetString(inputProperties, kOfxPropLabel, 0, "Main Input"));
+    ENSURE(propertySuite->propSetString(inputProperties, kOfxPropLabel, 0, "Main Input"));
 
-    //MFX_CHECK(propertySuite->propSetInt(inputProperties, kOfxInputPropRequireTransformMatrix, 0, 1));
+    //ENSURE(propertySuite->propSetInt(inputProperties, kOfxInputPropRequireTransformMatrix, 0, 1));
 
     OfxPropertySetHandle outputProperties;
-    MFX_CHECK(meshEffectSuite->inputDefine(meshEffect, kOfxMeshMainOutput, NULL, &outputProperties));
+    ENSURE(meshEffectSuite->inputDefine(meshEffect, kOfxMeshMainOutput, NULL, &outputProperties));
 
-    MFX_CHECK(propertySuite->propSetString(outputProperties, kOfxPropLabel, 0, "Main Output"));
+    ENSURE(propertySuite->propSetString(outputProperties, kOfxPropLabel, 0, "Main Output"));
 
     // Declare parameters
     OfxParamSetHandle parameters;
-    MFX_CHECK(meshEffectSuite->getParamSet(meshEffect, &parameters));
+    ENSURE(meshEffectSuite->getParamSet(meshEffect, &parameters));
 
     OfxPropertySetHandle paramProps;
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeInteger, "Count", &paramProps));
-    runtime->propertySuite->propSetInt(paramProps, kOfxParamPropDefault, 0, 15);
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeInteger, "Count", &paramProps));
+    ENSURE(propertySuite->propSetInt(paramProps, kOfxParamPropDefault, 0, 15));
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Count2D", &paramProps));
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Count2D", &paramProps));
     int int2D[2] = { 25, 87 };
-    runtime->propertySuite->propSetIntN(paramProps, kOfxParamPropDefault, 2, int2D);
+    ENSURE(propertySuite->propSetIntN(paramProps, kOfxParamPropDefault, 2, int2D));
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeInteger3D, "Count3D", &paramProps));
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeInteger3D, "Count3D", &paramProps));
     int int3D[3] = { 12, 45, 1569 };
-    runtime->propertySuite->propSetIntN(paramProps, kOfxParamPropDefault, 3, int3D);
+    ENSURE(propertySuite->propSetIntN(paramProps, kOfxParamPropDefault, 3, int3D));
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeDouble, "Distance", &paramProps));
-    runtime->propertySuite->propSetDouble(paramProps, kOfxParamPropDefault, 0, 17.0);
-    runtime->propertySuite->propSetDouble(paramProps, kOfxParamPropMin, 0, -10.0);
-    runtime->propertySuite->propSetDouble(paramProps, kOfxParamPropMax, 0, 110.0);
-    runtime->propertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMin, 0, 0.0);
-    runtime->propertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMax, 0, 100.0);
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeDouble, "Distance", &paramProps));
+    ENSURE(propertySuite->propSetDouble(paramProps, kOfxParamPropDefault, 0, 17.0));
+    ENSURE(propertySuite->propSetDouble(paramProps, kOfxParamPropMin, 0, -10.0));
+    ENSURE(propertySuite->propSetDouble(paramProps, kOfxParamPropMax, 0, 110.0));
+    ENSURE(propertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMin, 0, 0.0));
+    ENSURE(propertySuite->propSetDouble(paramProps, kOfxParamPropDisplayMax, 0, 100.0));
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeDouble2D, "Vector2D", &paramProps));
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeDouble2D, "Vector2D", &paramProps));
     double double2D[2] = { 12.89, 1.02369 };
-    runtime->propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 2, double2D);
+    ENSURE(propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 2, double2D));
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeDouble3D, "Vector3D", &paramProps));
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeDouble3D, "Vector3D", &paramProps));
     double double3D[3] = { -159.51, 0.00416, 2257896.123 };
-    runtime->propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 3, double3D);
+    ENSURE(propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 3, double3D));
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeRGB, "Color", &paramProps));
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeRGB, "Color", &paramProps));
     double rgb[3] = { 0.025363, 0.608, 0.62 };
-    runtime->propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 3, rgb);
+    ENSURE(propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 3, rgb));
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeRGBA, "RGBA Color", &paramProps));
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeRGBA, "RGBA Color", &paramProps));
     double rgba[4] = { 0.72, 0.058068, 0.14, 0.5 };
-    runtime->propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 4, rgba);
+    ENSURE(propertySuite->propSetDoubleN(paramProps, kOfxParamPropDefault, 4, rgba));
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeBoolean, "Enable Option", &paramProps));
-    runtime->propertySuite->propSetInt(paramProps, kOfxParamPropDefault, 0, (int)true);
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeBoolean, "Enable Option", &paramProps));
+    ENSURE(propertySuite->propSetInt(paramProps, kOfxParamPropDefault, 0, (int)true));
 
-    MFX_CHECK(parameterSuite->paramDefine(parameters, kOfxParamTypeString, "Description", &paramProps));
-    runtime->propertySuite->propSetString(paramProps, kOfxParamPropDefault, 0, "Description here!");
+    ENSURE(parameterSuite->paramDefine(parameters, kOfxParamTypeString, "Description", &paramProps));
+    ENSURE(propertySuite->propSetString(paramProps, kOfxParamPropDefault, 0, "Description here!"));
 
     return kOfxStatOK;
 }
 
 static OfxStatus plugin0_cook(PluginRuntime *runtime, OfxMeshEffectHandle meshEffect) {
-    OfxStatus status;
     OfxParamSetHandle parameters;
     OfxParamHandle param;
     int i1, i2, i3;
@@ -145,10 +138,10 @@ static OfxStatus plugin0_cook(PluginRuntime *runtime, OfxMeshEffectHandle meshEf
     OfxPropertySetHandle inputMeshProperties;
     OfxTime time = 0;
     OfxMeshHandle inputMesh;
-    MFX_CHECK(meshEffectSuite->inputGetHandle(meshEffect, kOfxMeshMainInput, &input, NULL));
-    MFX_CHECK(meshEffectSuite->inputGetMesh(input, time, &inputMesh, &inputMeshProperties));
+    ENSURE(meshEffectSuite->inputGetHandle(meshEffect, kOfxMeshMainInput, &input, NULL));
+    ENSURE(meshEffectSuite->inputGetMesh(input, time, &inputMesh, &inputMeshProperties));
     double *matrix;
-    MFX_CHECK(propertySuite->propGetPointer(inputMeshProperties, kOfxMeshPropTransformMatrix, 0, (void **)&matrix));
+    ENSURE(propertySuite->propGetPointer(inputMeshProperties, kOfxMeshPropTransformMatrix, 0, (void **)&matrix));
     printf("Input transform matrix: [\n");
     for (int i = 0; i < 4; ++i) {
       printf("[%f, %f, %f, %f],\n",
@@ -159,55 +152,55 @@ static OfxStatus plugin0_cook(PluginRuntime *runtime, OfxMeshEffectHandle meshEf
     }
     printf("]\n");
 
-    MFX_CHECK(meshEffectSuite->getParamSet(meshEffect, &parameters));
+    ENSURE(meshEffectSuite->getParamSet(meshEffect, &parameters));
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "Count", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &i1));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "Count", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &i1));
     printf(" - Parameter 'Count' (kOfxParamTypeInteger): %d\n", i1);
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "Count2D", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &i1, &i2));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "Count2D", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &i1, &i2));
     printf(" - Parameter 'Count2D' (kOfxParamTypeInteger2D): (%d, %d)\n", i1, i2);
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "Count3D", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &i1, &i2, &i3));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "Count3D", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &i1, &i2, &i3));
     printf(" - Parameter 'Count3D' (kOfxParamTypeInteger3D): (%d, %d, %d)\n", i1, i2, i3);
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "Distance", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &d1));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "Distance", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &d1));
     printf(" - Parameter 'Distance' (kOfxParamTypeDouble): %f\n", d1);
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "Vector2D", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &d1, &d2));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "Vector2D", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &d1, &d2));
     printf(" - Parameter 'Vector2D' (kOfxParamTypeDouble2D): (%f, %f)\n", d1, d2);
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "Vector3D", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &d1, &d2, &d3));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "Vector3D", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &d1, &d2, &d3));
     printf(" - Parameter 'Vector3D' (kOfxParamTypeDouble3D): (%f, %f, %f)\n", d1, d2, d3);
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "Color", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &d1, &d2, &d3));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "Color", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &d1, &d2, &d3));
     printf(" - Parameter 'Color' (kOfxParamTypeRGB): (%f, %f, %f)\n", d1, d2, d3);
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "RGBA Color", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &d1, &d2, &d3, &d4));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "RGBA Color", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &d1, &d2, &d3, &d4));
     printf(" - Parameter 'RGBA Color' (kOfxParamTypeRGBA): (%f, %f, %f, %f)\n", d1, d2, d3, d4);
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "Enable Option", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &b));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "Enable Option", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &b));
     printf(" - Parameter 'Enable Option' (kOfxParamTypeBoolean): (%s)\n", b ? "true" : "false");
 
-    MFX_CHECK(parameterSuite->paramGetHandle(parameters, "Description", &param, NULL));
-    MFX_CHECK(parameterSuite->paramGetValue(param, &str));
+    ENSURE(parameterSuite->paramGetHandle(parameters, "Description", &param, NULL));
+    ENSURE(parameterSuite->paramGetValue(param, &str));
     printf(" - Parameter 'Description' (kOfxParamTypeString): (%s)\n", str);
 
     // Also test messaging system
-    runtime->messageSuite->message(
-      meshEffect, kOfxMessageMessage, NULL, "mfx_test_parameters_plugin cooked successfully.");
-    runtime->messageSuite->setPersistentMessage(
-        meshEffect, kOfxMessageMessage, NULL, "mfx_test_parameters_plugin cooked successfully!");
-    runtime->messageSuite->setPersistentMessage(
-        meshEffect, kOfxMessageError, NULL, "oh no, an error!");
+    ENSURE(messageSuite->message(
+      meshEffect, kOfxMessageMessage, NULL, "mfx_test_parameters_plugin cooked successfully."));
+    ENSURE(messageSuite->setPersistentMessage(
+        meshEffect, kOfxMessageMessage, NULL, "mfx_test_parameters_plugin cooked successfully!"));
+    ENSURE(messageSuite->setPersistentMessage(
+        meshEffect, kOfxMessageError, NULL, "oh no, an error!"));
     
     return kOfxStatOK;
 }
@@ -216,6 +209,8 @@ static OfxStatus plugin0_mainEntry(const char *action,
                                    const void *handle,
                                    OfxPropertySetHandle inArgs,
                                    OfxPropertySetHandle outArgs) {
+    (void)inArgs;
+    (void)outArgs;
     if (0 == strcmp(action, kOfxActionLoad)) {
         return plugin0_load(&plugin0_runtime);
     }

@@ -1,6 +1,6 @@
 # ***** BEGIN APACHE 2 LICENSE BLOCK *****
 #
-# Copyright 2019-2021 Elie Michel
+# Copyright 2019-2022 Elie Michel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,5 @@
 #
 # ***** END APACHE 2 LICENSE BLOCK *****
 
-add_subdirectory(util)
-add_subdirectory(host)
-add_subdirectory(plugins)
+add_subdirectory(c)
+add_subdirectory(cpp)

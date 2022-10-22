@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdexcept>
 
-#include "ofxMeshEffect.h" // for kOfxMeshEffectPropContext
+#include "ofxMeshEffect.h"
 #include "ofxExtras.h" // for kOfxHostPropBeforeMeshReleaseCb
 
 #include "Allocator.h"
@@ -75,9 +75,9 @@ bool OfxPropertySetStruct::check_property_context(PropertySetContext context, Pr
       (0 == strcmp(property, kOfxMeshPropCornerCount)  && type == PROP_TYPE_INT)     ||
       (0 == strcmp(property, kOfxMeshPropFaceCount)    && type == PROP_TYPE_INT)     ||
       (0 == strcmp(property, kOfxMeshPropNoLooseEdge)  && type == PROP_TYPE_INT)     ||
-      (0 == strcmp(property, "OfxMeshPropIsAttributeMap")  && type == PROP_TYPE_INT)     || // TODO use defines
-      (0 == strcmp(property, "OfxMeshPropOutputPointsCount")  && type == PROP_TYPE_INT)     ||
-      (0 == strcmp(property, "OfxMeshPropOriginPointsTotalPoolSize")  && type == PROP_TYPE_INT)     ||
+      //(0 == strcmp(property, "OfxMeshPropIsAttributeMap")  && type == PROP_TYPE_INT)     || // TODO use defines
+      //(0 == strcmp(property, "OfxMeshPropOutputPointsCount")  && type == PROP_TYPE_INT)     ||
+      //(0 == strcmp(property, "OfxMeshPropOriginPointsTotalPoolSize")  && type == PROP_TYPE_INT)     ||
       (0 == strcmp(property, kOfxMeshPropConstantFaceSize) && type == PROP_TYPE_INT) ||
       (0 == strcmp(property, kOfxMeshPropAttributeCount) && type == PROP_TYPE_INT) ||
       (0 == strcmp(property, kOfxMeshPropTransformMatrix) && type == PROP_TYPE_POINTER) ||

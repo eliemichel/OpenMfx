@@ -35,7 +35,7 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-set_property(TARGET OpenMfx_Sdk_Cpp_Plugin PROPERTY FOLDER "OpenMfx")
+set_property(TARGET OpenMfx_Sdk_Cpp_Plugin PROPERTY FOLDER "OpenMfx/Sdk/Cpp")
 add_library(OpenMfx::Sdk::Cpp::Plugin ALIAS OpenMfx_Sdk_Cpp_Plugin)
 # Alternate target alias for backward compatibility
 add_library(OpenMfx::CppPluginSupport ALIAS OpenMfx_Sdk_Cpp_Plugin)
@@ -45,10 +45,10 @@ add_library(OpenMfx::CppPluginSupport ALIAS OpenMfx_Sdk_Cpp_Plugin)
 
 file(GLOB SRC src/BMesh/*.cpp src/BMesh/*.h)
 
-add_library(OpenMfx_Sdk_BMesh ${SRC})
+add_library(OpenMfx_Sdk_Cpp_BMesh ${SRC})
 
 target_link_libraries(
-    OpenMfx_Sdk_BMesh
+    OpenMfx_Sdk_Cpp_BMesh
     PUBLIC
         OpenMfx::Core
     PRIVATE
@@ -56,10 +56,10 @@ target_link_libraries(
 )
 
 target_include_directories(
-    OpenMfx_Sdk_BMesh
+    OpenMfx_Sdk_Cpp_BMesh
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-set_property(TARGET OpenMfx_Sdk_BMesh PROPERTY FOLDER "OpenMfx")
-add_library(OpenMfx::Sdk::BMesh ALIAS OpenMfx_Sdk_BMesh)
+set_property(TARGET OpenMfx_Sdk_Cpp_BMesh PROPERTY FOLDER "OpenMfx/Sdk/Cpp")
+add_library(OpenMfx::Sdk::Cpp::BMesh ALIAS OpenMfx_Sdk_Cpp_BMesh)
