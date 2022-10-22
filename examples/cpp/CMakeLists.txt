@@ -15,3 +15,5 @@
 # limitations under the License.
 #
 # ***** END APACHE 2 LICENSE BLOCK *****
+
+add_subdirectory(plugin)

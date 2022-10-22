@@ -18,9 +18,9 @@
 
 macro(add_mfx_plugin Target)
 	set(options)
-  set(oneValueArgs)
-  set(multiValueArgs SRC LIBS)
-  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+	set(oneValueArgs)
+	set(multiValueArgs SRC LIBS)
+	cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
 	add_library(${Target} SHARED ${ARG_SRC})
 	set_target_properties(${Target} PROPERTIES SUFFIX ".ofx" PREFIX "")

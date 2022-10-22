@@ -28,6 +28,7 @@ project(
 include(cmake/utils.cmake)
 
 option(OPENMFX_BUILD_EXAMPLES "Build example projects" OFF)
+option(OPENMFX_EXCLUDE_FROM_ALL "Exclude all OpenMfx targets from the BUILD_ALL target" OFF)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -42,3 +43,20 @@ add_subdirectory(sdk)
 if (OPENMFX_BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif ()
+
+# If this module is included as a subdirectory (or using FetchContent), we
+# remove all targets from BUILD_ALL so that the parts of the SDK that are not
+# used are not built by default
+if (NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+	set(OPENMFX_EXCLUDE_FROM_ALL ON)
+endif()
+if (OPENMFX_EXCLUDE_FROM_ALL)
+	message(STATUS "Removing OpenMfx targets from BUILD_ALL")
+	get_all_targets(${CMAKE_CURRENT_SOURCE_DIR} all_targets)
+	set_target_properties(
+		${all_targets}
+		PROPERTIES
+			EXCLUDE_FROM_ALL 1
+			EXCLUDE_FROM_DEFAULT_BUILD 1
+	)
+endif()

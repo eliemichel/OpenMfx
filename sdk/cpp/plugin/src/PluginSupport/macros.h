@@ -32,5 +32,7 @@ if (kOfxStatOK != status) { \
 
 using int2 = std::array<int,2>;
 using int3 = std::array<int,3>;
+using float2 = std::array<float, 2>;
+using float3 = std::array<float, 3>;
 using double2 = std::array<double,2>;
 using double3 = std::array<double,3>;
