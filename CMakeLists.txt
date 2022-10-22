@@ -1,6 +1,6 @@
 # ***** BEGIN APACHE 2 LICENSE BLOCK *****
 #
-# Copyright 2019-2021 Elie Michel
+# Copyright 2019-2022 Elie Michel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 #
 # ***** END APACHE 2 LICENSE BLOCK *****
 
-cmake_minimum_required(VERSION 3.0...3.18.4)
+cmake_minimum_required(VERSION 3.0...3.24)
 project(OpenMfx)
 
 option(OPENMFX_BUILD_EXAMPLES "Build example projects" OFF)

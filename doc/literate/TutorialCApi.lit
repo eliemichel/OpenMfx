@@ -19,6 +19,8 @@ We begin with a generic OpenFX skeleton:
 #include "ofxCore.h"
 #include "ofxMeshEffect.h"
 
+@{Global variables}
+
 @{Action handlers}
 
 static void setHost(OfxHost *host) {
@@ -101,14 +103,19 @@ So, at this point, our mainEntry functions relatives has become:
 
 --- Action handlers
 static OfxStatus load() {
+    @{Check that host supports mesh effects}
     return kOfxStatReplyDefault;
 }
 
 static OfxStatus unload() {
     return kOfxStatReplyDefault;
+    }
 }
 
 static OfxStatus describe(OfxMeshEffectHandle descriptor) {
+    @{Declare effect input}
+    @{Declare effect output}
+    @{Declare effect parameters}
     return kOfxStatReplyDefault;
 }
 
@@ -160,45 +167,28 @@ A suite is a set of functions defined by the host and called from plug-ins, grou
 
 The plug-in asks the host for suites using the `fetchSuite` function of an `OfxHost` variable. This is where the `setHost` function we defined at the beginning gets useful. We also need a global variable holding the returned suite.
 
-```C
-OfxMeshEffectSuiteV1 *gMeshEffectSuite; // global variable
+--- Global variables
+const OfxMeshEffectSuiteV1 *meshEffectSuite;
+const OfxPropertySuiteV1 *propertySuite;
+---
 
-static void setHost(OfxHost *host) {
-    gMeshEffectSuite = host->fetchSuite(
-        host->host, // host properties, might be useful to the host's internals
-        kOfxMeshEffectSuite, // name of the suite we want to fetch
-        1 // version of the suite
-    );
-}
-```
+--- Fetch host's function suites
+meshEffectSuite = host->fetchSuite(
+    host->host, // host properties, might be useful to the host's internals
+    kOfxMeshEffectSuite, // name of the suite we want to fetch
+    1 // version of the suite
+);
+---
 
 We are ensured by the standard that `setHost` is called before any action, but we need to check that the returned suite is valid. Indeed, a host is not required to implement all the suites. For instance, Natron does not implement the Mesh Effect suite, while on the contrary Blender does not implement the Image Effect suites.
 
 The check is expected to be carried in the `describe` action. If a required suite is found to be null, the special status `kOfxStatErrMissingHostFeature` must be returned.
 
-```C
-static void describe(OfxMeshEffectHandle descriptor) {
-    if (NULL == gMeshEffectSuite) {
-        return kOfxStatErrMissingHostFeature;
-    }
-    // ...
-    return kOfxStatReplyDefault;
+--- Check that host supports mesh effects
+if (NULL == meshEffectSuite) {
+    return kOfxStatErrMissingHostFeature;
 }
-```
-
-*NB: To prevent the proliferation of global variables when using several suites, which can lead to messy architectures, I like to define only one `gRuntime` global with such a struct:*
-
-```C
-typedef struct PluginRuntime {
-    OfxHost *host;
-    OfxPropertySuiteV1 *propertySuite;
-    OfxParameterSuiteV1 *parameterSuite;
-    OfxMeshEffectSuiteV1 *meshEffectSuite;
-} PluginRuntime;
-
-PluginRuntime gRuntime;
-```
-*The `gRuntime` can even be passed as a first argument to the action functions, so that only `mainEntry` relies on the global.*
+---
 
 @s Description
 
@@ -208,27 +198,28 @@ With these suites in hand, we will focus on how a plug-in describes itself to th
 
 We will start with the former. The mesh effect suite provides an `inputDefine` suite. It works like any suite function:
 
-```C
+--- Prototype
 OfxStatus function(Type1 arg1, Type2 arg2, ..., ReturnType *return)
-```
+---
 
 The suite function always return a status code, whose set of possible values may vary (see individual functions reference). You should check it, even though to make the code easier for you to read I will omit this here.
 
 The returned value(s) is (are) the last argument, which is a pointer telling where to write the result. This typically points to a local variable, which gives in our case:
 
-```C
+--- Declare effect input
 OfxMeshInputHandle input;
 OfxPropertySetHandle inputProperties;
 meshEffectSuite->inputDefine(descriptor, kOfxMeshMainInput, &input, &inputProperties);
-```
+@{Specify input name}
+---
 
 The standard describes inputs with *property sets*. These are basically key value stores like what Python calls a dictionary, or what JavaScript calls a JSON object. The `input` handle contains this property set plus it can be used to request attributes (see bellow).
 
 Its available fields are standardized, and some hosts may extend it with extra properties. For instance, the `kOfxPropLabel` field is the input label, set by:
 
-```C
+--- Specify input name
 propertySuite->propSetString(inputProperties, kOfxPropLabel, 0, "Main Input");
-```
+---
 
 With these three lines, we declared that our plug-in has a main input displayed as "Main Input". The identifier `kOfxMeshMainInput` is standardized for hosts such has Blender modifiers that need a main input, other inputs can have arbitrary identifiers.
 
@@ -236,11 +227,11 @@ With these three lines, we declared that our plug-in has a main input displayed 
 
 I am not sure that it will remain like this, but at the moment outputs are actually also defined as "inputs" in the terms used by the Mesh Effect API. So adding an output is as easy as:
 
-```C
+--- Declare effect output
 OfxPropertySetHandle outputProps;
 meshEffectSuite->inputDefine(descriptor, kOfxMeshMainOutput, &outputProps);
 propertySuite->propSetString(outputProps, kOfxPropLabel, 0, "Main Output");
-```
+---
 
 ### Parameters
 
@@ -248,14 +239,14 @@ The parameters are fields that users can edit, keyframe, etc. They are very diff
 
 The standard for parameters is the same as the one used by the Image Effect API, so you can check out its documentation as well. The effect descriptors (and instances) own an `OfxParamSetHandle` that is retrieved using the `getParamSet` function from the mesh effect suite, and then altered through the parameter suite:
 
-```C
+--- Declare effect parameters
 OfxParamSetHandle parameters;
 meshEffectSuite->getParamSet(meshEffect, &parameters);
 parameterSuite->paramDefine(parameters, kOfxParamTypeDouble, "width", NULL);
 parameterSuite->paramDefine(parameters, kOfxParamTypeDouble, "height", NULL);
 parameterSuite->paramDefine(parameters, kOfxParamTypeInteger, "axis", NULL);
 // ...
-```
+---
 
 @s Cooking
 
@@ -289,17 +280,19 @@ A mesh has a property set telling the number of points, vertices and faces in th
 
 To get a mesh from an input, the mesh effect suites provides a `inputGetMesh` function:
 
-```C
+--- Get input mesh
 OfxMeshInputHandle input;
 meshEffectSuite->inputGetHandle(instance, kOfxMeshMainInput, &input, NULL);
 
-OfxPropertySetHandle input_mesh;
-meshEffectSuite->inputGetMesh(input, time, &input_mesh);
-```
+OfxMeshHandle input_mesh;
+OfxPropertySetHandle input_mesh_props;
+OfxTime time = 0.0;
+meshEffectSuite->inputGetMesh(input, time, &input_mesh, &input_mesh_props);
+---
 
 From this input mesh, you can retrieve all the properties you need:
 
-```C
+--- Get input mesh attributes
 int input_point_count;
 propertySuite->propGetInt(input_mesh, kOfxMeshPropPointCount, 0, &input_point_count);
 
@@ -313,19 +306,19 @@ propertySuite->propGetPointer(point_position_attrib, kOfxMeshAttribPropStride, 0
 
 // Position of the i-th point is p[0], p[1], p[2]
 float* p = (float*)(point_position_buffer + i * point_stride);
-```
+---
 
 ### Output mesh
 
 Accessing the data pointers for outputs is done with the same steps than the input, at the difference that for the pointers to be valid, it must first get allocated. The mesh effect suites provides a function for this called `meshAlloc`.
 
-```C
+--- Allocate output mesh
 int output_point_count = 2 * input_point_count;
-propertySuite->propSetInt(input_mesh, kOfxMeshPropPointCount, 0, &output_point_count);
+propertySuite->propSetInt(output_mesh, kOfxMeshPropPointCount, 0, output_point_count);
 // [...] same for corner and face counts.
 
 meshEffectSuite->meshAlloc(output_mesh);
-```
+---
 
 You must call this function **before** getting data pointers using `kOfxMeshAttribPropData`, otherwise pointers will be null or invalid.
 
@@ -337,7 +330,7 @@ Whenever you use the `inputGetMesh`, you must then use `inputReleaseMesh` when y
 
 In our example of a simple mirror effect, the cooking function can be:
 
-```C
+--- Cook
 static OfxStatus cook(PluginRuntime *runtime, OfxMeshEffectHandle instance) { 
     OfxMeshEffectSuiteV1 *meshEffectSuite = runtime->meshEffectSuite;
     OfxPropertySuiteV1 *propertySuite = runtime->propertySuite;
@@ -471,7 +464,7 @@ static OfxStatus cook(PluginRuntime *runtime, OfxMeshEffectHandle instance) {
     meshEffectSuite->inputReleaseMesh(output_mesh);
     return kOfxStatOK;
 }
-```
+---
 
 You can already see from the code duplication between input and output data that you will quickly feel the need for some utility structures/functions, but I keep it simple for the example.
 

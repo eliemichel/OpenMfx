@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    id="svg4617"
    width="100"
    height="100"
    viewBox="0 0 100 99.999998"
    sodipodi:docname="openmesheffect.svg"
-   inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)"
-   inkscape:export-filename="E:\SourceCode\OpenMeshEffect\doc\images\openmesheffect.png"
-   inkscape:export-xdpi="130.56"
-   inkscape:export-ydpi="130.56">
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   inkscape:export-filename="openmfx.png"
+   inkscape:export-xdpi="737.28003"
+   inkscape:export-ydpi="737.28003"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <metadata
      id="metadata4623">
     <rdf:RDF>
@@ -25,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -150,9 +150,9 @@
      inkscape:window-height="1017"
      id="namedview4619"
      showgrid="false"
-     inkscape:zoom="2"
-     inkscape:cx="167.8441"
-     inkscape:cy="141.20178"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="39.332815"
+     inkscape:cy="70.710678"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -165,13 +165,16 @@
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0" />
+     fit-margin-bottom="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <g
      id="g1216"
      transform="translate(-2557.3404,-3033.255)">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24.9967px;line-height:1.25;font-family:Datalegreya;-inkscape-font-specification:Datalegreya;letter-spacing:0px;word-spacing:0px;fill:#242424;fill-opacity:1;stroke:#242424;stroke-width:0.804928;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24.9967px;line-height:1.25;font-family:Datalegreya;-inkscape-font-specification:Datalegreya;letter-spacing:0px;word-spacing:0px;fill:#242424;fill-opacity:1;stroke:#242424;stroke-width:1.105;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        x="2558.7219"
        y="3130.9973"
        id="text5234"
@@ -182,7 +185,7 @@
          id="tspan5232"
          x="2558.7219"
          y="3130.9973"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Datalegreya;-inkscape-font-specification:Datalegreya;fill:#242424;fill-opacity:1;stroke:#242424;stroke-width:0.804928;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Open Mfx</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Datalegreya;-inkscape-font-specification:Datalegreya;fill:#242424;fill-opacity:1;stroke:#242424;stroke-width:1.105;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Open Mfx</tspan></text>
     <g
        id="g5242"
        transform="matrix(0.82136842,0,0,0.82136842,-333.88123,2185.0234)"

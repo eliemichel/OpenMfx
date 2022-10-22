@@ -1,6 +1,6 @@
 # ***** BEGIN APACHE 2 LICENSE BLOCK *****
 #
-# Copyright 2019 Elie Michel
+# Copyright 2019-2022 Elie Michel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,26 +59,26 @@ set(SRC
   intern/util/binary_util.c
   intern/util/ofx_util.h
   intern/util/ofx_util.c
+
+  sdk/MfxAttributeProps.h
+  sdk/MfxAttributeProps.cpp
 )
 
-set(INC_PRIV
+add_library(OpenMfx_Sdk_Cpp_Host ${SRC})
+
+target_include_directories(
+  OpenMfx_Sdk_Cpp_Host
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-set(INC
-  ${CMAKE_CURRENT_SOURCE_DIR}
+target_link_libraries(
+  OpenMfx_Sdk_Cpp_Host
+  PRIVATE
+    OpenMfx::Core
 )
 
-set(LIB_PRIV
-  OpenMfx::Core
-)
-
-set(LIB
-  OpenMfx::Utils
-)
-
-add_library(OpenMfx_Host "${SRC}")
-target_include_directories(OpenMfx_Host PRIVATE "${INC_PRIV}" PUBLIC "${INC}")
-target_link_libraries(OpenMfx_Host PRIVATE "${LIB_PRIV}"  PUBLIC "${LIB}")
-
-set_property(TARGET OpenMfx_Host PROPERTY FOLDER "OpenMfx")
-add_library(OpenMfx::Host ALIAS OpenMfx_Host)
+set_property(TARGET OpenMfx_Sdk_Cpp_Host PROPERTY FOLDER "OpenMfx")
+add_library(OpenMfx::Sdk::Cpp::Host ALIAS OpenMfx_Sdk_Cpp_Host)
+# Alternate target alias for backward compatibility
+add_library(OpenMfx::Host ALIAS OpenMfx_Sdk_Cpp_Host)

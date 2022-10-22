@@ -42,10 +42,11 @@ void OfxAttributeStruct::deep_copy_from(const OfxAttributeStruct &other)
   properties.deep_copy_from(other.properties);
 }
 
-AttributeType OfxAttributeStruct::type()
+AttributeType OfxAttributeStruct::type() const
 {
     char* stringType;
-    propGetString(&properties, kOfxMeshAttribPropType, 0, &stringType);
+    OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
+    propGetString(mutableProperties, kOfxMeshAttribPropType, 0, &stringType);
 
     if (0 == strcmp(stringType, kOfxMeshAttribTypeUByte)) {
         return AttributeType::UByte;
@@ -59,6 +60,39 @@ AttributeType OfxAttributeStruct::type()
     else {
         return AttributeType::Invalid;
     }
+}
+
+int OfxAttributeStruct::componentCount() const
+{
+  int count;
+  OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
+  propGetInt(mutableProperties, kOfxMeshAttribPropComponentCount, 0, &count);
+  return count;
+}
+
+AttributeSemantic OfxAttributeStruct::semantic() const
+{
+  char *stringSemantic;
+  OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
+  propGetString(mutableProperties, kOfxMeshAttribPropSemantic, 0, &stringSemantic);
+  if (stringSemantic == NULL) {
+    return AttributeSemantic::None;
+  }
+  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticColor)) {    
+    return AttributeSemantic::Color;
+  }
+  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticTextureCoordinate)) {
+    return AttributeSemantic::TextureCoordinate;
+  }
+  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticNormal)) {
+    return AttributeSemantic::Normal;
+  }
+  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticWeight)) {
+    return AttributeSemantic::Weight;
+  }
+  else {
+    return AttributeSemantic::None;
+  }
 }
 
 void OfxAttributeStruct::setIndex(const Index& index)
@@ -105,6 +139,27 @@ AttributeType OfxAttributeStruct::typeAsEnum(const char* mfxType)
     return AttributeType::Invalid;
 }
 
+AttributeSemantic OfxAttributeStruct::semanticAsEnum(const char* mfxSemantic)
+{
+    if (nullptr == mfxSemantic) {
+        return AttributeSemantic::None;
+    }
+    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticTextureCoordinate)) {
+        return AttributeSemantic::TextureCoordinate;
+    }
+    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticNormal)) {
+        return AttributeSemantic::Normal;
+    }
+    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticColor)) {
+        return AttributeSemantic::Color;
+    }
+    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticWeight)) {
+        return AttributeSemantic::Weight;
+    }
+    printf("Warning: unknown attribute semantic: %s\n", mfxSemantic);
+    return AttributeSemantic::None;
+}
+
 int OfxAttributeStruct::byteSizeOf(AttributeType type)
 {
     switch (type)
@@ -118,6 +173,52 @@ int OfxAttributeStruct::byteSizeOf(AttributeType type)
     default:
         printf("Error: unsupported attribute type: %d\n", type);
         return 0;
+    }
+}
+
+const char* OfxAttributeStruct::attachmentAsString(AttributeAttachment attachment)
+{
+    switch (attachment) {
+    case AttributeAttachment::Point:
+        return kOfxMeshAttribPoint;
+    case AttributeAttachment::Corner:
+        return kOfxMeshAttribCorner;
+    case AttributeAttachment::Face:
+        return kOfxMeshAttribFace;
+    case AttributeAttachment::Mesh:
+        return kOfxMeshAttribMesh;
+    default:
+        return nullptr;
+    }
+}
+
+const char* OfxAttributeStruct::typeAsString(AttributeType type)
+{
+    switch (type) {
+    case AttributeType::Float:
+        return kOfxMeshAttribTypeFloat;
+    case AttributeType::Int:
+        return kOfxMeshAttribTypeInt;
+    case AttributeType::UByte:
+        return kOfxMeshAttribTypeUByte;
+    default:
+        return nullptr;
+    }
+}
+
+const char* OfxAttributeStruct::semanticAsString(AttributeSemantic semantic)
+{
+    switch (semantic) {
+    case AttributeSemantic::Color:
+        return kOfxMeshAttribSemanticColor;
+    case AttributeSemantic::Normal:
+        return kOfxMeshAttribSemanticNormal;
+    case AttributeSemantic::TextureCoordinate:
+        return kOfxMeshAttribSemanticTextureCoordinate;
+    case AttributeSemantic::Weight:
+        return kOfxMeshAttribSemanticWeight;
+    default:
+        return nullptr;
     }
 }
 

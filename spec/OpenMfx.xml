@@ -1,0 +1,25 @@
+<suite name="OfxMeshEffectSuiteV1">
+	<procedure name="getPropertySet">
+		<brief>
+			Retrieves the property set for the given mesh effect.
+		</brief>
+		<argument name="meshEffect" type="OfxMeshEffectHandle">
+			Mesh effect to get the property set for.
+		</argument>
+		<argument name="propHandle" type="OfxPropertySetHandle*">
+			Pointer to a the property set pointer, value is returned here.
+		</argument>
+		<info>
+			The property handle is for the duration of the mesh effect handle.
+		</info>
+		<return status="kOfxStatOK">
+			The property set was found and returned.
+		</return>
+		<return status="kOfxStatErrBadHandle">
+			The paramter handle is invalid.
+		</return>
+		<return status="kOfxStatErrUnknown">
+			The type is unknown.
+		</return>
+	</procedure>
+</suite>
