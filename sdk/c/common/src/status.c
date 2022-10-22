@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "ofx_util.h"
+#include "status.h"
 
 const char * ofxStatusName(OfxStatus status) {
   static const char *names[] = {

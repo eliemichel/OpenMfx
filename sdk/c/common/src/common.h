@@ -18,6 +18,6 @@
 #define __MFX_SDK_COMMON__
 
 #include "macro.h"
-#include "ofx_util.h"
+#include "status.h"
 
 #endif // __MFX_SDK_COMMON__
