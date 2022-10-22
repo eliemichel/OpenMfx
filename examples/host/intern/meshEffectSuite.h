@@ -67,8 +67,8 @@ OfxStatus attributeDefine(OfxMeshHandle meshHandle,
                           const char *semantic,
                           OfxPropertySetHandle *attributeHandle);
 OfxStatus meshGetAttributeByIndex(OfxMeshHandle meshHandle,
-                           int index,
-                           OfxPropertySetHandle *attributeHandle);
+                                  int index,
+                                  OfxPropertySetHandle *attributeHandle);
 OfxStatus meshGetAttribute(OfxMeshHandle meshHandle,
                            const char *attachment,
                            const char *name,
