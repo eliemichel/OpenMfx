@@ -10,8 +10,8 @@
 
 #include "util/ofx_util.h"
 #include "ofxExtras.h"
+#include "Logger.h"
 
-#include <cstdio>
 #include <cstring>
 
 using namespace OpenMfx;
@@ -64,19 +64,19 @@ bool MfxHost::LoadPlugin(OfxPlugin* plugin) {
 	plugin->setHost(RawHost());
 
 	status = plugin->mainEntry(kOfxActionLoad, NULL, NULL, NULL);
-	printf("%s action returned status %d (%s)\n", kOfxActionLoad, status, getOfxStatusName(status));
+	LOG << kOfxActionLoad << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatReplyDefault:
-		printf("WARNING: The plugin '%s' ignored load action.\n", plugin->pluginIdentifier);
+		WARN_LOG << "The plugin " << plugin->pluginIdentifier << " ignored load action.";
 		return true;
 
 	case kOfxStatFailed:
-		printf("ERROR: The load action failed, no further actions will be passed to the plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "The load action failed, no further actions will be passed to the plug-in '" << plugin->pluginIdentifier << "'.";
 		return false;
 
 	case kOfxStatErrFatal:
-		printf("ERROR: Fatal error while loading the plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Fatal error while loading the plug-in '" << plugin->pluginIdentifier << "'.";
 		return false;
 
 	default:
@@ -89,15 +89,15 @@ void MfxHost::UnloadPlugin(OfxPlugin* plugin) {
 	OfxStatus status;
 
 	status = plugin->mainEntry(kOfxActionUnload, NULL, NULL, NULL);
-	printf("%s action returned status %d (%s)\n", kOfxActionUnload, status, getOfxStatusName(status));
+	LOG << kOfxActionUnload << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatReplyDefault:
-		printf("WARNING: The plugin '%s' ignored unload action.\n", plugin->pluginIdentifier);
+		WARN_LOG << "The plugin " << plugin->pluginIdentifier << " ignored unload action.";
 		break;
 
 	case kOfxStatErrFatal:
-		printf("ERROR: Fatal error while unloading the plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Fatal error while unloading the plug-in '" << plugin->pluginIdentifier << "'.";
 		break;
 	}
 
@@ -113,23 +113,23 @@ bool MfxHost::GetDescriptor(OfxPlugin* plugin, OfxMeshEffectHandle & effectDescr
 	effectHandle = new OfxMeshEffectStruct(RawHost(), plugin);
 
 	status = plugin->mainEntry(kOfxActionDescribe, effectHandle, NULL, NULL);
-	printf("%s action returned status %d (%s)\n", kOfxActionDescribe, status, getOfxStatusName(status));
+	LOG << kOfxActionDescribe << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatErrMissingHostFeature:
-		printf("ERROR: The plugin '%s' lacks some host feature.\n", plugin->pluginIdentifier); // see message
+		ERR_LOG << "The plugin '" << plugin->pluginIdentifier << "' lacks some host feature.";
 		break;
 
 	case kOfxStatErrMemory:
-		printf("ERROR: Not enough memory for plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Not enough memory for plug-in '" << plugin->pluginIdentifier << "'";
 		break;
 
 	case kOfxStatFailed:
-		printf("ERROR: Error while describing plug-in '%s'.\n", plugin->pluginIdentifier); // see message
+		ERR_LOG << "Error while describing plug-in '" << plugin->pluginIdentifier << "'";
 		break;
 
 	case kOfxStatErrFatal:
-		printf("ERROR: Fatal error while describing plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Fatal error while describing plug-in '" << plugin->pluginIdentifier << "'";
 		break;
 
 	default:
@@ -172,19 +172,19 @@ bool MfxHost::CreateInstance(OfxMeshEffectHandle effectDescriptor, OfxMeshEffect
 	}
 
 	status = plugin->mainEntry(kOfxActionCreateInstance, instance, NULL, NULL);
-	printf("%s action returned status %d (%s)\n", kOfxActionCreateInstance, status, getOfxStatusName(status));
+	LOG << kOfxActionCreateInstance << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatErrMemory:
-		printf("ERROR: Not enough memory for plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Not enough memory for plug-in '" << plugin->pluginIdentifier << "'";
 		break;
 
 	case kOfxStatFailed:
-		printf("ERROR: Error while creating an instance of plug-in '%s'.\n", plugin->pluginIdentifier); // see message
+		ERR_LOG << "Error while creating an instance of plug-in '" << plugin->pluginIdentifier << "'";
 		break;
 
 	case kOfxStatErrFatal:
-		printf("ERROR: Fatal error while creating an instance of plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Fatal error while creating an instance of plug-in '" << plugin->pluginIdentifier << "'";
 		break;
 
 	default:
@@ -210,15 +210,15 @@ void MfxHost::DestroyInstance(OfxMeshEffectHandle effectInstance) {
 	OfxPlugin* plugin = effectInstance->plugin;
 
 	status = plugin->mainEntry(kOfxActionDestroyInstance, effectInstance, NULL, NULL);
-	printf("%s action returned status %d (%s)\n", kOfxActionDestroyInstance, status, getOfxStatusName(status));
+	LOG << kOfxActionDestroyInstance << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatFailed:
-		printf("ERROR: Error while destroying an instance of plug-in '%s'.\n", plugin->pluginIdentifier); // see message
+		ERR_LOG << "Error while destroying an instance of plug-in '" << plugin->pluginIdentifier << "'";
 		break;
 
 	case kOfxStatErrFatal:
-		printf("ERROR: Fatal error while destroying an instance of plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Fatal error while destroying an instance of plug-in '" << plugin->pluginIdentifier << "'";
 		break;
 	}
 
@@ -239,19 +239,19 @@ bool MfxHost::IsIdentity(OfxMeshEffectHandle effectInstance, bool* isIdentity, c
 	*isIdentity = false;
 
 	status = plugin->mainEntry(kOfxMeshEffectActionIsIdentity, effectInstance, &inArgs, &outArgs);
-	printf("%s action returned status %d (%s)\n", kOfxMeshEffectActionIsIdentity, status, getOfxStatusName(status));
+	LOG << kOfxMeshEffectActionIsIdentity << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatErrMemory:
-		printf("ERROR: Not enough memory for plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Not enough memory for plug-in '" << plugin->pluginIdentifier << "'";
 		return false;
 
 	case kOfxStatFailed:
-		printf("ERROR: Error while cooking an instance of plug-in '%s'.\n", plugin->pluginIdentifier); // see message
+		ERR_LOG << "Error while checking for identity in an instance of plug-in '" << plugin->pluginIdentifier << "'";
 		return false;
 
 	case kOfxStatErrFatal:
-		printf("ERROR: Fatal error while cooking an instance of plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Fatal error while checking for identity an instance of plug-in '" << plugin->pluginIdentifier << "'";
 		return false;
 
 	case kOfxStatOK:
@@ -271,19 +271,19 @@ bool MfxHost::Cook(OfxMeshEffectHandle effectInstance) {
 	OfxPlugin* plugin = effectInstance->plugin;
 
 	status = plugin->mainEntry(kOfxMeshEffectActionCook, effectInstance, NULL, NULL);
-	printf("%s action returned status %d (%s)\n", kOfxMeshEffectActionCook, status, getOfxStatusName(status));
+	LOG << kOfxMeshEffectActionCook << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatErrMemory:
-		printf("ERROR: Not enough memory for plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Not enough memory for cooking an instance of plug-in '" << plugin->pluginIdentifier << "'";
 		return false;
 
 	case kOfxStatFailed:
-		printf("ERROR: Error while cooking an instance of plug-in '%s'.\n", plugin->pluginIdentifier); // see message
+		ERR_LOG << "Error while cooking an instance of plug-in '" << plugin->pluginIdentifier << "'";
 		return false;
 
 	case kOfxStatErrFatal:
-		printf("ERROR: Fatal error while cooking an instance of plug-in '%s'.\n", plugin->pluginIdentifier);
+		ERR_LOG << "Fatal error while cooking an instance of plug-in '" << plugin->pluginIdentifier << "'";
 		return false;
 	}
 
@@ -333,7 +333,7 @@ const void* MfxHost::FetchSuite(OfxPropertySetHandle host, const char* suiteName
 		case 1:
 			return &gMeshEffectSuiteV1;
 		default:
-			printf("Suite '%s' is only supported in version 1.\n", suiteName);
+			ERR_LOG << "Suite '" << suiteName << "' is only supported in version 1.";
 			return NULL;
 		}
 	}
@@ -342,7 +342,7 @@ const void* MfxHost::FetchSuite(OfxPropertySetHandle host, const char* suiteName
 		case 1:
 			return &gParameterSuiteV1;
 		default:
-			printf("Suite '%s' is only supported in version 1.\n", suiteName);
+			ERR_LOG << "Suite '" << suiteName << "' is only supported in version 1.";
 			return NULL;
 		}
 	}
@@ -351,7 +351,7 @@ const void* MfxHost::FetchSuite(OfxPropertySetHandle host, const char* suiteName
 		case 1:
 			return &gPropertySuiteV1;
 		default:
-			printf("Suite '%s' is only supported in version 1.\n", suiteName);
+			ERR_LOG << "Suite '" << suiteName << "' is only supported in version 1.";
 			return NULL;
 		}
 	}
@@ -361,11 +361,11 @@ const void* MfxHost::FetchSuite(OfxPropertySetHandle host, const char* suiteName
 		case 2:
 			return &gMessageSuiteV2;
 		default:
-			printf("Suite '%s' is only supported in version 1.\n", suiteName);
+			ERR_LOG << "Suite '" << suiteName << "' is only supported in version 1.";
 			return NULL;
 		}
 	}
 
-	printf("Suite '%s' is not supported by this host.\n", suiteName);
+	ERR_LOG << "Suite '" << suiteName << "' is not supported by this host.";
 	return NULL;
 }

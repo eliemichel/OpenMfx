@@ -17,7 +17,9 @@
 #include "messageSuite.h"
 #include "messages.h"
 #include "mesheffect.h"
+#include "Logger.h"
 
+#include <string>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -34,14 +36,16 @@ OfxStatus message(
     void *handle, const char *messageType, const char *messageId, const char *format, ...)
 {
   OfxMessageType type = parseMessageType(messageType);
-  printf("[OpenMeshEffect] %s (%p): ", messageTypeTag(type), handle);
+  std::string content;
 
   va_list args;
   va_start(args, format);
-  vprintf(format, args);
+  int length = snprintf(NULL, 0, format, args) + 1;
+  content.resize(length);
+  snprintf(&content[0], length, format, args);
   va_end(args);
 
-  printf("\n");
+  LOG << messageTypeTag(type) << " (" << handle << ") " << content;
   return kOfxStatOK;
 }
 
@@ -63,7 +67,7 @@ OfxStatus setPersistentMessage(
   
   va_list args;
   va_start(args, format);
-  vsprintf(effect->message, format, args);
+  snprintf(effect->message, 1024, format, args);
   va_end(args);
 
   return kOfxStatOK;

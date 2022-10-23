@@ -18,6 +18,7 @@
 #include "propertySuite.h"
 #include "mesheffect.h"
 #include "util/mfx_util.h"
+#include "Logger.h"
 
 #include <cstring>
 #include <cstdio>
@@ -80,7 +81,7 @@ OfxStatus inputDefine(OfxMeshEffectHandle meshEffect,
                       OfxMeshInputHandle *input,
                       OfxPropertySetHandle *propertySet)
 {
-  printf("Defining input '%s' on OfxMeshEffectHandle %p\n", name, meshEffect);
+  DEBUG_LOG << "Defining input '" << name << "' on OfxMeshEffectHandle " << meshEffect;
   int i = meshEffect->inputs.ensure(name);
   meshEffect->inputs[i].host = meshEffect->host;
   propSetPointer(

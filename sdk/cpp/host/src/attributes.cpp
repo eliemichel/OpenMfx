@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #include "attributes.h"
 #include "propertySuite.h"
 #include "ofxMeshEffect.h"
+#include "Logger.h"
 
 #include <cstring>
 #include <algorithm>
@@ -136,7 +137,7 @@ AttributeAttachment OfxAttributeStruct::attachmentAsEnum(const char* mfxAttachme
     if (0 == strcmp(mfxAttachment, kOfxMeshAttribMesh)) {
         return AttributeAttachment::Mesh;
     }
-    printf("Warning: unknown attachment type: %s\n", mfxAttachment);
+    WARN_LOG << "unknown attachment type: " << mfxAttachment;
     return AttributeAttachment::Invalid;
 }
 
@@ -151,7 +152,7 @@ AttributeType OfxAttributeStruct::typeAsEnum(const char* mfxType)
     if (0 == strcmp(mfxType, kOfxMeshAttribTypeFloat)) {
         return AttributeType::Float;
     }
-    printf("Warning: unknown attribute type: %s\n", mfxType);
+    WARN_LOG  << "unknown attribute type: " << mfxType;
     return AttributeType::Invalid;
 }
 
@@ -172,7 +173,7 @@ AttributeSemantic OfxAttributeStruct::semanticAsEnum(const char* mfxSemantic)
     if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticWeight)) {
         return AttributeSemantic::Weight;
     }
-    printf("Warning: unknown attribute semantic: %s\n", mfxSemantic);
+    WARN_LOG << "unknown attribute semantic: " << mfxSemantic;
     return AttributeSemantic::None;
 }
 
@@ -187,7 +188,7 @@ int OfxAttributeStruct::byteSizeOf(AttributeType type)
     case AttributeType::Float:
         return sizeof(float);
     default:
-        printf("Error: unsupported attribute type: %d\n", type);
+        ERR_LOG << "unknown type";
         return 0;
     }
 }
@@ -285,6 +286,6 @@ bool OfxAttributeStruct::copy_data_from(const OfxAttributeStruct& source, int st
         }
         break;
     }
-    printf("Warning: unsupported input/output type combinason in copyAttribute: %d -> %d\n", sourceType, destinationType);
+    WARN_LOG << "unsupported input/output type combinason in copyAttribute: " << (int)sourceType << " -> " << (int)destinationType;
     return false;
 }

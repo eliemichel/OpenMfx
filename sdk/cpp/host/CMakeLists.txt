@@ -21,6 +21,9 @@ set(SRC
   mfxPluginRegistryManager.h
   PluginRegistryManager.h
 
+  src/Logger.h
+  src/Logger.cpp
+
   src/Allocator.h
   src/attributes.h
   src/attributes.cpp
