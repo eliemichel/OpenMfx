@@ -25,6 +25,7 @@
 #include "ofxProperty.h"
 #include "ofxParam.h"
 #include "ofxMessage.h"
+#include "ofxExtras.h"
 
 namespace OpenMfx {
 
