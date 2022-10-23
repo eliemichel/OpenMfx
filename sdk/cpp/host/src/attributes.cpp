@@ -111,6 +111,39 @@ void OfxAttributeStruct::setByteStride(int byteStride)
     propSetInt(&properties, kOfxMeshAttribPropStride, 0, byteStride);
 }
 
+int OfxAttributeStruct::componentCount() const
+{
+  int count;
+  OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
+  propGetInt(mutableProperties, kOfxMeshAttribPropComponentCount, 0, &count);
+  return count;
+}
+
+AttributeSemantic OfxAttributeStruct::semantic() const
+{
+  char *stringSemantic;
+  OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
+  propGetString(mutableProperties, kOfxMeshAttribPropSemantic, 0, &stringSemantic);
+  if (stringSemantic == NULL) {
+    return AttributeSemantic::None;
+  }
+  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticColor)) {    
+    return AttributeSemantic::Color;
+  }
+  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticTextureCoordinate)) {
+    return AttributeSemantic::TextureCoordinate;
+  }
+  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticNormal)) {
+    return AttributeSemantic::Normal;
+  }
+  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticWeight)) {
+    return AttributeSemantic::Weight;
+  }
+  else {
+    return AttributeSemantic::None;
+  }
+}
+
 void OfxAttributeStruct::setIndex(const Index& index)
 {
     m_attachment = index.first;
