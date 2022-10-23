@@ -120,13 +120,13 @@ template<typename T, typename Index = typename T::Index> class Collection {
     return m_items[i];
   }
 
-  template<typename = typename std::enable_if<std::is_same<T, std::string>::value>::type>
+  template<typename U = T, typename = typename std::enable_if<std::is_same<U, std::string>::value>::type>
   T &operator[](const char *charIndex)
   {
     (*this)[Index(charIndex)];
   }
 
-  template<typename = typename std::enable_if<std::is_same<T, std::string>::value>::type>
+  template<typename U = T, typename = typename std::enable_if<std::is_same<U, std::string>::value>::type>
   const T &operator[](const char *charIndex) const
   {
     (*this)[Index(charIndex)];
