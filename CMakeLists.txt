@@ -40,10 +40,6 @@ add_library(OpenMfx::Core ALIAS OpenMfx)
 # C++ API
 add_subdirectory(sdk)
 
-if (OPENMFX_BUILD_EXAMPLES)
-	add_subdirectory(examples)
-endif ()
-
 # If this module is included as a subdirectory (or using FetchContent), we
 # remove all targets from BUILD_ALL so that the parts of the SDK that are not
 # used are not built by default
