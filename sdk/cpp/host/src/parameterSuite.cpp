@@ -48,7 +48,7 @@ OfxStatus paramDefine(OfxParamSetHandle paramSet,
     const char* paramType,
     const char* name,
     OfxPropertySetHandle* propertySet) {
-  int i = paramSet->find(name);
+    int i = paramSet->find(name);
     if (-1 != i) {
         return kOfxStatErrExists;
     }
@@ -64,7 +64,7 @@ OfxStatus paramGetHandle(OfxParamSetHandle paramSet,
     const char* name,
     OfxParamHandle* param,
     OfxPropertySetHandle* propertySet) {
-  int i = paramSet->find(name);
+    int i = paramSet->find(name);
     if (-1 == i) {
         return kOfxStatErrUnknown; // parameter not found
     }
@@ -93,26 +93,26 @@ OfxStatus paramGetValue(OfxParamHandle paramHandle, ...) {
     va_start(valist, paramHandle);
     for (size_t i = 0; i < dimensions; ++i) {
         switch (paramHandle->type) {
-        case PARAM_TYPE_INTEGER:
-        case PARAM_TYPE_INTEGER_2D:
-        case PARAM_TYPE_INTEGER_3D:
+        case ParameterType::Integer:
+        case ParameterType::Integer2d:
+        case ParameterType::Integer3d:
             *va_arg(valist, int*) = paramHandle->value[i].as_int;
             break;
-        case PARAM_TYPE_DOUBLE:
-        case PARAM_TYPE_DOUBLE_2D:
-        case PARAM_TYPE_DOUBLE_3D:
-        case PARAM_TYPE_RGB:
-        case PARAM_TYPE_RGBA:
+        case ParameterType::Double:
+        case ParameterType::Double2d:
+        case ParameterType::Double3d:
+        case ParameterType::Rgb:
+        case ParameterType::Rgba:
             *va_arg(valist, double*) = paramHandle->value[i].as_double;
             break;
-        case PARAM_TYPE_BOOLEAN:
+        case ParameterType::Boolean:
             *va_arg(valist, bool*) = paramHandle->value[i].as_bool;
             break;
-        case PARAM_TYPE_STRING:
+        case ParameterType::String:
             // TODO: check memory management
             *va_arg(valist, char**) = paramHandle->value[i].as_char;
             break;
-        case PARAM_TYPE_UNKNOWN:
+        case ParameterType::Unknown:
             // TODO
             break;
         }
@@ -149,26 +149,26 @@ OfxStatus paramSetValue(OfxParamHandle paramHandle, ...) {
     va_start(args, paramHandle);
     for (size_t i = 0; i < dimensions; ++i) {
         switch (paramHandle->type) {
-        case PARAM_TYPE_INTEGER:
-        case PARAM_TYPE_INTEGER_2D:
-        case PARAM_TYPE_INTEGER_3D:
+        case ParameterType::Integer:
+        case ParameterType::Integer2d:
+        case ParameterType::Integer3d:
             paramHandle->value[i].as_int = va_arg(args, int);
             break;
-        case PARAM_TYPE_DOUBLE:
-        case PARAM_TYPE_DOUBLE_2D:
-        case PARAM_TYPE_DOUBLE_3D:
-        case PARAM_TYPE_RGB:
-        case PARAM_TYPE_RGBA:
+        case ParameterType::Double:
+        case ParameterType::Double2d:
+        case ParameterType::Double3d:
+        case ParameterType::Rgb:
+        case ParameterType::Rgba:
             paramHandle->value[i].as_double = va_arg(args, double);
             break;
-        case PARAM_TYPE_BOOLEAN:
+        case ParameterType::Boolean:
             paramHandle->value[i].as_bool = va_arg(args, bool);
             break;
-        case PARAM_TYPE_STRING:
+        case ParameterType::String:
             // TODO: check memory management
             paramHandle->value[i].as_char = va_arg(args, char*);
             break;
-        case PARAM_TYPE_UNKNOWN:
+        case ParameterType::Unknown:
             // TODO
             break;
         }

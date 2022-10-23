@@ -16,5 +16,17 @@
 #
 # ***** END APACHE 2 LICENSE BLOCK *****
 
-add_subdirectory(host)
-add_subdirectory(plugin)
+set(Target OpenMfx_Example_Cpp_Host)
+file(GLOB SRC *.h *.cpp)
+
+add_executable(${Target} ${SRC})
+
+target_link_libraries(
+	${Target}
+	PRIVATE
+		OpenMfx::Sdk::C::BinaryUtils
+		OpenMfx::Sdk::Cpp::Host
+)
+
+target_treat_warnings_as_errors(${Target})
+set_property(TARGET OpenMfx_Example_Cpp_Host PROPERTY FOLDER "OpenMfx/Examples")

@@ -1,5 +1,5 @@
-#include <PluginSupport/MfxEffect>
-#include <PluginSupport/utils>
+#include <OpenMfx/Sdk/Cpp/Plugin/MfxEffect>
+#include <OpenMfx/Sdk/Cpp/Plugin/utils>
 
 static const float output_point_data[] = {
 	-1, -1, -1,

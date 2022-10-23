@@ -16,11 +16,12 @@
 #
 # ***** END APACHE 2 LICENSE BLOCK *****
 
-macro(add_mfx_plugin Target)
+macro(add_mfx_plugin TargetShortname)
 	set(options)
 	set(oneValueArgs)
 	set(multiValueArgs SRC LIBS)
 	cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+	set(Target "OpenMfx_Example_C_Plugin_${TargetShortname}")
 
 	add_library(${Target} SHARED ${ARG_SRC})
 	set_target_properties(${Target} PROPERTIES SUFFIX ".ofx" PREFIX "")
@@ -37,37 +38,37 @@ macro(add_mfx_plugin Target)
 endmacro()
 
 add_mfx_plugin(
-	plugin_sample_plugin
+	sample
 	SRC
 		mfx_sample_plugin.c
 )
 
 add_mfx_plugin(
-	plugin_test_parameters_plugin
+	test_parameters_plugin
 	SRC
 		mfx_test_parameters_plugin.c
 )
 
 add_mfx_plugin(
-	plugin_identity_plugin
+	identity
 	SRC
 		mfx_identity_plugin.c
 )
 
 add_mfx_plugin(
-	plugin_mirror_plugin
+	mirror
 	SRC
 		mfx_mirror_plugin.c
 )
 
 add_mfx_plugin(
-	plugin_color_to_uv
+	color_to_uv
 	SRC
 		mfx_color_to_uv.c
 )
 
 add_mfx_plugin(
-	plugin_uv_transform
+	uv_transform
 	SRC
 		mfx_uv_transform.c
 )

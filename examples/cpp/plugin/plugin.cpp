@@ -1,7 +1,7 @@
 #include "TranslateEffect.hpp"
 #include "BoxGeneratorEffect.hpp"
 
-#include <PluginSupport/MfxRegister>
+#include <OpenMfx/Sdk/Cpp/Plugin/MfxRegister>
 
 MfxRegister(
     TranslateEffect,

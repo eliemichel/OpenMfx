@@ -61,11 +61,11 @@ private:
 
 namespace OpenMfx {
 
-enum PropertyType {
-  PROP_TYPE_POINTER,
-  PROP_TYPE_STRING,
-  PROP_TYPE_DOUBLE,
-  PROP_TYPE_INT,
+enum class PropertyType {
+  Pointer,
+  String,
+  Double,
+  Int,
 };
 
 // TODO: use kOfxPropType instead

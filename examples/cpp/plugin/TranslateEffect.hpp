@@ -1,5 +1,4 @@
-//#include <OpenMfx/Sdk/Cpp/Plugin/MfxEffect>
-#include <PluginSupport/MfxEffect>
+#include <OpenMfx/Sdk/Cpp/Plugin/MfxEffect>
 #include <iostream>
 
 /**

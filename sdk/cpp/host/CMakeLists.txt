@@ -17,48 +17,46 @@
 # ***** END APACHE 2 LICENSE BLOCK *****
 
 set(SRC
-  mfxHost.cpp
-  mfxHost.h
   mfxPluginRegistry.h
   mfxPluginRegistryManager.h
   PluginRegistryManager.h
 
-  intern/Allocator.h
-  intern/attributes.h
-  intern/attributes.cpp
-  intern/properties.h
-  intern/properties.cpp
-  intern/parameters.h
-  intern/parameters.cpp
-  intern/inputs.h
-  intern/inputs.cpp
-  intern/mesh.h
-  intern/mesh.cpp
-  intern/mesheffect.h
-  intern/mesheffect.cpp
-  intern/messages.h
-  intern/messages.cpp
-  intern/mfxPluginRegistry.cpp
-  intern/mfxPluginRegistryManager.cpp
-  intern/PluginRegistryManager.cpp
-  intern/MfxHost.h
-  intern/MfxHost.cpp
-  intern/Collection.h
+  src/Allocator.h
+  src/attributes.h
+  src/attributes.cpp
+  src/properties.h
+  src/properties.cpp
+  src/parameters.h
+  src/parameters.cpp
+  src/inputs.h
+  src/inputs.cpp
+  src/mesh.h
+  src/mesh.cpp
+  src/mesheffect.h
+  src/mesheffect.cpp
+  src/messages.h
+  src/messages.cpp
+  src/mfxPluginRegistry.cpp
+  src/mfxPluginRegistryManager.cpp
+  src/PluginRegistryManager.cpp
+  src/MfxHost.h
+  src/MfxHost.cpp
+  src/Collection.h
 
-  intern/parameterSuite.h
-  intern/parameterSuite.cpp
-  intern/propertySuite.h
-  intern/propertySuite.cpp
-  intern/meshEffectSuite.h
-  intern/meshEffectSuite.cpp
-  intern/messageSuite.h
-  intern/messageSuite.cpp
+  src/parameterSuite.h
+  src/parameterSuite.cpp
+  src/propertySuite.h
+  src/propertySuite.cpp
+  src/meshEffectSuite.h
+  src/meshEffectSuite.cpp
+  src/messageSuite.h
+  src/messageSuite.cpp
 
   util/binary_util.h
   util/mfx_util.h
-  intern/util/binary_util.c
-  intern/util/ofx_util.h
-  intern/util/ofx_util.c
+  src/util/binary_util.c
+  src/util/ofx_util.h
+  src/util/ofx_util.c
 
   sdk/MfxAttributeProps.h
   sdk/MfxAttributeProps.cpp
@@ -69,12 +67,14 @@ add_library(OpenMfx_Sdk_Cpp_Host ${SRC})
 target_include_directories(
   OpenMfx_Sdk_Cpp_Host
   PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+  PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(
   OpenMfx_Sdk_Cpp_Host
-  PRIVATE
+  PUBLIC
     OpenMfx::Core
 )
 

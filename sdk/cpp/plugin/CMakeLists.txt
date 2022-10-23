@@ -19,7 +19,7 @@
 #----------------------------------------------------------
 # Minimal Plugin SDK
 
-file(GLOB SRC src/PluginSupport/*.cpp src/PluginSupport/*.h)
+file(GLOB SRC src/Plugin/*.cpp src/Plugin/*.h)
 
 add_library(OpenMfx_Sdk_Cpp_Plugin ${SRC})
 

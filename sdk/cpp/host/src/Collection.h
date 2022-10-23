@@ -93,7 +93,7 @@ template<typename T, typename Index = T::Index> class Collection {
 
   int count() const
   {
-    return m_items.size();
+    return static_cast<int>(m_items.size());
   }
 
   T &operator[](int i)
@@ -134,6 +134,7 @@ template<typename T, typename Index = T::Index> class Collection {
 
   virtual void onNewItem(T &item)
   {
+      (void)item;
   }
 
   void clear()

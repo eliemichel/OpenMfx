@@ -19,8 +19,7 @@
  *
  */
 
-#ifndef __MFX_ATTRIBUTES_H__
-#define __MFX_ATTRIBUTES_H__
+#pragma once
 
 #include "properties.h"
 #include "Collection.h"
@@ -69,21 +68,25 @@ struct OfxAttributeStruct {
   OfxAttributeStruct(OfxAttributeStruct &&) = default;
   OfxAttributeStruct &operator=(OfxAttributeStruct &&) = default;
 
-  void set_name(const char *name);
+  void deep_copy_from(const OfxAttributeStruct& other);
 
-  void deep_copy_from(const OfxAttributeStruct &other);
+  AttributeAttachment attachment() const;
+  const std::string& name() const;
 
   AttributeType type() const;
+  void setType(AttributeType type);
+
   int componentCount() const;
+  void setComponentCount(int componentCount);
+
   AttributeSemantic semantic() const;
-  AttributeAttachment attachment() const
-  {
-    return m_attachment;
-  }
-  const std::string &name() const
-  {
-    return m_name;
-  }
+  void setSemantic(AttributeSemantic semantic);
+
+  void* data() const;
+  void setData(void *data);
+
+  int byteStride() const;
+  void setByteStride(int byteStride);
 
   bool copy_data_from(const OfxAttributeStruct &source, int start, int count);
 
@@ -112,5 +115,3 @@ struct OfxAttributeStruct {
 
 struct OfxAttributeSetStruct : OpenMfx::Collection<OfxAttributeStruct> {
 };
-
-#endif // __MFX_ATTRIBUTES_H__

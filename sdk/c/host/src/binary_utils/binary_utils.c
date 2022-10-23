@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "binary_utils.h"
+
 #include <stddef.h>
 #include <stdio.h>
 
@@ -22,8 +24,6 @@
 #else // _WIN32
 #include <dlfcn.h>
 #endif // _WIN32
-
-#include "binary_util.h"
 
 #ifdef _WIN32
 static LPVOID getLastErrorMessage() {

@@ -29,11 +29,6 @@ OfxAttributeStruct::OfxAttributeStruct()
     : properties(PropertySetContext::Attrib)
 {}
 
-void OfxAttributeStruct::set_name(const char *name)
-{
-    m_name = std::string(name);
-}
-
 void OfxAttributeStruct::deep_copy_from(const OfxAttributeStruct &other)
 {
   m_name = other.m_name;
@@ -42,57 +37,78 @@ void OfxAttributeStruct::deep_copy_from(const OfxAttributeStruct &other)
   properties.deep_copy_from(other.properties);
 }
 
+AttributeAttachment OfxAttributeStruct::attachment() const
+{
+    return m_attachment;
+}
+
+const std::string& OfxAttributeStruct::name() const
+{
+    return m_name;
+}
+
 AttributeType OfxAttributeStruct::type() const
 {
     char* stringType;
     OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
     propGetString(mutableProperties, kOfxMeshAttribPropType, 0, &stringType);
+    return typeAsEnum(stringType);
+}
 
-    if (0 == strcmp(stringType, kOfxMeshAttribTypeUByte)) {
-        return AttributeType::UByte;
-    }
-    else if (0 == strcmp(stringType, kOfxMeshAttribTypeInt)) {
-        return AttributeType::Int;
-    }
-    else if (0 == strcmp(stringType, kOfxMeshAttribTypeFloat)) {
-        return AttributeType::Float;
-    }
-    else {
-        return AttributeType::Invalid;
-    }
+void OfxAttributeStruct::setType(AttributeType type) {
+    propSetString(&properties, kOfxMeshAttribPropType, 0, typeAsString(type));
 }
 
 int OfxAttributeStruct::componentCount() const
 {
-  int count;
-  OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
-  propGetInt(mutableProperties, kOfxMeshAttribPropComponentCount, 0, &count);
-  return count;
+    int count;
+    OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
+    propGetInt(mutableProperties, kOfxMeshAttribPropComponentCount, 0, &count);
+    return count;
+}
+
+void OfxAttributeStruct::setComponentCount(int componentCount)
+{
+    propSetInt(&properties, kOfxMeshAttribPropComponentCount, 0, componentCount);
 }
 
 AttributeSemantic OfxAttributeStruct::semantic() const
 {
-  char *stringSemantic;
-  OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
-  propGetString(mutableProperties, kOfxMeshAttribPropSemantic, 0, &stringSemantic);
-  if (stringSemantic == NULL) {
-    return AttributeSemantic::None;
-  }
-  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticColor)) {    
-    return AttributeSemantic::Color;
-  }
-  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticTextureCoordinate)) {
-    return AttributeSemantic::TextureCoordinate;
-  }
-  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticNormal)) {
-    return AttributeSemantic::Normal;
-  }
-  else if (0 == strcmp(stringSemantic, kOfxMeshAttribSemanticWeight)) {
-    return AttributeSemantic::Weight;
-  }
-  else {
-    return AttributeSemantic::None;
-  }
+    char *stringSemantic;
+    OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
+    propGetString(mutableProperties, kOfxMeshAttribPropSemantic, 0, &stringSemantic);
+    return semanticAsEnum(stringSemantic);
+}
+
+void OfxAttributeStruct::setSemantic(AttributeSemantic semantic)
+{
+    propSetString(&properties, kOfxMeshAttribPropSemantic, 0, semanticAsString(semantic));
+}
+
+void* OfxAttributeStruct::data() const
+{
+    void* value;
+    OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
+    propGetPointer(mutableProperties, kOfxMeshAttribPropData, 0, &value);
+    return value;
+}
+
+void OfxAttributeStruct::setData(void* data)
+{
+    propSetPointer(&properties, kOfxMeshAttribPropData, 0, data);
+}
+
+int OfxAttributeStruct::byteStride() const
+{
+    int value;
+    OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
+    propGetInt(mutableProperties, kOfxMeshAttribPropStride, 0, &value);
+    return value;
+}
+
+void OfxAttributeStruct::setByteStride(int byteStride)
+{
+    propSetInt(&properties, kOfxMeshAttribPropStride, 0, byteStride);
 }
 
 void OfxAttributeStruct::setIndex(const Index& index)

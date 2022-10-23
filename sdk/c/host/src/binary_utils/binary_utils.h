@@ -20,12 +20,16 @@
  * This section provides a unified access to dynamic library loading.
  */
 
-#ifndef __MFX_SDK_C_BINARY_UTIL_H__
-#define __MFX_SDK_C_BINARY_UTIL_H__
+#ifndef __MFX_SDK_C_BINARY_UTILS_H__
+#define __MFX_SDK_C_BINARY_UTILS_H__
 
 #ifdef _WIN32
 #include <windows.h>
 #endif// _WIN32
+
+#if __cplusplus
+extern "C" {
+#endif
 
 /**
  * Blind handle to a library binary
@@ -63,4 +67,8 @@ void binary_close(BinaryHandle handle);
  */
 ProcHandle binary_get_proc(BinaryHandle handle, const char *name);
 
-#endif // __MFX_SDK_C_BINARY_UTIL_H__
+#if __cplusplus
+}
+#endif
+
+#endif // __MFX_SDK_C_BINARY_UTILS_H__

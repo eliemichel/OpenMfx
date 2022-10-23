@@ -23,11 +23,33 @@
 #define __MFX_PARAMETERS_H__
 
 #include "properties.h"
-#include "mfxParamType.h"
 
 #include <stddef.h> // size_t
 
 #include <cstddef>
+
+namespace OpenMfx {
+
+enum class ParameterType {
+    Unknown = -1,
+    Integer,
+    Integer2d,
+    Integer3d,
+    Double,
+    Double2d,
+    Double3d,
+    Rgb,
+    Rgba,
+    Boolean,
+    Choice,
+    String,
+    Custom,
+    PushButton,
+    Group,
+    Page,
+};
+
+} // namespace OpenMfx
 
 union OfxParamValueStruct {
     void *as_pointer;
@@ -49,7 +71,7 @@ struct OfxParamStruct {
   OfxParamStruct(const OfxParamStruct &) = delete;
   OfxParamStruct &operator=(const OfxParamStruct &) = delete;
 
-  void set_type(ParamType type);
+  void set_type(OpenMfx::ParameterType type);
   void realloc_string(int size);
 
   void deep_copy_from(const OfxParamStruct &other);
@@ -57,7 +79,7 @@ struct OfxParamStruct {
  public:
   char *name;
   OfxParamValueStruct value[4];
-  ParamType type;
+  OpenMfx::ParameterType type;
   OfxPropertySetStruct properties;
 };
 
@@ -94,9 +116,9 @@ private:
 
 namespace OpenMfx {
 
-ParamType parse_parameter_type(const char *str);
-size_t parameter_type_dimensions(ParamType type);
+ParameterType parse_parameter_type(const char *str);
+size_t parameter_type_dimensions(ParameterType type);
 
-}  // namespace OpenMfx
+} // namespace OpenMfx
 
 #endif // __MFX_PARAMETERS_H__

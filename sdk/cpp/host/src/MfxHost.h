@@ -30,7 +30,8 @@ namespace OpenMfx {
 
 /**
  * C++ extension of core OfxHost
- * To use this in you own program, it is advised to subclass it and implement BeforeMeshGet() and BeforeMeshRelease()
+ * To use this in you own program, it is advised to subclass it and implement
+ * BeforeMeshGet(), BeforeMeshRelease() and optionnaly InitInput
  */
 class MfxHost {
 public:
@@ -43,59 +44,77 @@ public:
 	MfxHost();
 	~MfxHost();
 
-  // Disable copy (rule of three)
+	// Disable copy, default move (rule of five)
 	MfxHost(const MfxHost&) = delete;
 	MfxHost& operator=(const MfxHost&) = delete;
+	MfxHost(MfxHost&&) = default;
+	MfxHost& operator=(MfxHost&&) = default;
 
 public: // Utility wrappers around plugin->mainEntry
 
-	// Load the plugin before using it, and unload it afterwards
+	/**
+	 * Load the plugin before using it, and unload it afterwards
+	 */
 	bool LoadPlugin(OfxPlugin* plugin);
 	void UnloadPlugin(OfxPlugin* plugin);
 
-	// The descriptor may be retrieved for different contexts of application
-	bool GetDescriptor(OfxPlugin* plugin, OfxMeshEffectHandle & effectDescriptor);
+	/**
+	 * The descriptor may be retrieved for different contexts of application
+	 */
+	bool GetDescriptor(OfxPlugin* plugin, OfxMeshEffectHandle& effectDescriptor);
 	void ReleaseDescriptor(OfxMeshEffectHandle effectDescriptor);
 
-	// An instance of an effect is basically a node of the scene's DAG/depsgraph
-	// It is created from a descriptor
+	/**
+	 * An instance of an effect is basically a node of the scene's DAG/depsgraph
+	 * It is created from a descriptor
+	 */
 	bool CreateInstance(OfxMeshEffectHandle effectDescriptor, OfxMeshEffectHandle& effectInstance);
 	void DestroyInstance(OfxMeshEffectHandle effectInstance);
 
-	// Cooking and querying whether the instance has an effect produces different
-	// results depending on the value that has been assigned to the effect's
-	// parameters for this particular instance.
-	// If isIdentity is turned true, there is no need to cook the effect, its
-	// input inputToPassThrough must simply be considered as the output.
+	/**
+	 * Cooking and querying whether the instance has an effect produces different
+	 * results depending on the value that has been assigned to the effect's
+	 * parameters for this particular instance.
+	 * If isIdentity is turned true, there is no need to cook the effect, its
+	 * input inputToPassThrough must simply be considered as the output.
+	 */
 	bool IsIdentity(OfxMeshEffectHandle effectInstance, bool* isIdentity, char** inputToPassThrough);
 	bool Cook(OfxMeshEffectHandle effectInstance);
 
 protected:
-	// Callback responsible for converting from and back to host's internal
-	// representation. They are callbacks so that they are ran only if and when
-	// the plugin needs so. To be overriden in subclasses.
-	virtual OfxStatus BeforeMeshGet(OfxMeshHandle ofxMesh) {
+	/**
+	 * Callback responsible for converting from and back to host's internal
+	 * representation. They are callbacks so that they are ran only if and when
+	 * the plugin needs so. To be overriden in subclasses.
+	 */
+	virtual OfxStatus BeforeMeshGet(OfxMeshHandle /* ofxMesh */) {
 		return kOfxStatReplyDefault;
 	}
-	virtual OfxStatus BeforeMeshRelease(OfxMeshHandle ofxMesh) {
+	virtual OfxStatus BeforeMeshRelease(OfxMeshHandle /* ofxMesh */) {
 		return kOfxStatReplyDefault;
 	}
-  virtual OfxStatus BeforeMeshAllocate(OfxMeshHandle ofxMesh) {
-    return kOfxStatReplyDefault;
-  }
+	virtual OfxStatus BeforeMeshAllocate(OfxMeshHandle /* ofxMesh */) {
+		return kOfxStatReplyDefault;
+	}
 
-	// Initialize inputs after creating an instance (mostly fills kOfxMeshPropInternalData)
-	virtual void InitInput(OfxMeshInputStruct& input) {}
+	/**
+	 * Initialize inputs after creating an instance (mostly fills kOfxMeshPropInternalData)
+	 */
+	virtual void InitInput(OfxMeshInputStruct& /* input */) {}
 
-	// Give access to the raw OfxHost
+	/**
+	 * Give access to the raw OfxHost
+	 */
 	inline OfxHost* RawHost() { return &m_host; }
 
 private:
-	// Actual callback must be static, these versions only route to non static
-	// methods whose name is the same.
+	/**
+	 * Actual callback must be static, these versions only route to non static
+	 * methods whose name is the same.
+	 */
 	static OfxStatus BeforeMeshGetCb(OfxHost *ofxHost, OfxMeshHandle ofxMesh);
 	static OfxStatus BeforeMeshReleaseCb(OfxHost* ofxHost, OfxMeshHandle ofxMesh);
-  static OfxStatus BeforeMeshAllocateCb(OfxHost *ofxHost, OfxMeshHandle ofxMesh);
+	static OfxStatus BeforeMeshAllocateCb(OfxHost *ofxHost, OfxMeshHandle ofxMesh);
 
 	static const void * FetchSuite(OfxPropertySetHandle host, const char* suiteName, int suiteVersion);
 

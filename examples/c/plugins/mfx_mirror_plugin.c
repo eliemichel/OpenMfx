@@ -105,19 +105,22 @@ static OfxStatus cook(const MfxPluginRuntime* runtime, OfxMeshEffectHandle insta
     parameterSuite->paramGetValue(axis_param, &axis_value);
 
     // Get input mesh data
-    int input_point_count = 0, input_corner_count = 0, input_face_count = 0;
+    int input_point_count = 0, input_corner_count = 0, input_face_count = 0, input_constant_face_size = 0;
     propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropPointCount, 0, &input_point_count);
     propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropCornerCount, 0, &input_corner_count);
     propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropFaceCount, 0, &input_face_count);
+    propertySuite->propGetInt(input_mesh_prop, kOfxMeshPropConstantFaceSize, 0, &input_constant_face_size);
 
     // Allocate output mesh
     int output_point_count = 2 * input_point_count;
     int output_corner_count = 2 * input_corner_count;
     int output_face_count = 2 * input_face_count;
+    int output_constant_face_size = input_constant_face_size;
 
     propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropPointCount, 0, output_point_count);
     propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropCornerCount, 0, output_corner_count);
     propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropFaceCount, 0, output_face_count);
+    propertySuite->propSetInt(output_mesh_prop, kOfxMeshPropConstantFaceSize, 0, output_constant_face_size);
 
     meshEffectSuite->meshAlloc(output_mesh);
 
@@ -172,25 +175,28 @@ static OfxStatus cook(const MfxPluginRuntime* runtime, OfxMeshEffectHandle insta
         printf("Warning: unsupported attribute type: %d", input_cornerpoint.type);
     }
     // Face count
-    MfxAttributeProperties input_facesize, output_facesize;
-    getFaceAttribute(input_mesh, kOfxMeshAttribFaceSize, &input_facesize);
-    getFaceAttribute(output_mesh, kOfxMeshAttribFaceSize, &output_facesize);
-    switch (input_facesize.type) {
-    case MFX_INT_ATTR:
-      for (int i = 0; i < input_face_count; ++i) {
-      // 1. copy
-      int* src = (int*)&input_facesize.data[i * input_facesize.byte_stride];
-      int* dst = (int*)&output_facesize.data[i * output_facesize.byte_stride];
-      memcpy(dst, src, sizeof(int));
+    if (input_constant_face_size == -1) {
+        MfxAttributeProperties input_facesize, output_facesize;
+        getFaceAttribute(input_mesh, kOfxMeshAttribFaceSize, &input_facesize);
+        getFaceAttribute(output_mesh, kOfxMeshAttribFaceSize, &output_facesize);
+        switch (input_facesize.type) {
+        case MFX_INT_ATTR:
+            for (int i = 0; i < input_face_count; ++i) {
+                // 1. copy
+                int* src = (int*)&input_facesize.data[i * input_facesize.byte_stride];
+                int* dst = (int*)&output_facesize.data[i * output_facesize.byte_stride];
+                memcpy(dst, src, sizeof(int));
 
-      // 2. mirror
-      dst = (int *)&output_facesize.data[(input_face_count + i) * output_facesize.byte_stride];
-      dst[0] = src[0];
-      }
-      break;
-    default:
-      printf("Warning: unsupported attribute type: %d", input_facesize.type);
+                // 2. mirror
+                dst = (int*)&output_facesize.data[(input_face_count + i) * output_facesize.byte_stride];
+                dst[0] = src[0];
+            }
+            break;
+        default:
+            printf("Warning: unsupported attribute type: %d", input_facesize.type);
+        }
     }
+
     // Release meshes
     meshEffectSuite->inputReleaseMesh(input_mesh);
     meshEffectSuite->inputReleaseMesh(output_mesh);

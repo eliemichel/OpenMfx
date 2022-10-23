@@ -17,7 +17,27 @@
 # ***** END APACHE 2 LICENSE BLOCK *****
 
 #----------------------------------------------------------
-# Minimal Plugin SDK
+
+file(GLOB SRC src/binary_utils/*.c src/binary_utils/*.h)
+
+add_library(OpenMfx_Sdk_C_BinaryUtils ${SRC})
+
+target_link_libraries(
+    OpenMfx_Sdk_C_BinaryUtils
+    PUBLIC
+        OpenMfx::Sdk::C::Common
+)
+
+target_include_directories(
+    OpenMfx_Sdk_C_BinaryUtils
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+set_property(TARGET OpenMfx_Sdk_C_BinaryUtils PROPERTY FOLDER "OpenMfx/Sdk/C")
+add_library(OpenMfx::Sdk::C::BinaryUtils ALIAS OpenMfx_Sdk_C_BinaryUtils)
+
+#----------------------------------------------------------
 
 file(GLOB SRC src/*.c src/*.h)
 
@@ -27,6 +47,7 @@ target_link_libraries(
     OpenMfx_Sdk_C_Host
     PUBLIC
         OpenMfx::Sdk::C::Common
+        OpenMfx::Sdk::C::BinaryUtils
 )
 
 target_include_directories(
