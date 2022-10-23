@@ -36,7 +36,7 @@ namespace OpenMfx {
  *     using Index = ...;
  * They must be movable but not necessarily copyable
  */
-template<typename T, typename Index = T::Index> class Collection {
+template<typename T, typename Index = typename T::Index> class Collection {
  public:
   Collection()
   {
