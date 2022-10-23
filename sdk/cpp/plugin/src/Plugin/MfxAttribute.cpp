@@ -66,7 +66,7 @@ OfxStatus MfxAttribute::copyAttributeData(MfxAttributeProps& destination, const 
 
 //-----------------------------------------------------------------------------
 
-void MfxAttribute::FetchProperties(MfxAttributeProps& props)
+void MfxAttribute::FetchProperties(MfxAttributeProps& props) const
 {
     char* type;
     int isOwner;
@@ -89,7 +89,7 @@ void MfxAttribute::SetProperties(const MfxAttributeProps &props) {
     MFX_ENSURE(propertySuite->propSetInt(m_properties, kOfxMeshAttribPropIsOwner, 0, (int)props.isOwner));
 }
 
-void MfxAttribute::CopyFrom(MfxAttribute& other, int start, int count)
+void MfxAttribute::CopyFrom(const MfxAttribute& other, int start, int count)
 {
     MfxAttributeProps sourceProps, destinationProps;
     other.FetchProperties(sourceProps);
@@ -97,7 +97,7 @@ void MfxAttribute::CopyFrom(MfxAttribute& other, int start, int count)
     copyAttributeData(destinationProps, sourceProps, start, count);
 }
 
-void MfxAttribute::ForwardFrom(MfxAttribute &&other) {
+void MfxAttribute::ForwardFrom(const MfxAttribute &other) {
     MfxAttributeProps sourceProps, destinationProps;
     other.FetchProperties(sourceProps);
 

@@ -27,7 +27,7 @@ public:
 	/**
 	 * Populate the provided props structure with this attribute's properties
 	 */
-	void FetchProperties(MfxAttributeProps & props);
+	void FetchProperties(MfxAttributeProps & props) const;
 
     /**
      * Set attribute properties according to provided props structure
@@ -37,13 +37,13 @@ public:
     /**
      * Copy attribute data, casting if necessary
      */
-	void CopyFrom(MfxAttribute& other, int start, int count);
+	void CopyFrom(const MfxAttribute& other, int start, int count);
 
     /**
      * Forward attribute data, pointing to existing buffers instead of copying.
      * Note that the buffer in source attribute must already be allocated.
      */
-    void ForwardFrom(MfxAttribute&& other);
+    void ForwardFrom(const MfxAttribute& other);
 
 public:
 	/**
