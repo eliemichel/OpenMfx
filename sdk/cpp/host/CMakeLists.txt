@@ -17,10 +17,6 @@
 # ***** END APACHE 2 LICENSE BLOCK *****
 
 set(SRC
-  mfxPluginRegistry.h
-  mfxPluginRegistryManager.h
-  PluginRegistryManager.h
-
   src/Logger.h
   src/Logger.cpp
 
@@ -39,8 +35,9 @@ set(SRC
   src/mesheffect.cpp
   src/messages.h
   src/messages.cpp
+  src/mfxPluginRegistry.h
   src/mfxPluginRegistry.cpp
-  src/mfxPluginRegistryManager.cpp
+  src/PluginRegistryManager.h
   src/PluginRegistryManager.cpp
   src/MfxHost.h
   src/MfxHost.cpp

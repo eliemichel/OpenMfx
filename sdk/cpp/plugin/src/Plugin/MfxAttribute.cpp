@@ -31,7 +31,7 @@ OfxStatus MfxAttribute::copyAttributeData(MfxAttributeProps& destination, const 
             componentByteSize = sizeof(float);
             break;
         default:
-            printf("Error: unsupported attribute type: %d\n", source.type);
+            printf("Error: unsupported attribute type: %d\n", (int)source.type);
             return kOfxStatErrFatal;
         }
 
@@ -60,7 +60,7 @@ OfxStatus MfxAttribute::copyAttributeData(MfxAttributeProps& destination, const 
         }
         break;
     }
-    printf("Warning: unsupported input/output type combinason in copyAttribute: %d -> %d\n", source.type, destination.type);
+    printf("Warning: unsupported input/output type combinason in copyAttribute: %d -> %d\n", (int)source.type, (int)destination.type);
     return kOfxStatErrUnsupported;
 }
 

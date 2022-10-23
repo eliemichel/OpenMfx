@@ -162,7 +162,7 @@ OfxStatus paramSetValue(OfxParamHandle paramHandle, ...) {
             paramHandle->value[i].as_double = va_arg(args, double);
             break;
         case ParameterType::Boolean:
-            paramHandle->value[i].as_bool = va_arg(args, bool);
+            paramHandle->value[i].as_bool = va_arg(args, int);
             break;
         case ParameterType::String:
             // TODO: check memory management

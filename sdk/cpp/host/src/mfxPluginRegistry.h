@@ -15,8 +15,11 @@
  */
 
 /** \file
- * \ingroup openmesheffect
+ * \ingroup openmfx
  *
+ * TODO: This should be either moved to the C SDK or converted
+ * to a more C++ idiomatic form.
+ * 
  */
 
 #ifndef __MFX_PLUGIN_REGISTRY_H__
