@@ -1,7 +1,7 @@
 ![CMake Badge](https://github.com/eliemichel/OpenMfx/actions/workflows/cmake.yml/badge.svg)
 
 <p align="center">
-  <img alt="OpenMfx" src="doc/images/openmesheffect.png">
+  <img alt="OpenMfx" src="doc/images/openmfx.png">
 </p>
 
 OpenMfx

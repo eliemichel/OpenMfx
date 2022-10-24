@@ -5,7 +5,7 @@
 
 |nbsp|
 
-.. image:: _static/openmesheffect.png
+.. image:: _static/openmfx.png
 	:align: center
 
 Welcome to OpenMfx documentation!

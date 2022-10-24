@@ -1,5 +1,5 @@
 #include "MfxAttributeProps.h"
-#include "util/mfx_util.h"
+#include "../src/util/mfx_util.h"
 
 #include <cstring>
 #include <cstdio>

@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('./_ext'))
 # -- Project information -----------------------------------------------------
 
 project = 'OpenMfx'
-copyright = '2019-2021, Elie Michel'
+copyright = '2019-2022, Elie Michel'
 author = 'Elie Michel'
 
 

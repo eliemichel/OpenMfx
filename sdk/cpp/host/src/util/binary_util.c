@@ -23,7 +23,7 @@
 #include <dlfcn.h>
 #endif // _WIN32
 
-#include "util/binary_util.h"
+#include "binary_util.h"
 
 #ifdef _WIN32
 static LPVOID getLastErrorMessage() {

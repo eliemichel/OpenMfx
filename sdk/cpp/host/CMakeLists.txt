@@ -23,22 +23,25 @@ set(SRC
   src/Allocator.h
   src/attributes.h
   src/attributes.cpp
+  src/EffectLibrary.h
+  src/EffectLibrary.cpp
+  src/EffectRegistry.h
+  src/EffectRegistry.cpp
+  src/EffectRegistryEntry.h
+  src/EffectRegistryEntry.cpp
   src/properties.h
   src/properties.cpp
   src/parameters.h
   src/parameters.cpp
   src/inputs.h
   src/inputs.cpp
+  src/macros.h
   src/mesh.h
   src/mesh.cpp
   src/mesheffect.h
   src/mesheffect.cpp
   src/messages.h
   src/messages.cpp
-  src/mfxPluginRegistry.h
-  src/mfxPluginRegistry.cpp
-  src/PluginRegistryManager.h
-  src/PluginRegistryManager.cpp
   src/MfxHost.h
   src/MfxHost.cpp
   src/Collection.h
@@ -52,14 +55,14 @@ set(SRC
   src/messageSuite.h
   src/messageSuite.cpp
 
-  util/binary_util.h
-  util/mfx_util.h
+  src/util/binary_util.h
+  src/util/mfx_util.h
   src/util/binary_util.c
   src/util/ofx_util.h
   src/util/ofx_util.c
 
-  sdk/MfxAttributeProps.h
-  sdk/MfxAttributeProps.cpp
+  common/MfxAttributeProps.h
+  common/MfxAttributeProps.cpp
 )
 
 add_library(OpenMfx_Sdk_Cpp_Host ${SRC})
