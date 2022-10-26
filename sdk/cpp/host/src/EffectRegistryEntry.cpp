@@ -29,7 +29,7 @@ EffectRegistryEntry::EffectRegistryEntry(const char *filename, MfxHost *host)
   m_filename = new char[len + 1];
   strncpy(m_filename, filename, len + 1);
 
-  m_descriptors.resize(m_library.pluginCount());
+  m_descriptors.resize(m_library.effectCount());
   fill(m_descriptors.begin(), m_descriptors.end(), nullptr);
 }
 
@@ -93,7 +93,7 @@ void EffectRegistryEntry::releaseDescriptors()
     }
   }
 
-  for (int i = 0; i < m_library.pluginCount(); ++i) {
+  for (int i = 0; i < m_library.effectCount(); ++i) {
     OfxPlugin *plugin = m_library.plugin(i);
     EffectLibrary::Status status = m_library.pluginStatus(i);
     if (EffectLibrary::Status::OK == status) {
@@ -123,7 +123,7 @@ OfxMeshEffectHandle EffectRegistryEntry::getDescriptor(int effectIndex)
       status = EffectLibrary::Status::OK;
     }
     else {
-      LOG("Error while loading plugin!\n");
+      ERR_LOG << "Error while loading plugin!\n";
       status = EffectLibrary::Status::Error;
       return nullptr;
     }

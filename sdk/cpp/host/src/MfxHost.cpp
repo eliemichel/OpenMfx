@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019-2022 Elie Michel
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "MfxHost.h"
 
 #include "mesheffect.h"
@@ -8,9 +24,10 @@
 #include "meshEffectSuite.h"
 #include "messageSuite.h"
 
-#include "util/ofx_util.h"
 #include "ofxExtras.h"
 #include "Logger.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <cstring>
 
@@ -64,7 +81,7 @@ bool MfxHost::LoadPlugin(OfxPlugin* plugin) {
 	plugin->setHost(RawHost());
 
 	status = plugin->mainEntry(kOfxActionLoad, NULL, NULL, NULL);
-	LOG << kOfxActionLoad << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
+	LOG << kOfxActionLoad << " action returned status " << status << "(" << ofxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatReplyDefault:
@@ -89,7 +106,7 @@ void MfxHost::UnloadPlugin(OfxPlugin* plugin) {
 	OfxStatus status;
 
 	status = plugin->mainEntry(kOfxActionUnload, NULL, NULL, NULL);
-	LOG << kOfxActionUnload << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
+	LOG << kOfxActionUnload << " action returned status " << status << "(" << ofxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatReplyDefault:
@@ -113,7 +130,7 @@ bool MfxHost::GetDescriptor(OfxPlugin* plugin, OfxMeshEffectHandle & effectDescr
 	effectHandle = new OfxMeshEffectStruct(RawHost(), plugin);
 
 	status = plugin->mainEntry(kOfxActionDescribe, effectHandle, NULL, NULL);
-	LOG << kOfxActionDescribe << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
+	LOG << kOfxActionDescribe << " action returned status " << status << "(" << ofxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatErrMissingHostFeature:
@@ -172,7 +189,7 @@ bool MfxHost::CreateInstance(OfxMeshEffectHandle effectDescriptor, OfxMeshEffect
 	}
 
 	status = plugin->mainEntry(kOfxActionCreateInstance, instance, NULL, NULL);
-	LOG << kOfxActionCreateInstance << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
+	LOG << kOfxActionCreateInstance << " action returned status " << status << "(" << ofxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatErrMemory:
@@ -210,7 +227,7 @@ void MfxHost::DestroyInstance(OfxMeshEffectHandle effectInstance) {
 	OfxPlugin* plugin = effectInstance->plugin;
 
 	status = plugin->mainEntry(kOfxActionDestroyInstance, effectInstance, NULL, NULL);
-	LOG << kOfxActionDestroyInstance << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
+	LOG << kOfxActionDestroyInstance << " action returned status " << status << "(" << ofxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatFailed:
@@ -239,7 +256,7 @@ bool MfxHost::IsIdentity(OfxMeshEffectHandle effectInstance, bool* isIdentity, c
 	*isIdentity = false;
 
 	status = plugin->mainEntry(kOfxMeshEffectActionIsIdentity, effectInstance, &inArgs, &outArgs);
-	LOG << kOfxMeshEffectActionIsIdentity << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
+	LOG << kOfxMeshEffectActionIsIdentity << " action returned status " << status << "(" << ofxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatErrMemory:
@@ -271,7 +288,7 @@ bool MfxHost::Cook(OfxMeshEffectHandle effectInstance) {
 	OfxPlugin* plugin = effectInstance->plugin;
 
 	status = plugin->mainEntry(kOfxMeshEffectActionCook, effectInstance, NULL, NULL);
-	LOG << kOfxMeshEffectActionCook << " action returned status " << status << "(" << getOfxStatusName(status) << ")";
+	LOG << kOfxMeshEffectActionCook << " action returned status " << status << "(" << ofxStatusName(status) << ")";
 
 	switch (status) {
 	case kOfxStatErrMemory:

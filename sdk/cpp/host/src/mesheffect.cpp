@@ -26,28 +26,24 @@ using namespace OpenMfx;
 
 // // Mesh Effect
 
-OfxMeshEffectStruct::OfxMeshEffectStruct(OfxHost *host, OfxPlugin* plugin)
+OfxMeshEffectStruct::OfxMeshEffectStruct(OfxHost* host, OfxPlugin* plugin)
 	: properties(PropertySetContext::MeshEffect)
 {
-  this->host = host;
-  this->plugin = plugin;
-  this->inputs.host = host;
-  this->parameters.effect_properties = &this->properties;
-  this->messageType = OfxMessageType::Invalid;
-  this->message[0] = '\0';
+	this->host = host;
+	this->plugin = plugin;
+	this->inputs.host = host;
+	this->parameters.effect_properties = &this->properties;
+	this->messageType = OfxMessageType::Invalid;
+	this->message[0] = '\0';
 }
 
-OfxMeshEffectStruct::~OfxMeshEffectStruct()
+void OfxMeshEffectStruct::deep_copy_from(const OfxMeshEffectStruct& other)
 {
-}
-
-void OfxMeshEffectStruct::deep_copy_from(const OfxMeshEffectStruct &other)
-{
-  this->inputs.deep_copy_from(other.inputs);
-  this->properties.deep_copy_from(other.properties);
-  this->parameters.deep_copy_from(other.parameters);
-  this->parameters.effect_properties = &this->properties;
-  this->host = other.host;  // not deep copied, as this is a weak pointer
-  this->messageType = other.messageType;
-  strncpy(this->message, other.message, sizeof(other.message));
+	this->inputs.deep_copy_from(other.inputs);
+	this->properties.deep_copy_from(other.properties);
+	this->parameters.deep_copy_from(other.parameters);
+	this->parameters.effect_properties = &this->properties;
+	this->host = other.host;  // not deep copied, as this is a weak pointer
+	this->messageType = other.messageType;
+	strncpy(this->message, other.message, sizeof(other.message));
 }

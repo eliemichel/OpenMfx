@@ -17,7 +17,8 @@
 #include "messageSuite.h"
 #include "messages.h"
 #include "mesheffect.h"
-#include "Logger.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <string>
 #include <stdio.h>

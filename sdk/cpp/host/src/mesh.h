@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2020 Elie Michel
+ * Copyright 2019 - 2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@
  *
  */
 
-#ifndef __MFX_MESH_H__
-#define __MFX_MESH_H__
+#pragma once
 
 #include "properties.h"
 #include "attributes.h"
@@ -46,4 +45,6 @@ struct OfxMeshStruct {
   OfxAttributeSetStruct attributes;
 };
 
-#endif // __MFX_MESH_H__
+namespace OpenMfx {
+typedef OfxMeshStruct Mesh;
+} // namespace OpenMfx

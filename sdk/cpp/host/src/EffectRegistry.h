@@ -16,8 +16,9 @@
 
 #pragma once
 
-#include "macros.h"
 #include "mesheffect.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <vector>
 
@@ -44,10 +45,7 @@ class EffectRegistry {
  public:
   EffectRegistry();
   ~EffectRegistry();
-
-  // Disable copy, we handle it explicitely
-  EffectRegistry(const EffectRegistry &) = delete;
-  EffectRegistry &operator=(const EffectRegistry &) = delete;
+  MOVE_ONLY(EffectRegistry)
 
   /**
    * Set the host before getting any registry.

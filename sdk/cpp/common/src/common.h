@@ -16,28 +16,7 @@
 
 #pragma once
 
-/**
- * Make a class move only (disable default copy but not default move semantics)
- * Example:
- *   class Foo {
- * public:
- *     Foo();
- *     MOVE_ONLY(Foo)
- *   }
- */
-#define MOVE_ONLY(T) \
-T(const T &) = delete; \
-T &operator=(const T &) = delete; \
-T(T&&) = default; \
-T &operator=(T&&) = default;
-
-/**
- * A simple logging macro that is only defined in debug mode
- */
-#ifndef NDEBUG
-#include <cstdio>
-#  define LOG printf
-#else
-#  define LOG(...)
-#endif
-
+#include "macros.h"
+#include "status.h"
+#include "MfxAttributeProps.h"
+#include "Logger.h"

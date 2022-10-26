@@ -16,7 +16,8 @@
 
 #include "EffectLibrary.h"
 #include "Allocator.h"
-#include "macros.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <ofxMeshEffect.h>
 
@@ -32,10 +33,10 @@
 namespace OpenMfx {
 
 bool EffectLibrary::load(const char* ofx_filepath) {
-    LOG("Loading OFX plug-ins from %s.\n", ofx_filepath);
+    LOG << "Loading OFX plug-ins from " << ofx_filepath;
 
     if (false == initBinary(ofx_filepath)) {
-        LOG("Could not init binary.\n");
+        ERR_LOG << "Could not init binary.";
         unload();
         return false;
     }
@@ -60,16 +61,29 @@ void EffectLibrary::unload() {
     }
 }
 
-int EffectLibrary::pluginCount() const {
+int EffectLibrary::effectCount() const {
     return static_cast<int>(m_plugins.size());
 }
 
-EffectLibrary::Status EffectLibrary::pluginStatus(int pluginIndex) const {
-    return m_plugins[pluginIndex].second;
+const char * EffectLibrary::effectIdentifier(int effectIndex) const {
+    return m_plugins[effectIndex].first->pluginIdentifier;
 }
 
-OfxPlugin* EffectLibrary::plugin(int pluginIndex) const {
-    return m_plugins[pluginIndex].first;
+unsigned int EffectLibrary::effectVersionMajor(int effectIndex) const {
+    return m_plugins[effectIndex].first->pluginVersionMajor;
+}
+
+unsigned int EffectLibrary::effectVersionMinor(int effectIndex) const {
+    return m_plugins[effectIndex].first->pluginVersionMinor;
+}
+
+
+EffectLibrary::Status EffectLibrary::pluginStatus(int effectIndex) const {
+    return m_plugins[effectIndex].second;
+}
+
+OfxPlugin* EffectLibrary::plugin(int effectIndex) const {
+    return m_plugins[effectIndex].first;
 }
 
 bool EffectLibrary::initBinary(const char* ofx_filepath) {
@@ -92,28 +106,27 @@ bool EffectLibrary::initBinary(const char* ofx_filepath) {
 
 void EffectLibrary::initPlugins() {
     int n = m_procedures.getNumberOfPlugins();
-    LOG("Found %d plugins.\n", n);
+    LOG << "Found " << n << " plugins.";
 
     for (int i = 0; i < n; ++i) {
         OfxPlugin* plugin;
         plugin = m_procedures.getPlugin(i);
-        LOG("Plugin #%d: %s (API %s, version %d)\n", i, plugin->pluginIdentifier, plugin->pluginApi, plugin->apiVersion);
-
+        LOG << "Plugin #" << i << ": " << plugin->pluginIdentifier << " (API " << plugin->pluginApi << ", version " << plugin->apiVersion << ")";
+        
         // API/Version check
         if (0 != strcmp(plugin->pluginApi, kOfxMeshEffectPluginApi)) {
-            LOG("Unsupported plugin API: %s (expected %s)", plugin->pluginApi, kOfxMeshEffectPluginApi);
+            WARN_LOG << "Unsupported plugin API: " << plugin->pluginApi << " (expected " << kOfxMeshEffectPluginApi << ")";
             continue;
         }
         if (plugin->apiVersion != kOfxMeshEffectPluginApiVersion) {
-            LOG("Plugin API version mismatch: %d found, but %d expected", plugin->apiVersion, kOfxMeshEffectPluginApiVersion);
+            WARN_LOG << "Plugin API version mismatch: " << plugin->apiVersion << " found, but " << kOfxMeshEffectPluginApiVersion << "expected";
             continue;
         }
 
-        LOG("Plugin #%d in binary is #%zu in plugin registry\n", i, m_plugins.size());
         m_plugins.push_back({ plugin, Status::NotLoaded });
     }
 
-    LOG("Found %zu supported plugins.\n", m_plugins.size());
+    LOG << "Found " << m_plugins.size() << " supported plugins.";
 }
 
 } // namespace OpenMfx

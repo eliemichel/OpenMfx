@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2020 Elie Michel
+ * Copyright 2019 - 2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,9 @@
  *
  */
 
-#ifndef __MFX_COLLECTION_H__
-#define __MFX_COLLECTION_H__
+#pragma once
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <vector>
 #include <stdexcept>
@@ -38,13 +39,8 @@ namespace OpenMfx {
  */
 template<typename T, typename Index = typename T::Index> class Collection {
  public:
-  Collection()
-  {
-  }
-  Collection(const Collection<T, Index> &) = delete;
-  Collection<T, Index> &operator=(const Collection<T, Index> &) = delete;
-  Collection(Collection<T, Index> &&) = default;
-  Collection<T, Index> &operator=(Collection<T, Index> &&) = default;
+  Collection() {}
+  MOVE_ONLY(Collection)
 
   int find(const Index &index) const
   {
@@ -147,5 +143,3 @@ template<typename T, typename Index = typename T::Index> class Collection {
 };
 
 }  // namespace OpenMfx
-
-#endif // __MFX_COLLECTION_H__

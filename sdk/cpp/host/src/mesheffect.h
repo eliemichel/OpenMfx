@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,41 +19,39 @@
  *
  */
 
-#ifndef __MFX_MESHEFFECT_H__
-#define __MFX_MESHEFFECT_H__
-
-#include "ofxCore.h"
-#include "ofxMeshEffect.h"
-#include "ofxExtras.h"
+#pragma once
 
 #include "properties.h"
 #include "parameters.h"
 #include "inputs.h"
 #include "messages.h"
 
+#include <OpenMfx/Sdk/Cpp/Common>
+
+#include <ofxCore.h>
+#include <ofxMeshEffect.h>
+
 // Mesh Effect
 
+namespace OpenMfx {
+typedef OfxMeshEffectStruct MeshEffect;
+} // namespace OpenMfx
+
 struct OfxMeshEffectStruct {
- public:
-  OfxMeshEffectStruct(OfxHost *host, OfxPlugin* plugin);
-  ~OfxMeshEffectStruct();
+public:
+	OfxMeshEffectStruct(OfxHost* host, OfxPlugin* plugin);
+	MOVE_ONLY(OfxMeshEffectStruct)
 
-  // Disable copy, we handle it explicitely
-  OfxMeshEffectStruct(const OfxMeshEffectStruct &) = delete;
-  OfxMeshEffectStruct &operator=(const OfxMeshEffectStruct &) = delete;
+	void deep_copy_from(const OfxMeshEffectStruct& other);
 
-  void deep_copy_from(const OfxMeshEffectStruct &other);
+public:
+	OfxMeshInputSetStruct inputs;
+	OfxPropertySetStruct properties;
+	OfxParamSetStruct parameters;
+	OfxHost* host; // weak pointer, do not deep copy
+	OfxPlugin* plugin; // weak pointer, do not deep copy
 
- public:
-  OfxMeshInputSetStruct inputs;
-  OfxPropertySetStruct properties;
-  OfxParamSetStruct parameters;
-  OfxHost *host; // weak pointer, do not deep copy
-  OfxPlugin* plugin; // weak pointer, do not deep copy
-
-  // Only the last persistent message is stored
-  OfxMessageType messageType;
-  char message[1024];
+	// Only the last persistent message is stored
+	OfxMessageType messageType;
+	char message[1024];
 };
-
-#endif // __MFX_MESHEFFECT_H__

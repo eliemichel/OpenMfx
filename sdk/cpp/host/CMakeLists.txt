@@ -17,9 +17,6 @@
 # ***** END APACHE 2 LICENSE BLOCK *****
 
 set(SRC
-  src/Logger.h
-  src/Logger.cpp
-
   src/Allocator.h
   src/attributes.h
   src/attributes.cpp
@@ -35,7 +32,6 @@ set(SRC
   src/parameters.cpp
   src/inputs.h
   src/inputs.cpp
-  src/macros.h
   src/mesh.h
   src/mesh.cpp
   src/mesheffect.h
@@ -56,13 +52,7 @@ set(SRC
   src/messageSuite.cpp
 
   src/util/binary_util.h
-  src/util/mfx_util.h
   src/util/binary_util.c
-  src/util/ofx_util.h
-  src/util/ofx_util.c
-
-  common/MfxAttributeProps.h
-  common/MfxAttributeProps.cpp
 )
 
 add_library(OpenMfx_Sdk_Cpp_Host ${SRC})
@@ -78,7 +68,7 @@ target_include_directories(
 target_link_libraries(
   OpenMfx_Sdk_Cpp_Host
   PUBLIC
-    OpenMfx::Core
+    OpenMfx::Sdk::Cpp::Common
 )
 
 set_property(TARGET OpenMfx_Sdk_Cpp_Host PROPERTY FOLDER "OpenMfx/Sdk/Cpp")

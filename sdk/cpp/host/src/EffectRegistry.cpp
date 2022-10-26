@@ -17,7 +17,8 @@
 #include "EffectRegistry.h"
 #include "EffectRegistryEntry.h"
 #include "MfxHost.h"
-#include "macros.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <cassert>
 #include <cstring>
@@ -57,11 +58,11 @@ EffectLibrary *EffectRegistry::getLibrary(const char *ofx_filepath)
   EffectRegistryEntry *entry = find(ofx_filepath);
 
   if (NULL == entry) {
-    LOG("[get_library] NEW library for %s\n", ofx_filepath);
+    LOG << "[get_library] NEW library for " << ofx_filepath;
     entry = add(ofx_filepath);
   }
   else {
-    LOG("[get_Library] reusing library for %s\n", ofx_filepath);
+    LOG << "[get_Library] reusing library for " << ofx_filepath;
   }
 
   entry->incrementReferences();

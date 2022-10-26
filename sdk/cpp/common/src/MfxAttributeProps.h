@@ -1,7 +1,10 @@
 #pragma once
 
-#include "ofxProperty.h"
-#include "ofxMeshEffect.h"
+#include <ofxProperty.h>
+#include <ofxMeshEffect.h>
+
+// TODO: This file is not yet so "common", it is only used by the host SDK and
+// the plugin SDK ha a very similar one to be merged with.
 
 enum class MfxAttributeType {
     Unknown = -1,

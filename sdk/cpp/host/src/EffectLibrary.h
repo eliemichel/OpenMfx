@@ -18,7 +18,8 @@
 
 #include "util/binary_util.h"
 #include "ofxExtras.h"
-#include "macros.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <ofxCore.h>
 
@@ -34,17 +35,39 @@ namespace OpenMfx {
  * The plug-in library holds all the data about the plug-ins made available by
  * a given ofx plug-in binary. A binary might contain many plug-ins.
  */
-struct EffectLibrary {
+class EffectLibrary {
 public:
+    EffectLibrary() {}
+    MOVE_ONLY(EffectLibrary)
+
+    /**
+     * Number of loaded plugins
+     */
+    int effectCount() const;
+
+    /**
+     * Assumes that the index is valid
+     */
+    const char *effectIdentifier(int effectIndex) const;
+
+    /**
+     * Assumes that the index is valid
+     */
+    unsigned int effectVersionMajor(int effectIndex) const;
+
+    /**
+     * Assumes that the index is valid
+     */
+    unsigned int effectVersionMinor(int effectIndex) const;
+
+private: // reserved to EffectRegistry
+    friend class EffectRegistryEntry;
+
     enum class Status {
         OK,
         NotLoaded,
         Error
     };
-
-public:
-    EffectLibrary() {}
-    MOVE_ONLY(EffectLibrary)
 
     /**
      * /pre registry has never been allocated
@@ -61,19 +84,14 @@ public:
     void unload();
 
     /**
-     * Number of loaded plugins
+     * Assumes that the index is valid
      */
-    int pluginCount() const;
+    Status pluginStatus(int effectIndex) const;
 
     /**
      * Assumes that the index is valid
      */
-    Status pluginStatus(int pluginIndex) const;
-
-    /**
-     * Assumes that the index is valid
-     */
-    OfxPlugin* plugin(int pluginIndex) const;
+    OfxPlugin* plugin(int effectIndex) const;
 
 private:
     /**

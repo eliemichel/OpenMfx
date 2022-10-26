@@ -17,7 +17,8 @@
 #include "attributes.h"
 #include "propertySuite.h"
 #include "ofxMeshEffect.h"
-#include "Logger.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <cstring>
 #include <algorithm>

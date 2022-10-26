@@ -17,8 +17,9 @@
 #include "meshEffectSuite.h"
 #include "propertySuite.h"
 #include "mesheffect.h"
-#include "util/mfx_util.h"
-#include "Logger.h"
+#include "ofxExtras.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <cstring>
 #include <cstdio>

@@ -17,7 +17,8 @@
 #pragma once
 
 #include "EffectLibrary.h"
-#include "macros.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 namespace OpenMfx {
 
