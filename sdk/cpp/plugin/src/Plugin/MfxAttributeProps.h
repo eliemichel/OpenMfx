@@ -49,4 +49,7 @@ struct MfxAttributeProps
      */
     template<typename T>
     T* at(int index) { return reinterpret_cast<T*>(data + index * stride); }
+
+    template<typename T>
+    const T* at(int index) const { return reinterpret_cast<T*>(data + index * stride); }
 };

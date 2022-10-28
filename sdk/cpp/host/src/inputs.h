@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2020 Elie Michel
+ * Copyright 2019 - 2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,13 @@
  *
  */
 
-#ifndef __MFX_INPUTS_H__
-#define __MFX_INPUTS_H__
+#pragma once
 
-#include "properties.h"
-#include "mesh.h"
+#include "Properties.h"
+#include "Mesh.h"
 #include "Collection.h"
 
-#include "ofxCore.h"
+#include <ofxCore.h>
 
 #include <string>
 
@@ -81,4 +80,7 @@ struct OfxMeshInputSetStruct : OpenMfx::Collection<OfxMeshInputStruct> {
   OfxHost *host;  // weak pointer, do not deep copy
 };
 
-#endif // __MFX_INPUTS_H__
+namespace OpenMfx {
+typedef OfxMeshInputStruct MeshInput;
+typedef OfxMeshInputSetStruct MeshInputSet;
+} // namespace OpenMfx

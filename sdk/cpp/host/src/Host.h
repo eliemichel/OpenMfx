@@ -20,12 +20,14 @@
 
 #pragma once
 
-#include "ofxCore.h"
-#include "ofxMeshEffect.h"
-#include "ofxProperty.h"
-#include "ofxParam.h"
-#include "ofxMessage.h"
 #include "ofxExtras.h"
+#include <ofxCore.h>
+#include <ofxMeshEffect.h>
+#include <ofxProperty.h>
+#include <ofxParam.h>
+#include <ofxMessage.h>
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 namespace OpenMfx {
 
@@ -34,22 +36,17 @@ namespace OpenMfx {
  * To use this in you own program, it is advised to subclass it and implement
  * BeforeMeshGet(), BeforeMeshRelease() and optionnaly InitInput
  */
-class MfxHost {
+class Host {
 public:
 	/**
-	 * Retrieve the MfxHost pointer stored in ofxHost's properties.
+	 * Retrieve the Host pointer stored in ofxHost's properties.
 	 */
-	static MfxHost* FromOfxHost(OfxHost* ofxHost);
+	static Host* FromOfxHost(OfxHost* ofxHost);
 
 public:
-	MfxHost();
-	~MfxHost();
-
-	// Disable copy, default move (rule of five)
-	MfxHost(const MfxHost&) = delete;
-	MfxHost& operator=(const MfxHost&) = delete;
-	MfxHost(MfxHost&&) = default;
-	MfxHost& operator=(MfxHost&&) = default;
+	Host();
+	~Host();
+	MOVE_ONLY(Host)
 
 public: // Utility wrappers around plugin->mainEntry
 

@@ -18,28 +18,37 @@
 
 set(SRC
   src/Allocator.h
-  src/attributes.h
-  src/attributes.cpp
+  src/Attributes.h
+  src/Attributes.cpp
+  src/AttributeProps.h
+  src/AttributeProps.cpp
+  src/AttributeEnums.h
+  src/AttributeEnums.cpp
   src/EffectLibrary.h
   src/EffectLibrary.cpp
   src/EffectRegistry.h
   src/EffectRegistry.cpp
   src/EffectRegistryEntry.h
   src/EffectRegistryEntry.cpp
-  src/properties.h
-  src/properties.cpp
-  src/parameters.h
-  src/parameters.cpp
+  src/Host.h
+  src/Host.cpp
+  src/Properties.h
+  src/Properties.cpp
+  src/PropertyEnums.h
+  src/Parameters.h
+  src/Parameters.cpp
+  src/ParameterEnums.h
+  src/ParameterEnums.cpp
   src/inputs.h
   src/inputs.cpp
-  src/mesh.h
-  src/mesh.cpp
-  src/mesheffect.h
-  src/mesheffect.cpp
+  src/Mesh.h
+  src/Mesh.cpp
+  src/MeshProps.h
+  src/MeshProps.cpp
+  src/MeshEffect.h
+  src/MeshEffect.cpp
   src/messages.h
   src/messages.cpp
-  src/MfxHost.h
-  src/MfxHost.cpp
   src/Collection.h
 
   src/parameterSuite.h

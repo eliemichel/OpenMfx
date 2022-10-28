@@ -53,7 +53,7 @@ OfxStatus paramDefine(OfxParamSetHandle paramSet,
         return kOfxStatErrExists;
     }
     i = paramSet->ensure(name);
-    (*paramSet)[i].set_type(parse_parameter_type(paramType));
+    (*paramSet)[i].set_type(parameterTypeAsEnum(paramType));
     if (NULL != propertySet) {
         *propertySet = &((*paramSet)[i].properties);
     }
@@ -88,10 +88,10 @@ OfxStatus paramGetPropertySet(OfxParamHandle param,
 }
 
 OfxStatus paramGetValue(OfxParamHandle paramHandle, ...) {
-    size_t dimensions = parameter_type_dimensions(paramHandle->type);
+    int dimensions = parameterTypeDimension(paramHandle->type);
     va_list valist;
     va_start(valist, paramHandle);
-    for (size_t i = 0; i < dimensions; ++i) {
+    for (int i = 0; i < dimensions; ++i) {
         switch (paramHandle->type) {
         case ParameterType::Integer:
         case ParameterType::Integer2d:
@@ -144,10 +144,10 @@ OfxStatus paramGetIntegral(OfxParamHandle paramHandle, OfxTime time1, OfxTime ti
 }
 
 OfxStatus paramSetValue(OfxParamHandle paramHandle, ...) {
-    size_t dimensions = parameter_type_dimensions(paramHandle->type);
+    int dimensions = parameterTypeDimension(paramHandle->type);
     va_list args;
     va_start(args, paramHandle);
-    for (size_t i = 0; i < dimensions; ++i) {
+    for (int i = 0; i < dimensions; ++i) {
         switch (paramHandle->type) {
         case ParameterType::Integer:
         case ParameterType::Integer2d:

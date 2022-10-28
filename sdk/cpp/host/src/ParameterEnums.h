@@ -16,6 +16,35 @@
 
 #pragma once
 
-#include "macros.h"
-#include "status.h"
-#include "Logger.h"
+namespace OpenMfx {
+
+enum class ParameterType {
+    Unknown = -1,
+    Integer,
+    Integer2d,
+    Integer3d,
+    Double,
+    Double2d,
+    Double3d,
+    Rgb,
+    Rgba,
+    Boolean,
+    Choice,
+    String,
+    Custom,
+    PushButton,
+    Group,
+    Page,
+};
+
+/**
+ * Convert a type string from MeshEffect API to its local enum counterpart
+ */
+ParameterType parameterTypeAsEnum(const char* mfxType);
+
+/**
+ * Return the number of components in the parameter type
+ */
+int parameterTypeDimension(ParameterType type);
+
+} // namespace OpenMfx

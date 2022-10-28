@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-/** \file
- * \ingroup openmesheffect
- *
- */
+#pragma once
 
-#ifndef __MFX_PROPERTIES_H__
-#define __MFX_PROPERTIES_H__
-
+#include "PropertyEnums.h"
 #include "Collection.h"
+
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <string>
 
@@ -37,13 +34,7 @@ union OfxPropertyValueStruct {
 struct OfxPropertyStruct {
  public:
   OfxPropertyStruct() {}
-
-  // Disable copy, we handle it explicitely
-  OfxPropertyStruct(const OfxPropertyStruct &) = delete;
-  OfxPropertyStruct &operator=(const OfxPropertyStruct &) = delete;
-
-  OfxPropertyStruct(OfxPropertyStruct&&) = default;
-  OfxPropertyStruct& operator=(OfxPropertyStruct&&) = default;
+  MOVE_ONLY(OfxPropertyStruct)
 
   void deep_copy_from(const OfxPropertyStruct &other);
 
@@ -59,31 +50,6 @@ private:
     std::string m_name;
 };
 
-namespace OpenMfx {
-
-enum class PropertyType {
-  Pointer,
-  String,
-  Double,
-  Int,
-};
-
-// TODO: use kOfxPropType instead
-enum class PropertySetContext {
-  Host,        // kOfxTypeMeshEffectHost
-  MeshEffect,  // kOfxTypeMeshEffect, kOfxTypeMeshEffectInstance
-  Input,       // kOfxTypeMeshEffectInput
-  Mesh,        // kOfxTypeMesh
-  Param,       // kOfxTypeParameter
-  Attrib,
-  ActionIdentityIn,
-  ActionIdentityOut,
-  Other,
-  // kOfxTypeParameterInstance
-};
-
-}  // namespace OpenMfx
-
 // // OfxPropertySetStruct
 
 struct OfxPropertySetStruct : OpenMfx::Collection<OfxPropertyStruct> {
@@ -92,6 +58,7 @@ struct OfxPropertySetStruct : OpenMfx::Collection<OfxPropertyStruct> {
 
  public:
   OfxPropertySetStruct(PropertySetContext context);
+  MOVE_ONLY(OfxPropertySetStruct)
 
  public:
   static bool check_property_context(PropertySetContext context,
@@ -102,4 +69,7 @@ struct OfxPropertySetStruct : OpenMfx::Collection<OfxPropertyStruct> {
   PropertySetContext context; // TODO: use this rather than generic property set objects
 };
 
-#endif // __MFX_PROPERTIES_H__
+namespace OpenMfx {
+typedef OfxPropertyStruct Property;
+typedef OfxPropertySetStruct PropertySet;
+} // namespace OpenMfx

@@ -16,7 +16,7 @@
 
 #include "EffectRegistry.h"
 #include "EffectRegistryEntry.h"
-#include "MfxHost.h"
+#include "Host.h"
 
 #include <OpenMfx/Sdk/Cpp/Common>
 
@@ -48,7 +48,7 @@ EffectRegistry::~EffectRegistry()
   m_first_entry = NULL;
 }
 
-void EffectRegistry::setHost(MfxHost *host)
+void EffectRegistry::setHost(Host *host)
 {
   m_host = host;
 }

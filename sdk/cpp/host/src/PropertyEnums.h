@@ -16,6 +16,26 @@
 
 #pragma once
 
-#include "macros.h"
-#include "status.h"
-#include "Logger.h"
+namespace OpenMfx {
+
+enum class PropertyType {
+  Pointer,
+  String,
+  Double,
+  Int,
+};
+
+enum class PropertySetContext {
+  Host,        // kOfxTypeMeshEffectHost
+  MeshEffect,  // kOfxTypeMeshEffect, kOfxTypeMeshEffectInstance
+  Input,       // kOfxTypeMeshEffectInput
+  Mesh,        // kOfxTypeMesh
+  Param,       // kOfxTypeParameter
+  Attrib,
+  ActionIdentityIn,
+  ActionIdentityOut,
+  Other,
+  // kOfxTypeParameterInstance
+};
+
+}  // namespace OpenMfx

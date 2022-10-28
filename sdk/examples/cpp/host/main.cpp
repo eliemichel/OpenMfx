@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-#include <OpenMfx/Sdk/Cpp/Host/MfxHost>
+#include <OpenMfx/Sdk/Cpp/Host/Host>
 #include <OpenMfx/Sdk/Cpp/Host/MeshEffect>
 #include <OpenMfx/Sdk/Cpp/Host/EffectRegistry>
 #include <OpenMfx/Sdk/Cpp/Host/EffectLibrary>
+#include <OpenMfx/Sdk/Cpp/Host/MeshProps>
+#include <OpenMfx/Sdk/Cpp/Host/AttributeProps>
 
 #include <exception>
 #include <iostream>
@@ -39,7 +41,7 @@ struct MyMeshStruct {
  * our custom MyMeshStruct structure as an OpenMfx mesh to the effect, and how
  * to read back.
  */
-class MyHost : public OpenMfx::MfxHost {
+class MyHost : public OpenMfx::Host {
 	// Callback triggered at the beginning of meshEffectSuite->inputGetMesh()
 	OfxStatus BeforeMeshGet(OpenMfx::Mesh* mfxMesh) override;
 	// Callback triggered at the beginning of meshEffectSuite->inputReleaseMesh()
@@ -57,7 +59,7 @@ void run(const char* filepath) {
 	MyHost host;
 	// (Optional: We alias some host functions to be able to easily use the
 	// OpenMfx API from within this function.)
-	const auto& propSetPointer = host.propertySuite->propSetPointer;
+	const auto& propertySuite = host.propertySuite;
 
 	// We then get the global registry. This is a singleton that avoid loading
 	// multiple times the same EffectLibrary when multiple parts of the program
@@ -125,10 +127,10 @@ void run(const char* filepath) {
 			// We provide a pointer to our own data structure but do convert to OpenMfx
 			// yet because inputGetMesh might not be called. We will do it in
 			// BeforeMeshGet instead.
-			propSetPointer(&input.mesh.properties, kOfxMeshPropInternalData, 0, (void*)&inputMeshData);
+			propertySuite->propSetPointer(&input.mesh.properties, kOfxMeshPropInternalData, 0, (void*)&inputMeshData);
 		}
 		else {
-			propSetPointer(&input.mesh.properties, kOfxMeshPropInternalData, 0, (void*)&outputMeshData);
+			propertySuite->propSetPointer(&input.mesh.properties, kOfxMeshPropInternalData, 0, (void*)&outputMeshData);
 		}
 	}
 
@@ -182,10 +184,13 @@ OfxStatus MyHost::BeforeMeshGet(OpenMfx::Mesh* mfxMesh) {
 	if (!myMesh->isInput)
 		return kOfxStatOK;
 
-	propertySuite->propSetInt(&mfxMesh->properties, kOfxMeshPropPointCount, 0, static_cast<int>(myMesh->points.size()));
-	propertySuite->propSetInt(&mfxMesh->properties, kOfxMeshPropCornerCount, 0, 3 * static_cast<int>(myMesh->triangles.size()));
-	propertySuite->propSetInt(&mfxMesh->properties, kOfxMeshPropFaceCount, 0, static_cast<int>(myMesh->triangles.size()));
-	propertySuite->propSetInt(&mfxMesh->properties, kOfxMeshPropConstantFaceSize, 0, 3);
+	OpenMfx::MeshProps props;
+	props.pointCount = static_cast<int>(myMesh->points.size());
+	props.cornerCount = 3 * static_cast<int>(myMesh->triangles.size());
+	props.faceCount = static_cast<int>(myMesh->triangles.size());
+	props.constantFaceSize = 3;
+	props.noLooseEdge = true;
+	props.setProperties(propertySuite , &mfxMesh->properties);
 
 	// Convert to attributes
 	int attributeCount = mfxMesh->attributes.count();
@@ -224,39 +229,37 @@ OfxStatus MyHost::BeforeMeshRelease(OpenMfx::Mesh* mfxMesh) {
 	if (myMesh->isInput)
 		return kOfxStatOK;
 
-	int pointCount = 0;
-	int faceCount = 0;
-	int constantFaceSize = -1;
-	propertySuite->propGetInt(&mfxMesh->properties, kOfxMeshPropPointCount, 0, &pointCount);
-	propertySuite->propGetInt(&mfxMesh->properties, kOfxMeshPropFaceCount, 0, &faceCount);
-	propertySuite->propGetInt(&mfxMesh->properties, kOfxMeshPropConstantFaceSize, 0, &constantFaceSize);
+	OpenMfx::MeshProps props;
+	props.fetchProperties(propertySuite, &mfxMesh->properties);
 
-	if (constantFaceSize != 3)
+	if (props.constantFaceSize != 3)
 		return kOfxStatErrUnsupported;
 
-	myMesh->points.resize(pointCount);
-	myMesh->triangles.resize(faceCount);
+	myMesh->points.resize(props.pointCount);
+	myMesh->triangles.resize(props.faceCount);
 
 	// Convert from attributes
 	int attributeCount = mfxMesh->attributes.count();
+	OpenMfx::AttributeProps attributeProps;
 	for (int i = 0; i < attributeCount; ++i) {
 		auto& attribute = mfxMesh->attributes[i];
+		attributeProps.fetchProperties(propertySuite, &attribute.properties);
 		if (attribute.attachment() == OpenMfx::AttributeAttachment::Point && attribute.name() == kOfxMeshAttribPointPosition) {
-			if (attribute.type() != OpenMfx::AttributeType::Float)
+			if (attributeProps.type != OpenMfx::AttributeType::Float)
 				return kOfxStatErrUnsupported;
-			for (int j = 0; j < pointCount; ++j) {
-				float* P = (float*)((char*)attribute.data() + attribute.byteStride() * j);
+			for (int j = 0; j < props.pointCount; ++j) {
+				float* P = attributeProps.at<float>(j);
 				for (int k = 0; k < 3; ++k) {
 					myMesh->points[j][k] = P[k];
 				}
 			}
 		}
 		else if (attribute.attachment() == OpenMfx::AttributeAttachment::Corner && attribute.name() == kOfxMeshAttribCornerPoint) {
-			if (attribute.type() != OpenMfx::AttributeType::Int)
+			if (attributeProps.type != OpenMfx::AttributeType::Int)
 				return kOfxStatErrUnsupported;
-			for (int j = 0; j < faceCount; ++j) {
+			for (int j = 0; j < props.faceCount; ++j) {
 				for (int k = 0; k < 3; ++k) {
-					int C = *(int*)((char*)attribute.data() + attribute.byteStride() * (3 * j + k));
+					int C = *attributeProps.at<int>(3 * j + k);
 					myMesh->triangles[j][k] = C;
 				}
 			}

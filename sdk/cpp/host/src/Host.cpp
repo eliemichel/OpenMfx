@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "MfxHost.h"
+#include "Host.h"
 
-#include "mesheffect.h"
-#include "properties.h"
+#include "MeshEffect.h"
+#include "Properties.h"
 
 #include "parameterSuite.h"
 #include "propertySuite.h"
@@ -25,7 +25,6 @@
 #include "messageSuite.h"
 
 #include "ofxExtras.h"
-#include "Logger.h"
 
 #include <OpenMfx/Sdk/Cpp/Common>
 
@@ -36,20 +35,20 @@ using namespace OpenMfx;
 // ----------------------------------------------------
 // Static constructor
 
-MfxHost* MfxHost::FromOfxHost(OfxHost* ofxHost)
+Host* Host::FromOfxHost(OfxHost* ofxHost)
 {
 	int i = ofxHost->host->find(kOfxMeshPropHostHandle);
 	if (i == -1) {
 		return nullptr;
 	}
 	void* ptr = (*ofxHost->host)[i].value[0].as_pointer;
-	return reinterpret_cast<MfxHost*>(ptr);
+	return reinterpret_cast<Host*>(ptr);
 }
 
 // ----------------------------------------------------
 // Base methods
 
-MfxHost::MfxHost()
+Host::Host()
 {
 	OfxPropertySetHandle props = new OfxPropertySetStruct(PropertySetContext::Host);
 	m_host.host = props;
@@ -67,7 +66,7 @@ MfxHost::MfxHost()
 	propertySuite->propSetPointer(props, kOfxMeshPropHostHandle, 0, (void**)this);
 }
 
-MfxHost::~MfxHost()
+Host::~Host()
 {
 	delete m_host.host;
 }
@@ -75,7 +74,7 @@ MfxHost::~MfxHost()
 // ----------------------------------------------------
 // Utility wrappers around plugin->mainEntry
 
-bool MfxHost::LoadPlugin(OfxPlugin* plugin) {
+bool Host::LoadPlugin(OfxPlugin* plugin) {
 	OfxStatus status;
 
 	plugin->setHost(RawHost());
@@ -102,7 +101,7 @@ bool MfxHost::LoadPlugin(OfxPlugin* plugin) {
 }
 
 
-void MfxHost::UnloadPlugin(OfxPlugin* plugin) {
+void Host::UnloadPlugin(OfxPlugin* plugin) {
 	OfxStatus status;
 
 	status = plugin->mainEntry(kOfxActionUnload, NULL, NULL, NULL);
@@ -121,7 +120,7 @@ void MfxHost::UnloadPlugin(OfxPlugin* plugin) {
 	plugin->setHost(NULL);
 }
 
-bool MfxHost::GetDescriptor(OfxPlugin* plugin, OfxMeshEffectHandle & effectDescriptor)
+bool Host::GetDescriptor(OfxPlugin* plugin, OfxMeshEffectHandle & effectDescriptor)
 {
 	OfxStatus status;
 	OfxMeshEffectHandle effectHandle;
@@ -161,13 +160,13 @@ bool MfxHost::GetDescriptor(OfxPlugin* plugin, OfxMeshEffectHandle & effectDescr
 	return true;
 }
 
-void MfxHost::ReleaseDescriptor(OfxMeshEffectHandle effectDescriptor)
+void Host::ReleaseDescriptor(OfxMeshEffectHandle effectDescriptor)
 {
 	delete effectDescriptor;
 }
 
 
-bool MfxHost::CreateInstance(OfxMeshEffectHandle effectDescriptor, OfxMeshEffectHandle & effectInstance)
+bool Host::CreateInstance(OfxMeshEffectHandle effectDescriptor, OfxMeshEffectHandle & effectInstance)
 {
 	OfxStatus status;
 	OfxMeshEffectHandle instance;
@@ -222,7 +221,7 @@ bool MfxHost::CreateInstance(OfxMeshEffectHandle effectDescriptor, OfxMeshEffect
 	return true;
 }
 
-void MfxHost::DestroyInstance(OfxMeshEffectHandle effectInstance) {
+void Host::DestroyInstance(OfxMeshEffectHandle effectInstance) {
 	OfxStatus status;
 	OfxPlugin* plugin = effectInstance->plugin;
 
@@ -242,7 +241,7 @@ void MfxHost::DestroyInstance(OfxMeshEffectHandle effectInstance) {
 	delete effectInstance;
 }
 
-bool MfxHost::IsIdentity(OfxMeshEffectHandle effectInstance, bool* isIdentity, char** inputToPassThrough) {
+bool Host::IsIdentity(OfxMeshEffectHandle effectInstance, bool* isIdentity, char** inputToPassThrough) {
 	OfxStatus status;
 	OfxPlugin* plugin = effectInstance->plugin;
 
@@ -283,7 +282,7 @@ bool MfxHost::IsIdentity(OfxMeshEffectHandle effectInstance, bool* isIdentity, c
 	}
 }
 
-bool MfxHost::Cook(OfxMeshEffectHandle effectInstance) {
+bool Host::Cook(OfxMeshEffectHandle effectInstance) {
 	OfxStatus status;
 	OfxPlugin* plugin = effectInstance->plugin;
 
@@ -310,40 +309,40 @@ bool MfxHost::Cook(OfxMeshEffectHandle effectInstance) {
 // ----------------------------------------------------
 // Static callbacks
 
-OfxStatus MfxHost::BeforeMeshGetCb(OfxHost* ofxHost, OfxMeshHandle ofxMesh)
+OfxStatus Host::BeforeMeshGetCb(OfxHost* ofxHost, OfxMeshHandle ofxMesh)
 {
-	MfxHost* mfxHost = MfxHost::FromOfxHost(ofxHost);
-	if (nullptr == mfxHost) {
+	Host* Host = Host::FromOfxHost(ofxHost);
+	if (nullptr == Host) {
 		return kOfxStatErrFatal;
 	}
 	else {
-		return mfxHost->BeforeMeshGet(ofxMesh);
+		return Host->BeforeMeshGet(ofxMesh);
 	}
 }
 
-OfxStatus MfxHost::BeforeMeshReleaseCb(OfxHost* ofxHost, OfxMeshHandle ofxMesh)
+OfxStatus Host::BeforeMeshReleaseCb(OfxHost* ofxHost, OfxMeshHandle ofxMesh)
 {
-	MfxHost *mfxHost = MfxHost::FromOfxHost(ofxHost);
-	if (nullptr == mfxHost) {
+	Host *Host = Host::FromOfxHost(ofxHost);
+	if (nullptr == Host) {
 		return kOfxStatErrFatal;
 	}
 	else {
-		return mfxHost->BeforeMeshRelease(ofxMesh);
+		return Host->BeforeMeshRelease(ofxMesh);
 	}
 }
 
-OfxStatus MfxHost::BeforeMeshAllocateCb(OfxHost *ofxHost, OfxMeshHandle ofxMesh)
+OfxStatus Host::BeforeMeshAllocateCb(OfxHost *ofxHost, OfxMeshHandle ofxMesh)
 {
-	MfxHost *mfxHost = MfxHost::FromOfxHost(ofxHost);
-	if (nullptr == mfxHost) {
+	Host *Host = Host::FromOfxHost(ofxHost);
+	if (nullptr == Host) {
 		return kOfxStatErrFatal;
 	}
 	else {
-		return mfxHost->BeforeMeshAllocate(ofxMesh);
+		return Host->BeforeMeshAllocate(ofxMesh);
 	}
 }
 
-const void* MfxHost::FetchSuite(OfxPropertySetHandle host, const char* suiteName, int suiteVersion)
+const void* Host::FetchSuite(OfxPropertySetHandle host, const char* suiteName, int suiteVersion)
 {
 	if (0 == strcmp(suiteName, kOfxMeshEffectSuite) && suiteVersion == 1) {
 		switch (suiteVersion) {

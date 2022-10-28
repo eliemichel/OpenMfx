@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,47 +14,19 @@
  * limitations under the License.
  */
 
-/** \file
- * \ingroup openmesheffect
- *
- */
+#pragma once
 
-#ifndef __MFX_PARAMETERS_H__
-#define __MFX_PARAMETERS_H__
+#include "Properties.h"
+#include "ParameterEnums.h"
 
-#include "properties.h"
-
-#include <stddef.h> // size_t
+#include <OpenMfx/Sdk/Cpp/Common>
 
 #include <cstddef>
 
-namespace OpenMfx {
-
-enum class ParameterType {
-    Unknown = -1,
-    Integer,
-    Integer2d,
-    Integer3d,
-    Double,
-    Double2d,
-    Double3d,
-    Rgb,
-    Rgba,
-    Boolean,
-    Choice,
-    String,
-    Custom,
-    PushButton,
-    Group,
-    Page,
-};
-
-} // namespace OpenMfx
-
 union OfxParamValueStruct {
-    void *as_pointer;
-    const char *as_const_char;
-    char *as_char;
+    void* as_pointer;
+    const char* as_const_char;
+    char* as_char;
     int as_int;
     double as_double;
     bool as_bool;
@@ -63,62 +35,50 @@ union OfxParamValueStruct {
 // // OfxParamStruct
 
 struct OfxParamStruct {
- public:
-  OfxParamStruct();
-  ~OfxParamStruct();
+public:
+    OfxParamStruct();
+    ~OfxParamStruct();
+    MOVE_ONLY(OfxParamStruct)
 
-  // Disable copy, we handle it explicitely
-  OfxParamStruct(const OfxParamStruct &) = delete;
-  OfxParamStruct &operator=(const OfxParamStruct &) = delete;
+        void set_type(OpenMfx::ParameterType type);
+    void realloc_string(int size);
 
-  void set_type(OpenMfx::ParameterType type);
-  void realloc_string(int size);
+    void deep_copy_from(const OfxParamStruct& other);
 
-  void deep_copy_from(const OfxParamStruct &other);
-
- public:
-  char *name;
-  OfxParamValueStruct value[4];
-  OpenMfx::ParameterType type;
-  OfxPropertySetStruct properties;
+public:
+    char* name;
+    OfxParamValueStruct value[4];
+    OpenMfx::ParameterType type;
+    OpenMfx::PropertySet properties;
 };
 
 // // OfxParamSetStruct
 
 struct OfxParamSetStruct {
- public:
-  OfxParamSetStruct();
-  ~OfxParamSetStruct();
+public:
+    OfxParamSetStruct();
+    ~OfxParamSetStruct();
+    MOVE_ONLY(OfxParamSetStruct)
 
-  // Disable copy, we handle it explicitely
-  OfxParamSetStruct(const OfxParamSetStruct &) = delete;
-  OfxParamSetStruct &operator=(const OfxParamSetStruct &) = delete;
+        int find(const char* param) const;
+    void append(int count);
+    int ensure(const char* parameter);
 
-  int find(const char *param) const;
-  void append(int count);
-  int ensure(const char *parameter);
+    void deep_copy_from(const OfxParamSetStruct& other);
 
-  void deep_copy_from(const OfxParamSetStruct &other);
+    int count() const { return num_parameters; }
+    OfxParamStruct& operator[](int i) { return *parameters[i]; }
+    const OfxParamStruct& operator[](int i) const { return *parameters[i]; }
 
-  int count() const { return num_parameters; }
-  OfxParamStruct& operator[](int i) { return *parameters[i]; }
-  const OfxParamStruct& operator[](int i) const { return *parameters[i]; }
-
- public:
-  OfxPropertySetStruct *effect_properties; // weak pointer
+public:
+    OpenMfx::PropertySet* effect_properties; // weak pointer
 
 private:
     int num_parameters;
     OfxParamStruct** parameters;
 };
 
-// // Utils
-
 namespace OpenMfx {
-
-ParameterType parse_parameter_type(const char *str);
-size_t parameter_type_dimensions(ParameterType type);
-
+typedef OfxParamStruct Param;
+typedef OfxParamSetStruct ParamSet;
 } // namespace OpenMfx
-
-#endif // __MFX_PARAMETERS_H__

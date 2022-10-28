@@ -23,37 +23,11 @@
 
 #include "properties.h"
 #include "Collection.h"
+#include "AttributeEnums.h"
 
 #include <vector>
 #include <string>
 #include <utility>
-
-namespace OpenMfx {
-
-enum class AttributeAttachment {
-  Invalid = -1,
-  Point,
-  Corner,
-  Face,
-  Mesh,
-};
-
-enum class AttributeType {
-  Invalid = -1,
-  UByte,  // kOfxMeshAttribTypeUByte
-  Int,    // kOfxMeshAttribTypeInt
-  Float,  // kOfxMeshAttribTypeFloat
-};
-
-enum class AttributeSemantic {
-  None = -1,
-  TextureCoordinate,
-  Normal,
-  Color,
-  Weight,
-};
-
-}  // namespace OpenMfx
 
 struct OfxAttributeStruct {
   using AttributeType = OpenMfx::AttributeType;
@@ -96,16 +70,6 @@ struct OfxAttributeStruct {
   Index index() const;
 
  public:
-  static AttributeAttachment attachmentAsEnum(const char *mfxAttachment);
-  static AttributeType typeAsEnum(const char *mfxType);
-  static AttributeSemantic semanticAsEnum(const char* mfxSemantic);
-  static int byteSizeOf(AttributeType type);
-
-  static const char* attachmentAsString(AttributeAttachment attachment);
-  static const char* typeAsString(AttributeType type);
-  static const char* semanticAsString(AttributeSemantic semantic);
-
- public:
   OfxPropertySetStruct properties;
 
  private:
@@ -115,3 +79,8 @@ struct OfxAttributeStruct {
 
 struct OfxAttributeSetStruct : OpenMfx::Collection<OfxAttributeStruct> {
 };
+
+namespace OpenMfx {
+typedef OfxAttributeStruct Attribute;
+typedef OfxAttributeSetStruct AttributeSet;
+} // namespace OpenMfx

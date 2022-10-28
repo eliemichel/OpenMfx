@@ -24,7 +24,7 @@
 
 namespace OpenMfx {
 
-class MfxHost;
+class Host;
 class EffectRegistryEntry;
 class EffectLibrary;
 
@@ -50,7 +50,7 @@ class EffectRegistry {
   /**
    * Set the host before getting any registry.
    */
-  void setHost(MfxHost *host);
+  void setHost(Host *host);
 
   /**
    * Access the global plugin registry pool. There is one registry per ofx file,
@@ -80,7 +80,7 @@ class EffectRegistry {
 
  private:
   EffectRegistryEntry *m_first_entry;
-  MfxHost *m_host;  // needed for descriptor management
+  Host *m_host;  // needed for descriptor management
 };
 
 }  // namespace OpenMfx

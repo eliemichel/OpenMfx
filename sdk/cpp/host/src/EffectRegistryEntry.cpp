@@ -15,13 +15,13 @@
  */
 
 #include "EffectRegistryEntry.h"
-#include "MfxHost.h"
+#include "Host.h"
 
 #include <cassert>
 
 namespace OpenMfx {
 
-EffectRegistryEntry::EffectRegistryEntry(const char *filename, MfxHost *host)
+EffectRegistryEntry::EffectRegistryEntry(const char *filename, Host *host)
     : m_host(host), m_count(0), m_next(nullptr)
 {
   m_is_valid = m_library.load(filename);

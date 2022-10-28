@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#include "attributes.h"
+#include "Attributes.h"
 #include "propertySuite.h"
-#include "ofxMeshEffect.h"
 
 #include <OpenMfx/Sdk/Cpp/Common>
+
+#include <ofxMeshEffect.h>
 
 #include <cstring>
 #include <algorithm>
@@ -54,11 +55,11 @@ AttributeType OfxAttributeStruct::type() const
     char* stringType;
     OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
     propGetString(mutableProperties, kOfxMeshAttribPropType, 0, &stringType);
-    return typeAsEnum(stringType);
+    return attributeTypeAsEnum(stringType);
 }
 
 void OfxAttributeStruct::setType(AttributeType type) {
-    propSetString(&properties, kOfxMeshAttribPropType, 0, typeAsString(type));
+    propSetString(&properties, kOfxMeshAttribPropType, 0, attributeTypeAsString(type));
 }
 
 int OfxAttributeStruct::componentCount() const
@@ -79,12 +80,12 @@ AttributeSemantic OfxAttributeStruct::semantic() const
     char *stringSemantic;
     OfxPropertySetHandle mutableProperties = const_cast<OfxPropertySetHandle>(&properties);
     propGetString(mutableProperties, kOfxMeshAttribPropSemantic, 0, &stringSemantic);
-    return semanticAsEnum(stringSemantic);
+    return attributeSemanticAsEnum(stringSemantic);
 }
 
 void OfxAttributeStruct::setSemantic(AttributeSemantic semantic)
 {
-    propSetString(&properties, kOfxMeshAttribPropSemantic, 0, semanticAsString(semantic));
+    propSetString(&properties, kOfxMeshAttribPropSemantic, 0, attributeSemanticAsString(semantic));
 }
 
 void* OfxAttributeStruct::data() const
@@ -124,126 +125,10 @@ OfxAttributeStruct::Index OfxAttributeStruct::index() const
     return std::make_pair(m_attachment, m_name);
 }
 
-AttributeAttachment OfxAttributeStruct::attachmentAsEnum(const char* mfxAttachment)
-{
-    if (0 == strcmp(mfxAttachment, kOfxMeshAttribPoint)) {
-        return AttributeAttachment::Point;
-    }
-    if (0 == strcmp(mfxAttachment, kOfxMeshAttribCorner)) {
-        return AttributeAttachment::Corner;
-    }
-    if (0 == strcmp(mfxAttachment, kOfxMeshAttribFace)) {
-        return AttributeAttachment::Face;
-    }
-    if (0 == strcmp(mfxAttachment, kOfxMeshAttribMesh)) {
-        return AttributeAttachment::Mesh;
-    }
-    WARN_LOG << "unknown attachment type: " << mfxAttachment;
-    return AttributeAttachment::Invalid;
-}
-
-AttributeType OfxAttributeStruct::typeAsEnum(const char* mfxType)
-{
-    if (0 == strcmp(mfxType, kOfxMeshAttribTypeUByte)) {
-        return AttributeType::UByte;
-    }
-    if (0 == strcmp(mfxType, kOfxMeshAttribTypeInt)) {
-        return AttributeType::Int;
-    }
-    if (0 == strcmp(mfxType, kOfxMeshAttribTypeFloat)) {
-        return AttributeType::Float;
-    }
-    WARN_LOG  << "unknown attribute type: " << mfxType;
-    return AttributeType::Invalid;
-}
-
-AttributeSemantic OfxAttributeStruct::semanticAsEnum(const char* mfxSemantic)
-{
-    if (nullptr == mfxSemantic) {
-        return AttributeSemantic::None;
-    }
-    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticTextureCoordinate)) {
-        return AttributeSemantic::TextureCoordinate;
-    }
-    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticNormal)) {
-        return AttributeSemantic::Normal;
-    }
-    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticColor)) {
-        return AttributeSemantic::Color;
-    }
-    if (0 == strcmp(mfxSemantic, kOfxMeshAttribSemanticWeight)) {
-        return AttributeSemantic::Weight;
-    }
-    WARN_LOG << "unknown attribute semantic: " << mfxSemantic;
-    return AttributeSemantic::None;
-}
-
-int OfxAttributeStruct::byteSizeOf(AttributeType type)
-{
-    switch (type)
-    {
-    case AttributeType::UByte:
-        return sizeof(unsigned char);
-    case AttributeType::Int:
-        return sizeof(int);
-    case AttributeType::Float:
-        return sizeof(float);
-    default:
-        ERR_LOG << "unknown type";
-        return 0;
-    }
-}
-
-const char* OfxAttributeStruct::attachmentAsString(AttributeAttachment attachment)
-{
-    switch (attachment) {
-    case AttributeAttachment::Point:
-        return kOfxMeshAttribPoint;
-    case AttributeAttachment::Corner:
-        return kOfxMeshAttribCorner;
-    case AttributeAttachment::Face:
-        return kOfxMeshAttribFace;
-    case AttributeAttachment::Mesh:
-        return kOfxMeshAttribMesh;
-    default:
-        return nullptr;
-    }
-}
-
-const char* OfxAttributeStruct::typeAsString(AttributeType type)
-{
-    switch (type) {
-    case AttributeType::Float:
-        return kOfxMeshAttribTypeFloat;
-    case AttributeType::Int:
-        return kOfxMeshAttribTypeInt;
-    case AttributeType::UByte:
-        return kOfxMeshAttribTypeUByte;
-    default:
-        return nullptr;
-    }
-}
-
-const char* OfxAttributeStruct::semanticAsString(AttributeSemantic semantic)
-{
-    switch (semantic) {
-    case AttributeSemantic::Color:
-        return kOfxMeshAttribSemanticColor;
-    case AttributeSemantic::Normal:
-        return kOfxMeshAttribSemanticNormal;
-    case AttributeSemantic::TextureCoordinate:
-        return kOfxMeshAttribSemanticTextureCoordinate;
-    case AttributeSemantic::Weight:
-        return kOfxMeshAttribSemanticWeight;
-    default:
-        return nullptr;
-    }
-}
-
 bool OfxAttributeStruct::copy_data_from(const OfxAttributeStruct& source, int start, int count)
 {
-    AttributeType sourceType = typeAsEnum(source.properties[kOfxMeshAttribPropType].value[0].as_char);
-    AttributeType destinationType = typeAsEnum(properties[kOfxMeshAttribPropType].value[0].as_char);
+    AttributeType sourceType = attributeTypeAsEnum(source.properties[kOfxMeshAttribPropType].value[0].as_char);
+    AttributeType destinationType = attributeTypeAsEnum(properties[kOfxMeshAttribPropType].value[0].as_char);
 
     int sourceComponentCount = source.properties[kOfxMeshAttribPropComponentCount].value[0].as_int;
     int destinationComponentCount = properties[kOfxMeshAttribPropComponentCount].value[0].as_int;

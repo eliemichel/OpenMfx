@@ -22,7 +22,7 @@
 
 namespace OpenMfx {
 
-class MfxHost;
+class Host;
 
 /**
  * An entry of the effect registry corresponds to one loaded
@@ -36,7 +36,7 @@ class MfxHost;
  */
 class EffectRegistryEntry {
  public:
-  EffectRegistryEntry(const char *filename, MfxHost *host);
+  EffectRegistryEntry(const char *filename, Host *host);
   ~EffectRegistryEntry();
   MOVE_ONLY(EffectRegistryEntry)
 
@@ -77,7 +77,7 @@ class EffectRegistryEntry {
   bool m_is_valid;
   int m_count;  // reference counter
   std::vector<OfxMeshEffectHandle> m_descriptors;
-  MfxHost *m_host;  // needed for descriptor management
+  Host *m_host;  // needed for descriptor management
 
   EffectRegistryEntry *m_next;  // chained list
 };
