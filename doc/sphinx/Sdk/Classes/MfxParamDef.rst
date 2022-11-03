@@ -4,4 +4,3 @@ MfxParamDef
 ===========
 
 .. doxygenclass:: MfxParamDef
-	:project: SDK

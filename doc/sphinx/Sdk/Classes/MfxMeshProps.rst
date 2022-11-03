@@ -4,4 +4,3 @@ MfxMeshProps
 ============
 
 .. doxygenstruct:: MfxMeshProps
-	:project: SDK

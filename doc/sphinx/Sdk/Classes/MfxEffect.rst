@@ -4,4 +4,3 @@ MfxEffect
 =========
 
 .. doxygenclass:: MfxEffect
-	:project: SDK

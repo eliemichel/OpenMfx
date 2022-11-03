@@ -1,6 +1,6 @@
 pushd doxygen
 doxygen Doxyfile
-doxygen Sdk.Doxyfile
+REM doxygen Sdk.Doxyfile
 popd
 
 pushd sphinx

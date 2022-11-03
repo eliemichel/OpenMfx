@@ -4,4 +4,3 @@ MfxSuiteException
 =================
 
 .. doxygenclass:: MfxSuiteException
-	:project: SDK

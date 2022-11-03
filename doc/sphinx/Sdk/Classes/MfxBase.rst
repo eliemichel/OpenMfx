@@ -4,4 +4,3 @@ MfxBase
 =======
 
 .. doxygenclass:: MfxBase
-	:project: SDK

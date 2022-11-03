@@ -10,8 +10,8 @@ Documentation
 ```
 pip install sphinx
 pip install breathe
-pip install sphinxjp.themes.basicstrap
 pip install myst-parser
+pip install furo
 ```
 
 ### Building

@@ -4,4 +4,3 @@ MfxRegister
 ===========
 
 .. doxygendefine:: MfxRegister
-	:project: SDK

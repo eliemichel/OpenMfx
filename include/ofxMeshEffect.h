@@ -230,7 +230,7 @@ For more details on how to deal with actions, see \ref MeshEffectActions.
 
  This action is where an effect gets to compute geometry and turn its input
  mesh and parameter set into an output mesh. This is possibly quite
- complicated and covered in the \ref CookingEffects "Cooking Mesh Effects" chapter.
+ complicated and covered in the "Cooking Mesh Effects" chapter.
 
  The cook action *must* be trapped by the plug-in, it cannot return
  \ref kOfxStatReplyDefault.
@@ -408,7 +408,7 @@ this information to speed up processing of loose-edge free meshes.
     - Property Set - a mesh instance
 
 When all faces have the same number of corners, this property may be set to this number in place of
-using the \ref kOfxMeshAttribFaceCounts attribute, thus reducing memory allocation and potentially
+using the \ref kOfxMeshAttribFaceSize attribute, thus reducing memory allocation and potentially
 enabling speed-ups on host side. This property is -1 when faces have a varying number of corners.
  */
 #define kOfxMeshPropConstantFaceSize "OfxMeshPropConstantFaceSize"

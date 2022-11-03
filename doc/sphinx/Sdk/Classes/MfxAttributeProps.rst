@@ -4,4 +4,3 @@ MfxAttributeProps
 =================
 
 .. doxygenstruct:: MfxAttributeProps
-	:project: SDK

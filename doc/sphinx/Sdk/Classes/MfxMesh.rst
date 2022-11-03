@@ -4,4 +4,3 @@ MfxMesh
 =======
 
 .. doxygenclass:: MfxMesh
-	:project: SDK

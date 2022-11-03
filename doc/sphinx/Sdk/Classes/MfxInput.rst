@@ -4,4 +4,3 @@ MfxInput
 ========
 
 .. doxygenclass:: MfxInput
-	:project: SDK

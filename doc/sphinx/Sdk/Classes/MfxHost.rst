@@ -4,4 +4,3 @@ MfxHost
 =======
 
 .. doxygenclass:: MfxHost
-	:project: SDK
