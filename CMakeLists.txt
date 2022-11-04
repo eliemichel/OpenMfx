@@ -25,10 +25,19 @@ project(
 	LANGUAGES C CXX
 )
 
-include(cmake/utils.cmake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(utils)
 
-option(OPENMFX_BUILD_EXAMPLES "Build example projects" OFF)
-option(OPENMFX_EXCLUDE_FROM_ALL "Exclude all OpenMfx targets from the BUILD_ALL target" OFF)
+# Default config when built as a standalone repository
+if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+	set(OPENMFX_BUILD_EXAMPLES ON)
+	set(OPENMFX_BUILD_DOC ON)
+	set(OPENMFX_EXCLUDE_FROM_ALL OFF)
+endif()
+
+option_if_not_defined(OPENMFX_BUILD_EXAMPLES "Build example projects" OFF)
+option_if_not_defined(OPENMFX_BUILD_DOC "Build example projects" OFF)
+option_if_not_defined(OPENMFX_EXCLUDE_FROM_ALL "Exclude all OpenMfx targets from the BUILD_ALL target" ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -40,12 +49,14 @@ add_library(OpenMfx::Core ALIAS OpenMfx)
 # C++ API
 add_subdirectory(sdk)
 
+if (OPENMFX_BUILD_DOC)
+	# Documentation
+	add_subdirectory(doc)
+endif()
+
 # If this module is included as a subdirectory (or using FetchContent), we
 # remove all targets from BUILD_ALL so that the parts of the SDK that are not
 # used are not built by default
-if (NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-	set(OPENMFX_EXCLUDE_FROM_ALL ON)
-endif()
 if (OPENMFX_EXCLUDE_FROM_ALL)
 	message(STATUS "Removing OpenMfx targets from BUILD_ALL")
 	get_all_targets(${CMAKE_CURRENT_SOURCE_DIR} all_targets)

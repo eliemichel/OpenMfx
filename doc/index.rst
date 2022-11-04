@@ -17,6 +17,7 @@ Contents
    :maxdepth: 3
 
    introduction
+   Guide/GettingStarted
    Guide/index
    Sdk/index
    Reference/index

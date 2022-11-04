@@ -8,10 +8,7 @@ Documentation
  - `lit` from https://github.com/zyedidia/Literate (for tutorials written using literate programming)
 
 ```
-pip install sphinx
-pip install breathe
-pip install myst-parser
-pip install furo
+pip install -r requirements.txt
 ```
 
 ### Building

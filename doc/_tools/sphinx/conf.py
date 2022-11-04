@@ -12,14 +12,14 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('./_ext'))
+sys.path.insert(0, os.path.abspath('@CMAKE_CURRENT_SOURCE_DIR@/_tools/sphinx/extensions'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'OpenMfx'
-copyright = '2019-2022, Elie Michel'
-author = 'Elie Michel'
+copyright = '2019-2022, Élie Michel and contributors'
+author = 'Élie Michel'
 
 
 # -- General configuration ---------------------------------------------------
@@ -41,11 +41,11 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '_tools', '_literate', 'README.md']
 
 # Breathe Configuration
 breathe_projects = {
-	"OpenMfx": "../doxygen/output/xml",
+	"OpenMfx": "@CMAKE_CURRENT_BINARY_DIR@/doxygen-output/xml",
 }
 breathe_default_project = "OpenMfx"
 
@@ -85,26 +85,27 @@ html_theme_options = {
             "class": "",
         },
     ],
+    "source_repository": "https://github.com/eliemichel/OpenMfx/",
+    "source_branch": "master",
+    "source_directory": "doc/sphinx",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['@CMAKE_CURRENT_SOURCE_DIR@/_static']
 
 html_css_files = [
-#    'extra.css',
-#    'prism.css',
+    'extra.css',
 ]
 html_js_files = [
-#    'extra.js',
-#    'prism.js',
+    'extra.js',
 ]
 
 pygments_style = "sphinx"
 pygments_dark_style = "monokai"
 
-literate_source_path = "../literate"
+literate_source_path = "@CMAKE_CURRENT_SOURCE_DIR@/_literate"
 
 # -- Options for sphinxext-opengraph -----------------------------------------
 
