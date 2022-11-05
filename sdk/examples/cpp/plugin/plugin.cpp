@@ -6,5 +6,5 @@
 MfxRegister(
     TranslateEffect,
     BoxGeneratorEffect
-);
+)
 

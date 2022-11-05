@@ -35,6 +35,9 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+# Add -fPIC on unix systems
+set_property(TARGET OpenMfx_Sdk_Cpp_Plugin PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 set_property(TARGET OpenMfx_Sdk_Cpp_Plugin PROPERTY FOLDER "OpenMfx/Sdk/Cpp")
 add_library(OpenMfx::Sdk::Cpp::Plugin ALIAS OpenMfx_Sdk_Cpp_Plugin)
 # Alternate target alias for backward compatibility

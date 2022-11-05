@@ -74,10 +74,13 @@ target_include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+set(NOT_MSVC $<NOT:$<CXX_COMPILER_ID:MSVC>>)
+
 target_link_libraries(
   OpenMfx_Sdk_Cpp_Host
   PUBLIC
     OpenMfx::Sdk::Cpp::Common
+    $<${NOT_MSVC}:dl> # for dlopen
 )
 
 set_property(TARGET OpenMfx_Sdk_Cpp_Host PROPERTY FOLDER "OpenMfx/Sdk/Cpp")

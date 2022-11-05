@@ -25,6 +25,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <stdexcept>
 
 /**
  * To illustrate this demo, we use an arbitrary mesh structure, here a very
@@ -74,13 +75,13 @@ void run(const char* filepath) {
 	// NB: It is important to call releaseLibrary once we no longer use it.
 	OpenMfx::EffectLibrary* library = registry.getLibrary(filepath);
 	if (nullptr == library) {
-		throw std::exception("Could not load binary!");
+		throw std::runtime_error("Could not load binary!");
 	}
 
 	// An OpenFX library may contain both Mesh effects and Image effects, so it is
 	// possible that effectCount (the number of Mesh effects found) is zero.
 	if (library->effectCount() == 0) {
-		throw std::exception("No Mesh Effect found in library!");
+		throw std::runtime_error("No Mesh Effect found in library!");
 	}
 
 	// At this point, the effect's load() action has still not been called, but
@@ -93,7 +94,7 @@ void run(const char* filepath) {
 	// need to call the describe action more than once for the whole application).
 	OpenMfx::MeshEffect* effectDescriptor = registry.getEffectDescriptor(library, 0);
 	if (!effectDescriptor) {
-		throw std::exception("Could not load effect!");
+		throw std::runtime_error("Could not load effect!");
 	}
 
 	// For each use of the effect, we instantiate it. An instance is allowed to
@@ -102,7 +103,7 @@ void run(const char* filepath) {
 	// the value of its input meshes and parameters.
 	OpenMfx::MeshEffect* effectInstance;
 	if (!host.CreateInstance(effectDescriptor, effectInstance)) {
-		throw std::exception("Could not create instance!");
+		throw std::runtime_error("Could not create instance!");
 	}
 
 	// Create the mesh structures for input/output data
@@ -166,7 +167,7 @@ int main(int argc, char** argv) {
 	try {
 		run(filepath);
 	}
-	catch (std::exception err) {
+	catch (const std::runtime_error& err) {
 		std::cerr << err.what() << std::endl;
 		return EXIT_FAILURE;
 	}

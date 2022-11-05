@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 #include <OpenMfx/Sdk/C/Common>
 #include <OpenMfx/Sdk/C/Plugin>
 
-#include "ofxCore.h"
-#include "ofxMeshEffect.h"
+#include <ofxCore.h>
+#include <ofxMeshEffect.h>
 
 #include <stdbool.h>
 #include <string.h>
@@ -50,7 +50,6 @@ static OfxStatus describe(const MfxPluginRuntime *runtime, OfxMeshEffectHandle d
     const OfxMeshEffectSuiteV1 *meshEffectSuite = runtime->meshEffectSuite;
     const OfxPropertySuiteV1 *propertySuite = runtime->propertySuite;
     const OfxParameterSuiteV1 *parameterSuite = runtime->parameterSuite;
-    OfxStatus status;
 
     OfxPropertySetHandle inputProperties;
     meshEffectSuite->inputDefine(descriptor, kOfxMeshMainInput, NULL, &inputProperties);
@@ -62,11 +61,11 @@ static OfxStatus describe(const MfxPluginRuntime *runtime, OfxMeshEffectHandle d
 
     // Declare parameters
     OfxParamSetHandle parameters;
-    status = meshEffectSuite->getParamSet(descriptor, &parameters);
+    meshEffectSuite->getParamSet(descriptor, &parameters);
 
-    status = parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Translation", NULL);
-    status = parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Rotation", NULL);
-    status = parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Scale", NULL);
+    parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Translation", NULL);
+    parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Rotation", NULL);
+    parameterSuite->paramDefine(parameters, kOfxParamTypeInteger2D, "Scale", NULL);
 
     return kOfxStatOK;
 }
