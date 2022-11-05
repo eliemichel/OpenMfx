@@ -105,7 +105,9 @@ html_js_files = [
 pygments_style = "sphinx"
 pygments_dark_style = "monokai"
 
-literate_source_path = "@CMAKE_CURRENT_SOURCE_DIR@/_literate"
+literate_executable = "@LITERATE_EXECUTABLE@"
+literate_source_paths = [".", "@CMAKE_CURRENT_SOURCE_DIR@/_literate"]
+literate_build_dir = "@CMAKE_CURRENT_BINARY_DIR@/literate"
 
 # -- Options for sphinxext-opengraph -----------------------------------------
 

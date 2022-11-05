@@ -4,17 +4,22 @@
 
 from subprocess import run
 import os
-from os.path import dirname, realpath, join
+from os.path import dirname, realpath, join, relpath, isfile, basename, splitext, isabs
 
-def build_lit(litfile, lit_source_dir):
-    lit_source_dir = realpath(lit_source_dir)
-    build_dir = join(lit_source_dir, "build", litfile[:-4])
-    htmlfile = join(build_dir, litfile[:-4] + ".html")
+def abspath(path, root=""):
+    if not isabs(path):
+        return realpath(join(root, path))
+    else:
+        return realpath(path)
+
+def build_lit(source_file, build_dir, lit_executable='lit'):
+    name = splitext(basename(source_file))[0]
+    htmlfile = join(build_dir, name + ".html")
 
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
 
-    run(["lit", join(lit_source_dir, litfile), "-odir", build_dir])
+    run([lit_executable, source_file, "-odir", build_dir])
 
     with open(htmlfile, "rb") as f:
         html_content = f.read().decode("utf-8")
@@ -38,41 +43,85 @@ from docutils import nodes
 from docutils.nodes import Element
 from docutils.parsers.rst import Directive, directives
 from sphinx.writers.html import HTMLTranslator
+from sphinx.util import logging
+from sphinx.errors import ExtensionError, ConfigError
+import shutil
 
-class literate_node(Element):
+logger = logging.getLogger(__name__)
+
+class LiterateNode(Element):
     def __init__(self, filename=None):
         super().__init__(self)
         self.filename = filename
 
-class Literate(Directive):
+class LiterateDirective(Directive):
 
     required_arguments = 1
     optional_arguments = 0
 
     def run(self):
-        node = literate_node(filename=self.arguments[0])
+        node = LiterateNode(filename=self.arguments[0])
         return [node]
 
 class LiterateHTMLTranslator(HTMLTranslator):
     def __init__(self, document):
-        HTMLTranslator.__init__(self, document)
+        super().__init__(self, document)
 
-    def visit_literate_node_html(self, node):
-        lit_source_dir = join(self.builder.app.srcdir, self.config.literate_source_path)
+    def visit_literate_node_html(self, node):    
+        check_config(self.config)
+
+        # Resolve source path
+        source_file = None
+        all_candidates = []
+        for path in self.config.literate_source_paths:
+            path = abspath(path, root=dirname(node.source))
+            candidate = realpath(join(path, node.filename))
+            all_candidates.append(candidate)
+            if isfile(candidate):
+                source_file = candidate
+                break
+
+        if source_file is None:
+            raise ExtensionError(
+                f"Could not find literate source '{node.filename}' (included in {node.source})\n" +
+                "  searched paths:\n" +
+                "\n".join(["   - " + c for c in all_candidates])
+            )
+
+        # Resolve build dir
+        if self.config.literate_build_dir == "":
+            build_dir = join(dirname(source_file), "build", node.filename[:-4])
+        else:
+            subdir = splitext(relpath(source_file, start=self.builder.app.srcdir))[0]
+            build_dir = join(self.config.literate_build_dir, subdir)
+
+        content = build_lit(
+            source_file,
+            build_dir,
+            lit_executable=self.config.literate_executable,
+        )
+
         self.body.append(self.starttag(node, 'div', **{'class': "literate"}))
-        self.body.append(build_lit(node.filename, lit_source_dir))
+        self.body.append(content)
 
     def depart_literate_node_html(self, node):
         self.body.append('</div>')
 
+def check_config(config):
+    lit = config.literate_executable
+    if shutil.which(lit) is None:
+        logger.critical(f"The Literate command was not found (command: '{lit}')")
+        raise ConfigError()
 
 def setup(app):
-    app.add_directive("literate", Literate)
-    app.add_node(literate_node, html=(
+    app.add_directive("literate", LiterateDirective)
+    app.add_node(LiterateNode, html=(
         LiterateHTMLTranslator.visit_literate_node_html,
         LiterateHTMLTranslator.depart_literate_node_html
     ))
-    app.add_config_value("literate_source_path", ".", "html")
+    app.add_config_value("literate_executable", "lit", "html")
+    app.add_config_value("literate_source_paths", ["."], "html")
+    app.add_config_value("literate_build_dir", "", "html")
 
     return {
         'version': '0.1',

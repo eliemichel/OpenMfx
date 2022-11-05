@@ -193,6 +193,12 @@ public:
     	int constantFaceSize=-1
     );
 
+	/**
+	 * Alternatively, Allocate() can be called with a MfxMeshProps struct, which
+	 * contains the same counters.
+	 */
+	void Allocate(const MfxMeshProps& props);
+
 private:
 	OfxMeshHandle m_mesh;
 	OfxPropertySetHandle m_properties;

@@ -3,6 +3,10 @@
 Introduction
 ============
 
+.. note::
+
+   This page needs a bit of clean up.
+
 OpenMfx is a plug-in standard for 3D mesh processing effects built on top of `OpenFX <http://openeffects.org/>`_. It is also known as the *OpenFX Mesh Effect API* and formerly *Open Mesh Effect*.
 
 **Recommended fore-reading** Since OpenMfx is built on top of OpenFX, the reader should know about the bases of OpenFX Core by reading `OpenFX documentation <https://openfx.readthedocs.io/en/master/>`_.
