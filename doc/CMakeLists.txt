@@ -6,7 +6,7 @@ if (NOT DOXYGEN_FOUND)
 endif()
 find_package(Literate)
 if (NOT LITERATE_FOUND)
-	message(FATAL_ERROR "Literate (the 'lit' command) was not found but is needed to build the documentation, add its location to your PATH or turn OPENMFX_BUILD_DOC to OFF\nNB: Literate can be downloaded from https://github.com/zyedidia/Literate and a build for Windows is available at https://github.com/zyedidia/Literate/issues/49")
+	message(FATAL_ERROR "Literate (the 'lit' command) was not found but is needed to build the documentation, add its location to your PATH or turn OPENMFX_BUILD_DOC to OFF\nNB: Literate can be downloaded from https://github.com/eliemichel/Literate and a build for Windows is available at https://github.com/eliemichel/Literate/releases/tag/v1.0.0-elie-beta")
 endif()
 
 # Check Python packages

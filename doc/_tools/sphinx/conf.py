@@ -97,9 +97,11 @@ html_static_path = ['@CMAKE_CURRENT_SOURCE_DIR@/_static']
 
 html_css_files = [
     'extra.css',
+    'prism.css',
 ]
 html_js_files = [
     'extra.js',
+    'prism.js',
 ]
 
 pygments_style = "sphinx"

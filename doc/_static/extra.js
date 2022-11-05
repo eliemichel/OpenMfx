@@ -15,8 +15,8 @@ function getTextNodes(node) {
     return textNodes;
 }
 
-$(document).ready(function() {
-	var images = $(".literate p img");
+document.addEventListener('DOMContentLoaded', function() {
+	var images = document.querySelector(".literate p img");
 	images.after(function(i) {
 		return '<div class="caption">' + this.alt + '</div>';
 	})

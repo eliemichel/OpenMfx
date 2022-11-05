@@ -1,7 +1,7 @@
 ![CMake Badge](https://github.com/eliemichel/OpenMfx/actions/workflows/cmake.yml/badge.svg)
 
 <p align="center">
-  <img alt="OpenMfx" src="doc/images/openmfx.png">
+  <img alt="OpenMfx" src="doc/_static/openmfx.png">
 </p>
 
 OpenMfx
@@ -66,7 +66,7 @@ For a more complete post about the motivations behind OpenMfx, see [The need for
 
 The API itself is only a set of headers found in [`include/`](include/). To make the creation of hosts and plugins easier, an ecosystem of C and C++ libraries has been developed around, called the [`SDK`](sdk/).
 
-![Overview](doc/images/overview.png)
+![Overview](doc/_static/overview.png)
 
 ### Writing a plugin
 

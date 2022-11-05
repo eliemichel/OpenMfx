@@ -6,7 +6,6 @@ from subprocess import run
 import os
 from os.path import dirname, realpath, join, relpath, isfile, basename, splitext, isabs
 from html.parser import HTMLParser
-import json
 
 def abspath(path, root=""):
     if not isabs(path):
@@ -14,51 +13,30 @@ def abspath(path, root=""):
     else:
         return realpath(path)
 
-class HTMLNode():
-    def __init__(self, tag, attributes = {}, children = []):
-        self.tag = tag
-        self.attributes = attributes
-        self.children = children[:]
-    def __repr__(self):
-        childlines = sum([str(c).split("\n") for c in self.children], [])
-        print(childlines)
-        if childlines:
-            return (
-                f"<{self.tag}>\n" +
-                f"\n".join(["  " + l for l in childlines]) + "\n" +
-                f"</{self.tag}>"
-            )
-        else:
-            return f"<{self.tag}></{self.tag}>"
-
 class LitOutputParser(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.content = ""
-        self.hierarchy = [HTMLNode('root')]
+        self.body_start = None
+        self.body_end = None
 
     def handle_starttag(self, tag, attrs):
-        self.hierarchy.append(HTMLNode(tag, attrs))
-        # Fix broken HTML
-        if tag == 'meta':
-            self.handle_endtag(tag)
-
-    def handle_startendtag(self, tag, attrs):
-        self.hierarchy[-1].children.append(HTMLNode(tag, attrs))
-
-    def handle_endtag(self, tag):
-        parent_tag = self.hierarchy[-1].tag
-        while parent_tag != tag and parent_tag != 'root':
-            # Fix broken HTML
-            self.handle_endtag(parent_tag)
-            parent_tag = self.hierarchy[-1].tag
-        if parent_tag == 'root':
-            return
-        node = self.hierarchy.pop()
-        self.hierarchy[-1].children.append(node)
         if tag == 'body':
-            self.content = self.get_starttag_text()
-            print(self.hierarchy)
+            self.body_start = self.getpos()
+            
+    def handle_endtag(self, tag):
+        if tag == 'body':
+            self.body_end = self.getpos()
+
+    def get_body_content(self, html_content):
+        lines = html_content.split('\n')
+        sl, so = self.body_start
+        el, eo = self.body_end
+        body_content = "".join(
+            [lines[sl][so:]] +
+            lines[sl+1:el] +
+            [lines[el][:eo]]
+        )
+        return body_content.strip()[:-len("</body>")]
 
 def build_lit(source_file, build_dir, lit_executable='lit'):
     name = splitext(basename(source_file))[0]
@@ -74,7 +52,7 @@ def build_lit(source_file, build_dir, lit_executable='lit'):
 
     parser = LitOutputParser()
     parser.feed(html_content)
-    return parser.content
+    return parser.get_body_content(html_content)
 
 # -----------------------------------------------------
 
