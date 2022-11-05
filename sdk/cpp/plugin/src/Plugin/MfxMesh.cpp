@@ -165,7 +165,7 @@ void MfxMesh::Allocate(int pointCount, int cornerCount, int faceCount, bool noLo
 	MFX_ENSURE(meshEffectSuite->meshAlloc(m_mesh));
 }
 
-void Allocate(const MfxMeshProps& props)
+void MfxMesh::Allocate(const MfxMeshProps& props)
 {
 	Allocate(
 		props.pointCount,
