@@ -24,16 +24,6 @@
 #include <stdio.h>
 
 /**
- * A simple logging macro that is only defined in debug mode
- */
-#ifndef NDEBUG
-#include <cstdio>
-#  define LOG printf
-#else
-#  define LOG(...)
-#endif
-
-/**
  * Macro to wrap calls to any OpenFX function (which returns an OfxStatus)
  * This macro only displays an error message when the returned status is not OK
  */
