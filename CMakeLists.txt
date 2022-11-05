@@ -28,16 +28,10 @@ project(
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(utils)
 
-# Default config when built as a standalone repository
-if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-	set(OPENMFX_BUILD_EXAMPLES ON)
-	set(OPENMFX_BUILD_DOC ON)
-	set(OPENMFX_EXCLUDE_FROM_ALL OFF)
-endif()
-
-option_if_not_defined(OPENMFX_BUILD_EXAMPLES "Build example projects" OFF)
-option_if_not_defined(OPENMFX_BUILD_DOC "Build example projects" OFF)
-option_if_not_defined(OPENMFX_EXCLUDE_FROM_ALL "Exclude all OpenMfx targets from the BUILD_ALL target" ON)
+# The second argument is the default config when built as a standalone repository
+option_if_not_defined(OPENMFX_BUILD_EXAMPLES "Build example projects" OFF ON)
+option_if_not_defined(OPENMFX_BUILD_DOC "Build example projects" OFF ON)
+option_if_not_defined(OPENMFX_EXCLUDE_FROM_ALL "Exclude all OpenMfx targets from the BUILD_ALL target" ON OFF)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
