@@ -39,8 +39,8 @@ set(SRC
   src/Parameters.cpp
   src/ParameterEnums.h
   src/ParameterEnums.cpp
-  src/inputs.h
-  src/inputs.cpp
+  src/Inputs.h
+  src/Inputs.cpp
   src/Mesh.h
   src/Mesh.cpp
   src/MeshProps.h
