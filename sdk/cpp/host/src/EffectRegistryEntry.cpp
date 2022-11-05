@@ -18,6 +18,7 @@
 #include "Host.h"
 
 #include <cassert>
+#include <cstring>
 
 namespace OpenMfx {
 

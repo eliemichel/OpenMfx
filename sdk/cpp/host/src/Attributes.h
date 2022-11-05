@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "properties.h"
+#include "Properties.h"
 #include "Collection.h"
 #include "AttributeEnums.h"
 

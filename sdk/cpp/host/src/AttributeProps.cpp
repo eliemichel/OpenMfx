@@ -50,8 +50,11 @@ OfxStatus AttributeProps::fetchProperties(const OfxPropertySuiteV1 *propertySuit
                                         const char *name)
 {
     OfxPropertySetHandle properties;
+
     MFX_ENSURE(meshEffectSuite->meshGetAttribute(mesh, attachment, name, &properties));
-    fetchProperties(propertySuite, properties);
+    MFX_ENSURE(fetchProperties(propertySuite, properties));
+
+    return kOfxStatOK;
 }
 
 OfxStatus AttributeProps::setProperties(const OfxPropertySuiteV1* propertySuite, OfxPropertySetHandle properties) const
