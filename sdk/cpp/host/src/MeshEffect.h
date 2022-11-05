@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-/** \file
- * \ingroup openmesheffect
- *
- */
-
 #pragma once
 
-#include "properties.h"
-#include "parameters.h"
-#include "inputs.h"
+#include "Properties.h"
+#include "Parameters.h"
+#include "Inputs.h"
 #include "messages.h"
 
 #include <OpenMfx/Sdk/Cpp/Common>

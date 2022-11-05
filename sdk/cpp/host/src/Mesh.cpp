@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#include <string.h>
-
-#include "mesh.h"
+#include "Mesh.h"
 #include "propertySuite.h"
 #include "meshEffectSuite.h"
+
+#include <cstring>
 
 using namespace OpenMfx;
 

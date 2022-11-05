@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2020 Elie Michel
+ * Copyright 2019 - 2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-/** \file
- * \ingroup openmesheffect
- *
- */
+#pragma once
 
-#ifndef __MFX_MESSAGES_H__
-#define __MFX_MESSAGES_H__
-
-#include "ofxMessage.h"
+#include <ofxMessage.h>
 
 enum class OfxMessageType {
   Invalid = -1, // meaning "don't show"
@@ -43,5 +37,3 @@ OfxMessageType parseMessageType(const char *messageType);
  * Return a human readable version of OfxMessageType value
  */
 const char *messageTypeTag(OfxMessageType type);
-
-#endif // __MFX_MESSAGES_H__

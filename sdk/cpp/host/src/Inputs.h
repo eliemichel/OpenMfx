@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/** \file
- * \ingroup openmesheffect
- *
- */
-
 #pragma once
 
 #include "Properties.h"

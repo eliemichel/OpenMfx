@@ -22,6 +22,8 @@
 #ifndef __MFX_ALLOCATOR_H__
 #define __MFX_ALLOCATOR_H__
 
+#include <cstddef>
+
 /**
  * Class responsible for memory allocation, to ease future drop in replacement
  */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#include <string.h>
-#include <stdio.h>
-#include <stdexcept>
-
-#include "ofxMeshEffect.h"
-#include "ofxExtras.h" // for kOfxHostPropBeforeMeshReleaseCb
-
 #include "Allocator.h"
-#include "properties.h"
+#include "Properties.h"
+
+#include "ofxExtras.h"
+#include <ofxMeshEffect.h>
+
+#include <cstring>
+#include <cstdio>
+#include <stdexcept>
 
 using namespace OpenMfx;
 

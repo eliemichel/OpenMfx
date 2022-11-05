@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-/** \file
- * \ingroup openmesheffect
- *
- */
-
 #pragma once
 
-#include "properties.h"
-#include "attributes.h"
+#include "Properties.h"
+#include "Attributes.h"
 
 struct OfxMeshStruct {
  public:

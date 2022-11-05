@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
- /** \file
-  * \ingroup openmesheffect
-  *
-  */
-
 #ifndef __MFX_PARAMETER_SUITE_H__
 #define __MFX_PARAMETER_SUITE_H__
 
 // // Parameter Suite Entry Points
 
-#include "ofxParam.h"
+#include <ofxParam.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-/** \file
- * \ingroup openmesheffect
- *
- */
-
 #ifndef __MFX_MESH_EFFECT_SUITE_H__
 #define __MFX_MESH_EFFECT_SUITE_H__
 
 // Mesh Effect Suite Entry Points
 
-#include "ofxMeshEffect.h"
+#include <ofxMeshEffect.h>
 
 #ifdef __cplusplus
 extern "C" {

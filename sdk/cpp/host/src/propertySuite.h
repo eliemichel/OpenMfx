@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-/** \file
- * \ingroup openmesheffect
- *
- */
-
 #ifndef __MFX_PROPERTY_SUITE_H__
 #define __MFX_PROPERTY_SUITE_H__
 
 
 // // Property Suite Entry Points
 
-#include "ofxProperty.h"
+#include <ofxProperty.h>
 
 #ifdef __cplusplus
 extern "C" {

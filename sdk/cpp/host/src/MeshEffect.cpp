@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-#include <stdio.h>
-#include <string.h>
-
-#include "mesheffect.h"
+#include "MeshEffect.h"
 #include "propertySuite.h"
 
+#include <cstdio>
+#include <cstring>
+
 using namespace OpenMfx;
-
-// OFX MESH EFFECT SUITE
-
-// // Mesh Effect
 
 OfxMeshEffectStruct::OfxMeshEffectStruct(OfxHost* host, OfxPlugin* plugin)
 	: properties(PropertySetContext::MeshEffect)

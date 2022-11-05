@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "inputs.h"
+#include "Inputs.h"
 #include "ofxMeshEffect.h"
 
 #include <cstring>

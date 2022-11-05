@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "parameters.h"
-#include "properties.h"
+#include "Parameters.h"
+#include "Properties.h"
 
 #include "ofxParam.h"
 

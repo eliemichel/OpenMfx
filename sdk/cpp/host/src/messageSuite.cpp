@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Elie Michel
+ * Copyright 2019-2022 Elie Michel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 #include "messageSuite.h"
 #include "messages.h"
-#include "mesheffect.h"
+#include "MeshEffect.h"
 
 #include <OpenMfx/Sdk/Cpp/Common>
 
 #include <string>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
 
 // // Message Suite Entry Points
 
