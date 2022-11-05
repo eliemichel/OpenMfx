@@ -115,7 +115,7 @@ OfxStatus MyCoolEffect::Describe(OfxMeshEffectHandle) {
 The "input" called `kOfxMeshMainOutput` is considered as the output. There is at most one output in an effect, and since an output behaves very similarly to an input, one interacts with it using the functions and types in the OpenMfx API.
 ```
 
- 6. We implement the core behavior in `Cook`. This code is detailed in []().
+ 6. We implement the core behavior in `Cook`. This code is detailed in [the C++ Plugin SDK Guide](../Guide/TutorialCppSdk.rst).
 
 ```C++
 OfxStatus MyCoolEffect::Cook(OfxMeshEffectHandle) {
@@ -147,8 +147,8 @@ OfxStatus MyCoolEffect::Cook(OfxMeshEffectHandle) {
 
 	// (NB: This can totally benefit from parallelization using e.g. OpenMP)
 	for (int i = 0; i < meshProps.pointCount; ++i) {
-		float* in_p = attributeAt<float>(input_positions, i);
-		float* out_p = attributeAt<float>(output_positions, i);
+		float* in_p = input_positions.at<float>(i);
+		float* out_p = output_positions.at<float>(i);
 		out_p[0] = in_p[0] + static_cast<float>(translation[0]);
 		out_p[1] = in_p[1] + static_cast<float>(translation[1]);
 		out_p[2] = in_p[2] + static_cast<float>(translation[2]);

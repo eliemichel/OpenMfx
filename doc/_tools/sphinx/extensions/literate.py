@@ -5,12 +5,60 @@
 from subprocess import run
 import os
 from os.path import dirname, realpath, join, relpath, isfile, basename, splitext, isabs
+from html.parser import HTMLParser
+import json
 
 def abspath(path, root=""):
     if not isabs(path):
         return realpath(join(root, path))
     else:
         return realpath(path)
+
+class HTMLNode():
+    def __init__(self, tag, attributes = {}, children = []):
+        self.tag = tag
+        self.attributes = attributes
+        self.children = children[:]
+    def __repr__(self):
+        childlines = sum([str(c).split("\n") for c in self.children], [])
+        print(childlines)
+        if childlines:
+            return (
+                f"<{self.tag}>\n" +
+                f"\n".join(["  " + l for l in childlines]) + "\n" +
+                f"</{self.tag}>"
+            )
+        else:
+            return f"<{self.tag}></{self.tag}>"
+
+class LitOutputParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.content = ""
+        self.hierarchy = [HTMLNode('root')]
+
+    def handle_starttag(self, tag, attrs):
+        self.hierarchy.append(HTMLNode(tag, attrs))
+        # Fix broken HTML
+        if tag == 'meta':
+            self.handle_endtag(tag)
+
+    def handle_startendtag(self, tag, attrs):
+        self.hierarchy[-1].children.append(HTMLNode(tag, attrs))
+
+    def handle_endtag(self, tag):
+        parent_tag = self.hierarchy[-1].tag
+        while parent_tag != tag and parent_tag != 'root':
+            # Fix broken HTML
+            self.handle_endtag(parent_tag)
+            parent_tag = self.hierarchy[-1].tag
+        if parent_tag == 'root':
+            return
+        node = self.hierarchy.pop()
+        self.hierarchy[-1].children.append(node)
+        if tag == 'body':
+            self.content = self.get_starttag_text()
+            print(self.hierarchy)
 
 def build_lit(source_file, build_dir, lit_executable='lit'):
     name = splitext(basename(source_file))[0]
@@ -24,18 +72,9 @@ def build_lit(source_file, build_dir, lit_executable='lit'):
     with open(htmlfile, "rb") as f:
         html_content = f.read().decode("utf-8")
 
-    main_content = ""
-    rec = False
-    for line in html_content.split("\n"):
-        if not rec:
-            if "<body" in line:
-                rec = True
-        else:
-            if "</body>" in line:
-                rec = False
-            main_content += line
-
-    return main_content
+    parser = LitOutputParser()
+    parser.feed(html_content)
+    return parser.content
 
 # -----------------------------------------------------
 
