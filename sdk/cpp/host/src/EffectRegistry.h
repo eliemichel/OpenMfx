@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "mesheffect.h"
+#include "MeshEffect.h"
 
 #include <OpenMfx/Sdk/Cpp/Common>
 
