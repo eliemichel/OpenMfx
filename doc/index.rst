@@ -22,3 +22,4 @@ Contents
    Sdk/index
    Reference/index
    Implementations/index
+   Rfc/index

@@ -4,7 +4,7 @@ Using OpenMfx
 OpenMfx is a plugin API, so using it means to dynamically load a *plugin* in an *host* application that supports it.
 
 ```{warning}
-Latest builds are only available for Windows. Older releases may provide binaries for other platforms but in general feel free to share your own build with us if you compile a more recent one.
+Latest builds are only available for Windows and linux. Older releases may provide binaries for MacOS but in general feel free to share your own build with us if you compile a more recent one.
 ```
 
 Get an OpenMfx plugin
