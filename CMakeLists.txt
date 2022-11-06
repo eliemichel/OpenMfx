@@ -53,7 +53,7 @@ endif()
 # used are not built by default
 if (OPENMFX_EXCLUDE_FROM_ALL)
 	message(STATUS "Removing OpenMfx targets from BUILD_ALL")
-	get_all_targets(${CMAKE_CURRENT_SOURCE_DIR} all_targets)
+	get_all_targets(${CMAKE_CURRENT_SOURCE_DIR} all_targets NO_INTERFACE)
 	set_target_properties(
 		${all_targets}
 		PROPERTIES

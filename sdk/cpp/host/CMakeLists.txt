@@ -71,7 +71,7 @@ target_include_directories(
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
   PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 set(NOT_MSVC $<NOT:$<CXX_COMPILER_ID:MSVC>>)

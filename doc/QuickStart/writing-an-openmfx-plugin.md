@@ -64,7 +64,7 @@ MfxRegister(
     BoxGeneratorEffect,
     ExplodeEffect,
     MyCoolEffect // make sure not to add a comma after the last effect!
-);
+)
 ```
 
  3. In `MyCoolEffect.hpp`, we include the Plugin SDK and define a subclass of `MfxEffect`:
