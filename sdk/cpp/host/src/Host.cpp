@@ -183,7 +183,7 @@ bool Host::CreateInstance(OfxMeshEffectHandle effectDescriptor, OfxMeshEffectHan
 		OfxPropertySetStruct& props = param.properties;
 		int default_idx = props.find(kOfxParamPropDefault);
 		if (default_idx > -1) {
-			memcpy(param.value, props[default_idx].value, 4 * sizeof(OfxParamValueStruct));
+			memcpy(param.value, props[default_idx].value, 4 * sizeof(ParameterValue));
 		}
 	}
 

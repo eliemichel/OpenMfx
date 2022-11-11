@@ -1,4 +1,4 @@
-Writing an OpenMfx plugin
+Your first OpenMfx plugin
 =========================
 
 Plugins may be written in various languages, provided they can interface with the raw C API. The easiest route is to use C++ and the helper SDK provided by the OpenMfx project.

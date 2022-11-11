@@ -23,13 +23,17 @@
 
 #include <string>
 
-union OfxPropertyValueStruct {
+namespace OpenMfx {
+
+union PropertyValue {
     void *as_pointer;
     const char *as_const_char;
     char *as_char;
     double as_double;
     int as_int;
 };
+
+} // namespace OpenMfx
 
 struct OfxPropertyStruct {
  public:
@@ -44,7 +48,7 @@ struct OfxPropertyStruct {
   Index index() const { return m_name; }
 
  public:
-  OfxPropertyValueStruct value[4];
+    OpenMfx::PropertyValue value[4];
 
 private:
     std::string m_name;

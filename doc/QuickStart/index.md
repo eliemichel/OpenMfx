@@ -7,6 +7,6 @@ The instructions for getting started depends on whether you are a user of existi
 :maxdepth: 1
 
 using-openmfx
-writing-an-openmfx-plugin
+your-first-openmfx-plugin
 integrating-openmfx-as-an-host
 ```

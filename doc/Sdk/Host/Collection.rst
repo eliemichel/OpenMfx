@@ -1,0 +1,4 @@
+Collection
+==========
+
+.. doxygenclass:: OpenMfx::Collection

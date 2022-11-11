@@ -23,7 +23,10 @@
 
 #include <cstddef>
 
-union OfxParamValueStruct {
+
+namespace OpenMfx {
+
+union ParameterValue {
     void* as_pointer;
     const char* as_const_char;
     char* as_char;
@@ -31,6 +34,8 @@ union OfxParamValueStruct {
     double as_double;
     bool as_bool;
 };
+
+} // namespace OpenMfx
 
 // // OfxParamStruct
 
@@ -47,13 +52,16 @@ public:
 
 public:
     char* name;
-    OfxParamValueStruct value[4];
+    OpenMfx::ParameterValue value[4];
     OpenMfx::ParameterType type;
     OpenMfx::PropertySet properties;
 };
 
 // // OfxParamSetStruct
 
+/**
+ * TODO: Why does not this inherit from OpenMfx::Collection<OfxParamStruct>?
+ */
 struct OfxParamSetStruct {
 public:
     OfxParamSetStruct();
@@ -79,6 +87,6 @@ private:
 };
 
 namespace OpenMfx {
-typedef OfxParamStruct Param;
-typedef OfxParamSetStruct ParamSet;
+typedef OfxParamStruct Parameter;
+typedef OfxParamSetStruct ParameterSet;
 } // namespace OpenMfx

@@ -24,6 +24,11 @@
 #include <string>
 #include <utility>
 
+/**
+ * The name of this structure is imposed by the underlying C API, but it is
+ * aliased as \ref OpenMfx::Attribute so that it is more consistent with the
+ * rest of the Host SDK.
+ */
 struct OfxAttributeStruct {
   using AttributeType = OpenMfx::AttributeType;
   using AttributeAttachment = OpenMfx::AttributeAttachment;

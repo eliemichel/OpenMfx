@@ -1,0 +1,4 @@
+EffectRegistryEntry
+===================
+
+.. doxygenclass:: OpenMfx::EffectRegistryEntry
