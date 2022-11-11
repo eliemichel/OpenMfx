@@ -1,7 +1,6 @@
-<a href="https://www.unrealengine.com/en-US/megagrants">
-   <img align="right" src="doc/_static/Epic_MegaGrants_Recipient_logo_black64.png#gh-light-mode-only" alt="Epic MegaGrants Recipient" />
-   <img align="right" src="doc/_static/Epic_MegaGrants_Recipient_logo_white64.png#gh-dark-mode-only" alt="Epic MegaGrants Recipient" />
-</a>
+<img align="right" src="doc/_static/Epic_MegaGrants_Recipient_logo_black64.png#gh-light-mode-only" alt="Epic MegaGrants Recipient" />
+<img align="right" src="doc/_static/Epic_MegaGrants_Recipient_logo_white64.png#gh-dark-mode-only" alt="Epic MegaGrants Recipient" />
+
 <img align="left" src="https://github.com/eliemichel/OpenMfx/actions/workflows/cmake.yml/badge.svg" alt="CMake Badge" />
 
 &nbsp;
