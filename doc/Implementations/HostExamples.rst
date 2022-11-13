@@ -1,7 +1,7 @@
 .. _HostExamples:
 
-Examples of OpenMfx hosts
-=========================
+Available hosts
+===============
 
 This page intends to list all the implementations of the OpenMfx API as a host, i.e., all the creation tools that can handle OpenMfx plugins.
 
@@ -12,3 +12,12 @@ The most notable one so far is the `OpenMfx for Blender <https://github.com/elie
 `PythonMfx <https://github.com/eliemichel/PythonMfx>`_ is a python-only implementation of an OpenMfx host. It is meant more for developing validation tools for plugins/hosts than for performance.
 
 `WebMfx <https://github.com/eliemichel/WebMfx>`_ is PoC running OpenMfx plugins on the web, using emscripten.
+
+Detailed pages
+--------------
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
+
+   Hosts/Blender

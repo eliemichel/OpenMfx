@@ -1,9 +1,9 @@
 .. _PluginExamples:
 
-Examples of OpenMfx plugins
-===========================
+Available plugins
+=================
 
-This page intends to list all the publicly available OpenMfx plugins.
+This page intends to list all the publicly available OpenMfx plugins, `let us know <https://github.com/eliemichel/OpenMfx/issues>`_ if we forgot yours!
 
 To begin with, there are sample plugins in the OpenMfx repository: `examples/plugins <https://github.com/eliemichel/OpenMeshEffect/examples/plugins/>`_. Some of them are outdated, relevant examples are for instance ``mfx_test_parameters_plugin`` and ``mfx_uv_transform``.
  

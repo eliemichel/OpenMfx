@@ -116,7 +116,7 @@ History
  - *2020-10-13* @tkarabela made the first proposal.
  - *2020-10-15* Follow-up in [OpenMfx#6](https://github.com/eliemichel/OpenMfx/issues/6)
  - *2020-10-16* @tkarabela raises the issue of edge ordering of Option B. It is abandonned. ([OpenMfx#6](https://github.com/eliemichel/OpenMfx/issues/6#issuecomment-709647993))
- - *2020-10-25* **Option D** is adopted.
+ - *2020-10-25* **Option D** is adopted. Commit [OpenMfx@bef660d](https://github.com/eliemichel/OpenMfx/commit/bef660d9f3487b9bbcdc334cead99c5a00fae8bf).
 
 Contributors
 ------------

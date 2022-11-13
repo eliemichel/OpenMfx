@@ -47,7 +47,7 @@ History
 
  - *2020-10-13* Kickstarted by @tkarabela in [OpenMfxForBlender#27](https://github.com/eliemichel/OpenMfxForBlender/issues/27).
  - *2020-10-15* Follow-up in [OpenMfx#6](https://github.com/eliemichel/OpenMfx/issues/6)
- - *2020-10-25* **Option A** is adopted.
+ - *2020-10-25* **Option A** is adopted. Commit [OpenMfx@bef660d](https://github.com/eliemichel/OpenMfx/commit/bef660d9f3487b9bbcdc334cead99c5a00fae8bf).
 
 Contributors
 ------------
