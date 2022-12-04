@@ -81,7 +81,7 @@ typedef struct OfxHost {
 
       Repeated calls to fetchSuite with the same parameters will return the same pointer.
 
-      @returns
+      returns
          - NULL if the API is unknown (either the api or the version requested),
 	 - pointer to the relevant API if it was found
   */
@@ -185,6 +185,8 @@ These are the actions passed to a plug-in's 'main' function
  The \ref handle, \ref inArgs and \ref outArgs arguments to the \ref mainEntry
  are redundant and should be set to NULL.
 
+ 
+
  \pre
  - The plugin's \ref OfxPlugin::setHost function has been called
 
@@ -194,8 +196,10 @@ These are the actions passed to a plug-in's 'main' function
  @returns
  -  \ref kOfxStatOK, the action was trapped and all was well,
  -  \ref kOfxStatReplyDefault, the action was ignored,
- -  \ref kOfxStatFailed, the load action failed, no further actions will be
- passed to the plug-in,
+ -  \ref kOfxStatFailed, the load action failed, no further actions will be passed to the plug-in.
+ Interpret if possible  kOfxStatFailed as plug-in indicating it does not want to load 
+ Do not create an entry in the host's UI for plug-in then.  
+ Plug-in also has the option to return 0 for OfxGetNumberOfPlugins or kOfxStatFailed if host supports OfxSetHost in which case kOfxActionLoad will never be called.
  -  \ref kOfxStatErrFatal, fatal error in the plug-in.
  */
 #define  kOfxActionLoad "OfxActionLoad"
@@ -234,7 +238,8 @@ These are the actions passed to a plug-in's 'main' function
      without worrying about it changing between actions).
      -  \ref kOfxImageEffectActionDescribeInContext
      will be called once for each context that the host and plug-in
-     mutually support.
+     mutually support.  If a plug-in does not report to support any context supported by host, 
+	 host should not enable the plug-in.
 
  @returns
      -  \ref kOfxStatOK, the action was trapped and all was well
@@ -258,7 +263,7 @@ These are the actions passed to a plug-in's 'main' function
  The handle, inArgs and outArgs arguments to the main entry
  are redundant and should be set to NULL.
 
- \pre
+ \pref
      -  the \ref kOfxActionLoad action has been called
      -  all instances of a plugin have been destroyed
 
@@ -344,7 +349,7 @@ These are the actions passed to a plug-in's 'main' function
  @param  inArgs is redundant and is set to NULL
  @param  outArgs is redundant and is set to NULL
 
- \pre
+ \pref
      -  \ref kOfxActionDescribe has been called
      -  the instance is fully constructed, with all objects requested in the
      describe actions (eg, parameters and clips) have been constructed and
@@ -579,6 +584,17 @@ OfxExport OfxPlugin *OfxGetPlugin(int nth);
  * must be implemented in and exported from each plug-in binary.
  */
 OfxExport int OfxGetNumberOfPlugins(void);
+
+/** @brief First thing host should call
+*
+* This host call, added in 2020, is not specified in earlier implementation of the API.
+* Therefore host must check if the plugin implemented it and not assume symbol exists.
+* The order of calls is then:  1) OfxSetHost, 2) OfxGetNumberOfPlugins, 3) OfxGetPlugin
+* The host pointer is only assumed valid until OfxGetPlugin where it might get reset.
+* Plug-in can return kOfxStatFailed to indicate it has nothing to do here, it's not for this Host and it should be skipped silently.
+*/
+
+OfxExport  OfxStatus OfxSetHost(const OfxHost *host);
 
 /**
    \defgroup PropertiesAll Ofx Properties
@@ -901,7 +917,7 @@ General status codes start at 1 and continue until 999
 /** @brief Status code indicating all was fine */
 #define kOfxStatOK 0
 
-/** @brief Status error code for a failed operation */
+/** @brief Status error code for a failed operation. */
 #define kOfxStatFailed  ((int)1)
 
 /** @brief Status error code for a fatal error
