@@ -37,6 +37,31 @@ template<typename T, typename Index = typename T::Index> class Collection {
   Collection() {}
   MOVE_ONLY(Collection)
 
+  class Iterator {
+  public:
+    Iterator(Collection& collection, int index) : m_collection(collection), m_index(index) {}
+
+    Iterator operator++()
+    {
+      m_index++;
+      return *this;
+    }
+
+    bool operator!=(const Iterator &other) const
+    {
+      return m_index != other.m_index;
+    }
+
+    T& operator*() const
+    {
+      return m_collection[this->m_index];
+    }
+
+  private:
+    Collection &m_collection;
+    int m_index;
+  };
+
   int find(const Index &index) const
   {
     int i = -1;
@@ -121,6 +146,16 @@ template<typename T, typename Index = typename T::Index> class Collection {
   const T &operator[](const char *charIndex) const
   {
     (*this)[Index(charIndex)];
+  }
+
+  Iterator begin()
+  {
+    return Iterator(*this, 0);
+  }
+
+  Iterator end()
+  {
+    return Iterator(*this, count());
   }
 
   virtual void onNewItem(T &item)
